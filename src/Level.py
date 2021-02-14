@@ -46,6 +46,10 @@ class Level:
             length = len(hallway)
             point = 0
             start = hallway[point]
+            for way in range(len(hallway) - 1):
+                if way != 0:
+                    self.validateTile(hallway[way][0], hallway[way][1])
+                    self.grid[hallway[way][0]][hallway[way][1]] = " "
             while point < length - 2:
                 nextWay = hallway[point + 1]
                 point = point + 1
@@ -57,17 +61,17 @@ class Level:
                     lil = min(startX, nextX)
                     big = max(startX, nextX)
                     cursor = lil + 1
-                    while cursor <= big:
+                    while cursor < big:
                         self.validateTile(cursor, startY)
-                        self.grid[cursor][startY] = "e"
+                        self.grid[cursor][startY] = " "
                         cursor = cursor + 1
                 if startX == nextX:
                     lil = min(startY, nextY)
                     big = max(startY, nextY)
-                    cursor = lil
-                    while cursor <= big:
+                    cursor = lil + 1
+                    while cursor < big:
                         self.validateTile(startX, cursor)
-                        self.grid[startX][cursor] = "e"
+                        self.grid[startX][cursor] = " "
                         cursor = cursor + 1
                 start = nextWay
             nextWay = hallway[len(hallway) - 1]
@@ -81,7 +85,7 @@ class Level:
                 cursor = lil + 1
                 while cursor < big - 1:
                     self.validateTile(cursor, startY)
-                    self.grid[cursor][startY] = "e"
+                    self.grid[cursor][startY] = " "
                     cursor = cursor + 1
             if startX == nextX:
                 lil = min(startY, nextY)
@@ -89,7 +93,7 @@ class Level:
                 cursor = lil
                 while cursor < big - 1:
                     self.validateTile(startX, cursor)
-                    self.grid[startX][cursor] = "e"
+                    self.grid[startX][cursor] = " "
                     cursor = cursor + 1
 
 
