@@ -1,5 +1,3 @@
-import Point
-
 
 class Room:
     width = 0

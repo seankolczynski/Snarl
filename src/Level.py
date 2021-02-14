@@ -1,5 +1,5 @@
-import Room
-import Hallway
+from src import Hallway, Room
+
 
 class Level:
 
@@ -37,7 +37,6 @@ class Level:
                 for y in range(room.height):
                     tile = room.layout[x][y]
                     self.grid[x + offX][y + offY] = tile
-                    test = self.grid[x + offX][y + offY]
 
 
 
@@ -59,6 +58,7 @@ class Level:
                     big = max(startX, nextX)
                     cursor = lil + 1
                     while cursor <= big:
+                        self.validateTile(cursor, startY)
                         self.grid[cursor][startY] = "e"
                         cursor = cursor + 1
                 if startX == nextX:
@@ -66,6 +66,7 @@ class Level:
                     big = max(startY, nextY)
                     cursor = lil
                     while cursor <= big:
+                        self.validateTile(startX, cursor)
                         self.grid[startX][cursor] = "e"
                         cursor = cursor + 1
                 start = nextWay
@@ -79,6 +80,7 @@ class Level:
                 big = max(startX, nextX)
                 cursor = lil + 1
                 while cursor < big - 1:
+                    self.validateTile(cursor, startY)
                     self.grid[cursor][startY] = "e"
                     cursor = cursor + 1
             if startX == nextX:
@@ -86,6 +88,7 @@ class Level:
                 big = max(startY, nextY)
                 cursor = lil
                 while cursor < big - 1:
+                    self.validateTile(startX, cursor)
                     self.grid[startX][cursor] = "e"
                     cursor = cursor + 1
 
