@@ -43,25 +43,58 @@ class Level:
 
     def setupHallways(self, halls):
         for h in halls:
-            hallway =h.connectDots
-            if hallway:
-                length = len(hallway)
-                start = hallway[0]
-                point = 1
-                while point < length:
-                    next = hallway[point]
-                    point = point + 1
-                    startX = start[0]
-                    startY = start[1]
-                    nextX = next[0]
-                    nextY = next[1]
-                    if startX == nextX:
-                        lil = min(startY, nextY)
-                        big = max(startY, nextY)
-                        cursor = lil
-                        while cursor < big:
-                            self.grid[cursor][startX] = " "
-                            cursor = cursor + 1
+            hallway = h.connectDots
+            length = len(hallway)
+            point = 0
+            start = hallway[point]
+            while point < length - 2:
+                nextWay = hallway[point + 1]
+                point = point + 1
+                startX = start[0]
+                startY = start[1]
+                nextX = nextWay[0]
+                nextY = nextWay[1]
+                if startY == nextY:
+                    lil = min(startX, nextX)
+                    big = max(startX, nextX)
+                    cursor = lil + 1
+                    while cursor <= big:
+                        self.grid[cursor][startY] = "e"
+                        cursor = cursor + 1
+                if startX == nextX:
+                    lil = min(startY, nextY)
+                    big = max(startY, nextY)
+                    cursor = lil
+                    while cursor <= big:
+                        self.grid[startX][cursor] = "e"
+                        cursor = cursor + 1
+                start = nextWay
+            nextWay = hallway[len(hallway) - 1]
+            startX = start[0]
+            startY = start[1]
+            nextX = nextWay[0]
+            nextY = nextWay[1]
+            if startY == nextY:
+                lil = min(startX, nextX)
+                big = max(startX, nextX)
+                cursor = lil + 1
+                while cursor < big - 1:
+                    self.grid[cursor][startY] = "e"
+                    cursor = cursor + 1
+            if startX == nextX:
+                lil = min(startY, nextY)
+                big = max(startY, nextY)
+                cursor = lil
+                while cursor < big - 1:
+                    self.grid[startX][cursor] = "e"
+                    cursor = cursor + 1
+
+
+
+    def validateTile(self, x, y):
+        currentVal = self.grid[x][y]
+        if currentVal == " ":
+            raise ValueError("Given Invalid Layout. Please ensure your rooms and hallways do not overlap")
 
 
 
@@ -69,8 +102,9 @@ class Level:
 
 if __name__ == "__main__":
     example = [[" " for i in range(10)] for j in range(10)]
-    hall = Hallway.Hallway((5, 15), (5, 20), [])
+    hall = Hallway.Hallway((14, 5), (21, 5), [])
+    zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
     room = Room.Room(example, [], (5, 5))
     room2 = Room.Room(example, [], (20, 5))
-    level = Level([room, room2], [hall])
+    level = Level([room, room2], [hall, zHall])
     level.draw()
