@@ -1,3 +1,4 @@
+"""Describes a layout of tiles. See examples in LevelTest.py"""
 class Room:
     width = 0
     height = 0

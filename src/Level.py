@@ -3,7 +3,7 @@ import random as r
 
 """
 A level is a data representation of the current level being played on by the users. It maintains the entire layout of 
-the game, including rooms and hallways, as well as where objects are.
+the game, including rooms and hallways, as well as where objects are. See examples in LevelTest.py
 """
 class Level:
 
@@ -18,9 +18,9 @@ class Level:
 
     """Increases the default size of the board if needed"""
     def expandGrid(self, new_length, new_width):
-        for i in range(len(self.rows)):
+        for i in range(self.rows):
             self.grid[i] = self.grid[i] + ["X" for i in range(new_width - self.cols)]
-        for i in range( new_width - self.rows):
+        for i in range(new_width - self.rows):
             self.grid.append(["X" for i in range(new_length)])
         self.rows, self.cols = (new_length, new_width)
 
@@ -47,8 +47,8 @@ class Level:
     def setupRooms(self):
         for roomie in self.rooms:
             offX, offY = roomie.upperLeft
-            if offX > self.cols or offY > self.rows:
-                self.expand_grid(offX, offY)
+            if offX + roomie.width > self.cols or offY + roomie.height > self.rows:
+                self.expandGrid(offX + roomie.width, offY + roomie.height)
             for x in range(roomie.width):
                 for y in range(roomie.height):
                     self.validateTile(x + offX, y + offY)
@@ -141,12 +141,12 @@ class Level:
             self.makeExit()
 
 
-if __name__ == "__main__":
-    example = [[" " for i in range(10)] for j in range(10)]
-    hall = Hallway.Hallway((14, 5), (21, 5), [])
-    zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
-    room = Room.Room(example, (5, 5))
-    room2 = Room.Room(example, (20, 5))
-    level = Level([room, room2], [hall, zHall])
-    level.draw()
+# if __name__ == "__main__":
+#     example = [[" " for i in range(10)] for j in range(10)]
+#     hall = Hallway.Hallway((14, 5), (21, 5), [])
+#     zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
+#     room = Room.Room(example, (5, 5))
+#     room2 = Room.Room(example, (20, 5))
+#     level = Level([room, room2], [hall, zHall])
+#     level.draw()
 

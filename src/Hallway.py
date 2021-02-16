@@ -1,3 +1,4 @@
+"""Describes a layout of tiles connecting two rooms. See examples in LevelTest.py"""
 class Hallway:
 
     def __init__(self, start, end, waypoints):
