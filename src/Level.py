@@ -15,19 +15,19 @@ class Level:
 
     def expand_grid(self, new_length, new_width):
         for i in range(len(self.rows)):
-            self.grid[i] =  self.grid[i] + ["X" for i in range(new_width - self.cols)] 
+            self.grid[i] = self.grid[i] + ["X" for i in range(new_width - self.cols)]
         for i in range( new_width - self.rows):
-            self.grid.append(["X" for i in range(new_length )])
+            self.grid.append(["X" for i in range(new_length)])
         self.rows, self.cols = (new_length, new_width)
-    
+
     def draw(self):
         image = ""
         image += "┌"
         for x in range(self.cols):
             image += "──"
-        image += "┐\n"
+        image += "─┐\n"
         for y in range(self.rows):
-            image += "│"
+            image += "│ "
             for x in range(self.cols):
                 image += self.grid[x][y]
                 image += " "
@@ -35,7 +35,7 @@ class Level:
         image += "└"
         for x in range(self.cols):
             image += "──"
-        image += "┘"
+        image += "─┘"
         print(image)
 
     def setupRooms(self):
@@ -55,6 +55,7 @@ class Level:
             length = len(hallway)
             point = 0
             start = hallway[point]
+
             for way in range(len(hallway) - 1):
                 if way != 0:
                     self.validateTile(hallway[way][0], hallway[way][1])
@@ -131,8 +132,8 @@ if __name__ == "__main__":
     example = [[" " for i in range(10)] for j in range(10)]
     hall = Hallway.Hallway((14, 5), (21, 5), [])
     zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
-    room = Room.Room(example, [], (5, 5))
-    room2 = Room.Room(example, [], (20, 5))
+    room = Room.Room(example, (5, 5))
+    room2 = Room.Room(example, (20, 5))
     level = Level([room, room2], [hall, zHall])
     level.draw()
 
