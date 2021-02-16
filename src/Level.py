@@ -13,6 +13,13 @@ class Level:
         self.setupHallways(halls)
         self.exit = self.makeExit()
 
+    def expand_grid(self, new_length, new_width):
+        for i in range(len(self.rows)):
+            self.grid[i] =  self.grid[i] + ["X" for i in range(new_width - self.cols)] 
+        for i in range( new_width - self.rows):
+            self.grid.append(["X" for i in range(new_length )])
+        self.rows, self.cols = (new_length, new_width)
+    
     def draw(self):
         image = ""
         image += "┌"
@@ -34,6 +41,8 @@ class Level:
     def setupRooms(self):
         for room in self.rooms:
             offX, offY = room.upperLeft
+            if offX > self.cols or offY > self.rows:
+                self.expand_grid(offX, offY)
             for x in range(room.width):
                 for y in range(room.height):
                     tile = room.layout[x][y]
