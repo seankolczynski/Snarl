@@ -1,25 +1,30 @@
-from src import Hallway, Room
+from src import Hallway, Room, Tile
 import random as r
 
-
+"""
+A level is a data representation of the current level being played on by the users. It maintains the entire layout of 
+the game, including rooms and hallways, as well as where objects are.
+"""
 class Level:
 
     def __init__(self, rooms, halls):
         self.rows, self.cols = (50, 50)
-        self.grid = [["X" for i in range(self.cols)] for j in range(self.rows)]
+        self.grid = [[Tile.WallTile((i, j)) for i in range(self.cols)] for j in range(self.rows)]
         self.rooms = rooms
         self.halls = halls
         self.setupRooms()
         self.setupHallways(halls)
         self.exit = self.makeExit()
 
-    def expand_grid(self, new_length, new_width):
+    """Increases the default size of the board if needed"""
+    def expandGrid(self, new_length, new_width):
         for i in range(len(self.rows)):
             self.grid[i] = self.grid[i] + ["X" for i in range(new_width - self.cols)]
         for i in range( new_width - self.rows):
             self.grid.append(["X" for i in range(new_length)])
         self.rows, self.cols = (new_length, new_width)
 
+    """Creates a low-res visual of the current game layout"""
     def draw(self):
         image = ""
         image += "┌"
@@ -29,7 +34,7 @@ class Level:
         for y in range(self.rows):
             image += "│ "
             for x in range(self.cols):
-                image += self.grid[x][y]
+                image += self.grid[x][y].draw()
                 image += " "
             image += "│\n"
         image += "└"
@@ -38,28 +43,33 @@ class Level:
         image += "─┘"
         print(image)
 
+    """Places the rooms in the level and ensures they are valid"""
     def setupRooms(self):
-        for room in self.rooms:
-            offX, offY = room.upperLeft
+        for roomie in self.rooms:
+            offX, offY = roomie.upperLeft
             if offX > self.cols or offY > self.rows:
                 self.expand_grid(offX, offY)
-            for x in range(room.width):
-                for y in range(room.height):
-                    tile = room.layout[x][y]
+            for x in range(roomie.width):
+                for y in range(roomie.height):
                     self.validateTile(x + offX, y + offY)
-                    self.grid[x + offX][y + offY] = tile
+                    spot = Tile.Tile((x + offX, y + offY))
+                    spot.setRoom(roomie)
+                    self.grid[x + offX][y + offY] = spot
 
+    """Places Hallways in the level and confirms validity"""
     def setupHallways(self, halls):
         for h in halls:
             hallway = h.connectDots
             length = len(hallway)
             point = 0
             start = hallway[point]
-
+            door1 = self.grid[start[0]][start[1]]
+            roomie = door1.room
+            roomie.addDoor(start)
             for way in range(len(hallway) - 1):
                 if way != 0:
                     self.validateTile(hallway[way][0], hallway[way][1])
-                    self.grid[hallway[way][0]][hallway[way][1]] = " "
+                    self.grid[hallway[way][0]][hallway[way][1]] = Tile.Tile((hallway[way][0], hallway[way][1]))
             while point < length - 2:
                 nextWay = hallway[point + 1]
                 point = point + 1
@@ -73,7 +83,7 @@ class Level:
                     cursor = lil + 1
                     while cursor < big:
                         self.validateTile(cursor, startY)
-                        self.grid[cursor][startY] = " "
+                        self.grid[cursor][startY] = Tile.Tile((cursor, startY))
                         cursor = cursor + 1
                 if startX == nextX:
                     lil = min(startY, nextY)
@@ -81,10 +91,13 @@ class Level:
                     cursor = lil + 1
                     while cursor < big:
                         self.validateTile(startX, cursor)
-                        self.grid[startX][cursor] = " "
+                        self.grid[startX][cursor] = Tile.Tile((startX, cursor))
                         cursor = cursor + 1
                 start = nextWay
             nextWay = hallway[len(hallway) - 1]
+            door2 = self.grid[nextWay[0]][nextWay[1]]
+            roomie = door2.room
+            roomie.addDoor(nextWay)
             startX = start[0]
             startY = start[1]
             nextX = nextWay[0]
@@ -95,7 +108,7 @@ class Level:
                 cursor = lil + 1
                 while cursor < big - 1:
                     self.validateTile(cursor, startY)
-                    self.grid[cursor][startY] = " "
+                    self.grid[cursor][startY] = Tile.Tile((cursor, startY))
                     cursor = cursor + 1
             if startX == nextX:
                 lil = min(startY, nextY)
@@ -103,16 +116,16 @@ class Level:
                 cursor = lil
                 while cursor < big - 1:
                     self.validateTile(startX, cursor)
-                    self.grid[startX][cursor] = " "
+                    self.grid[startX][cursor] = Tile.Tile((startX, cursor))
                     cursor = cursor + 1
 
-
-
+    """Ensures that no Tile is placed where another exists. If one is, it throws an error, as the layout is invalid."""
     def validateTile(self, x, y):
         currentVal = self.grid[x][y]
-        if currentVal == " ":
+        if type(currentVal) == Tile.Tile:
             raise ValueError("Given Invalid Layout. Please ensure your rooms and hallways do not overlap")
 
+    """Randomly places the exit in a room of the level"""
     def makeExit(self):
         roomRange = len(self.rooms)
         roomChoiceNum = r.randint(0, roomRange - 1)
@@ -121,9 +134,9 @@ class Level:
         coordY = r.randint(0, roomChoice.height - 1)
         offX, offY = roomChoice.upperLeft
 
-        if self.grid[offX + coordX][offY + coordY] == " ":
-            self.exit = (offX + coordX, offY + coordY)
-            self.grid[offX + coordX][offY + coordY] = "e"
+        if type(self.grid[offX + coordX][offY + coordY]) == Tile.Tile:
+            self.grid[offX + coordX][offY + coordY].setObject("Exit")
+            return (offX + coordX, offY + coordY)
         else:
             self.makeExit()
 

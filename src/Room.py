@@ -1,4 +1,3 @@
-
 class Room:
     width = 0
     height = 0
