@@ -1,7 +1,6 @@
 import io
 import sys
 import unittest
-
 import Hallway
 import Level
 import Room
