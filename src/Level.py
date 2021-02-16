@@ -1,4 +1,4 @@
-from src import Hallway, Room, Tile
+import Hallway, Room, Tile
 import random as r
 
 """
