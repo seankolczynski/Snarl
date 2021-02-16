@@ -1,4 +1,5 @@
 from src import Hallway, Room
+import random as r
 
 
 class Level:
@@ -10,7 +11,7 @@ class Level:
         self.halls = halls
         self.setupRooms()
         self.setupHallways(halls)
-
+        self.exit = self.makeExit()
 
     def draw(self):
         image = ""
@@ -36,9 +37,8 @@ class Level:
             for x in range(room.width):
                 for y in range(room.height):
                     tile = room.layout[x][y]
+                    self.validateTile(x + offX, y + offY)
                     self.grid[x + offX][y + offY] = tile
-
-
 
     def setupHallways(self, halls):
         for h in halls:
@@ -103,8 +103,19 @@ class Level:
         if currentVal == " ":
             raise ValueError("Given Invalid Layout. Please ensure your rooms and hallways do not overlap")
 
+    def makeExit(self):
+        roomRange = len(self.rooms)
+        roomChoiceNum = r.randint(0, roomRange - 1)
+        roomChoice = self.rooms[roomChoiceNum]
+        coordX = r.randint(0, roomChoice.width - 1)
+        coordY = r.randint(0, roomChoice.height - 1)
+        offX, offY = roomChoice.upperLeft
 
-
+        if self.grid[offX + coordX][offY + coordY] == " ":
+            self.exit = (offX + coordX, offY + coordY)
+            self.grid[offX + coordX][offY + coordY] = "e"
+        else:
+            self.makeExit()
 
 
 if __name__ == "__main__":
@@ -115,3 +126,4 @@ if __name__ == "__main__":
     room2 = Room.Room(example, [], (20, 5))
     level = Level([room, room2], [hall, zHall])
     level.draw()
+
