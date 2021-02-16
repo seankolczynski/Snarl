@@ -35,6 +35,21 @@ class MyTestCase(unittest.TestCase):
         with self.assertRaises(ValueError):
             Level.Level([room, room2], [])
 
+    # Tests that levels will not allow invalid layouts
+    def testExpand(self):
+        example = [[" " for i in range(10)] for j in range(10)]
+        room = Room.Room(example, [], (60, 60))
+        newout = io.StringIO()
+        expected = ""
+        sys.stdout = newout
+        level.draw()
+        endVal = newout.getvalue()
+        # Because the level exit is randomly placed, we had to remove it from the test
+        if endVal.__contains__("e"):
+            endVal = endVal.replace("e", " ")
+        self.assertEqual(expected, endVal) 
+
+
 
 if __name__ == '__main__':
     unittest.main()
