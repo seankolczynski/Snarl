@@ -2,10 +2,10 @@ import Hallway, Room, Tile
 import random as r
 
 """
-A level is a data representation of the current level being played on by the users. It maintains the entire layout of 
-the game, including rooms and hallways, as well as where objects are. See examples in LevelTest.py
+A floor is a data representation of the current floor being played on by the users. It maintains the entire layout of 
+the game, including rooms and hallways, as well as where objects are. See examples in floorTest.py
 """
-class Level:
+class Floor:
 
     def __init__(self, rooms, halls):
         self.rows, self.cols = (50, 50)
@@ -17,12 +17,12 @@ class Level:
         self.exit = self.makeExit()
 
     """Increases the default size of the board if needed"""
-    def expandGrid(self, new_length, new_width):
+    def expandGrid(self, new_height, new_width):
         for i in range(self.rows):
-            self.grid[i] = self.grid[i] + ["X" for i in range(new_width - self.cols)]
+            self.grid[i] = self.grid[i] + [Tile.WallTile((i, new_width)) for i in range(new_width - self.cols)]
         for i in range(new_width - self.rows):
-            self.grid.append(["X" for i in range(new_length)])
-        self.rows, self.cols = (new_length, new_width)
+            self.grid.append([Tile.WallTile() for i in range(new_height)])
+        self.rows, self.cols = (new_height, new_width)
 
     """Creates a low-res visual of the current game layout"""
     def draw(self):
@@ -43,7 +43,7 @@ class Level:
         image += "─┘"
         print(image)
 
-    """Places the rooms in the level and ensures they are valid"""
+    """Places the rooms in the floor and ensures they are valid"""
     def setupRooms(self):
         for roomie in self.rooms:
             offX, offY = roomie.upperLeft
@@ -56,7 +56,7 @@ class Level:
                     spot.setRoom(roomie)
                     self.grid[x + offX][y + offY] = spot
 
-    """Places Hallways in the level and confirms validity"""
+    """Places Hallways in the floor and confirms validity"""
     def setupHallways(self, halls):
         for h in halls:
             hallway = h.connectDots
@@ -125,7 +125,7 @@ class Level:
         if type(currentVal) == Tile.Tile:
             raise ValueError("Given Invalid Layout. Please ensure your rooms and hallways do not overlap")
 
-    """Randomly places the exit in a room of the level"""
+    """Randomly places the exit in a room of the floor"""
     def makeExit(self):
         roomRange = len(self.rooms)
         roomChoiceNum = r.randint(0, roomRange - 1)
@@ -142,11 +142,11 @@ class Level:
 
 
 if __name__ == "__main__":
-    example = [[" " for i in range(10)] for j in range(10)]
+    example = [[Tile.Tile(i, j) for i in range(10)] for j in range(10)]
     hall = Hallway.Hallway((14, 5), (21, 5), [])
     zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
     room = Room.Room(example, (5, 5))
     room2 = Room.Room(example, (20, 5))
-    level = Level([room, room2], [hall, zHall])
-    level.draw()
+    floor = Floor([room, room2], [hall, zHall])
+    floor.draw()
 

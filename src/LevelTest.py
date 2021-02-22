@@ -1,11 +1,11 @@
 import io
 import sys
 import unittest
-import Hallway, Level, Room
+import Hallway, Floor, Room
 
 
 class MyTestCase(unittest.TestCase):
-    # Tests that our level draws properly
+    # Tests that our floor draws properly
     def testDefaultRoom(self):
         self.maxDiff = None
         example = [[" " for i in range(10)] for j in range(10)]
@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
         zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
         room = Room.Room(example, (5, 5))
         room2 = Room.Room(example, (20, 5))
-        level = Level.Level([room, room2], [hall, zHall])
+        floor = Floor.Floor([room, room2], [hall, zHall])
         newout = io.StringIO()
         expected = '┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐\n'\
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
@@ -68,28 +68,28 @@ class MyTestCase(unittest.TestCase):
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '└─────────────────────────────────────────────────────────────────────────────────────────────────────┘\n'
         sys.stdout = newout
-        level.draw()
+        floor.draw()
         endVal = newout.getvalue()
-        # Because the level exit is randomly placed, we had to remove it from the test
+        # Because the floor exit is randomly placed, we had to remove it from the test
         if endVal.__contains__("e"):
             endVal = endVal.replace("e", " ")
         self.assertEqual(expected, endVal)
 
-    # Tests that levels will not allow invalid layouts
+    # Tests that floors will not allow invalid layouts
     def testValidation(self):
         example = [[" " for i in range(10)] for j in range(10)]
         room = Room.Room(example, (5, 5))
         room2 = Room.Room(example, (6, 5))
         with self.assertRaises(ValueError):
-            Level.Level([room, room2], [])
+            Floor.Floor([room, room2], [])
 
-    # Tests that levels will not allow invalid layouts
+    # Tests that floors will not allow invalid layouts
     def testExpand(self):
         example = [[" " for i in range(10)] for j in range(10)]
         room = Room.Room(example, (60, 60))
-        level = Level.Level([room], [])
-        self.assertEqual(70, level.rows)
-        self.assertEqual(70, level.cols)
+        floor = Floor.Floor([room], [])
+        self.assertEqual(70, floor.rows)
+        self.assertEqual(70, floor.cols)
 
     #Checks that a room's doors are updated
     def testDoors(self):
@@ -99,7 +99,7 @@ class MyTestCase(unittest.TestCase):
         room = Room.Room(example, (5, 5))
         room2 = Room.Room(example, (20, 5))
         self.assertEqual([], room.doors)
-        level = Level.Level([room, room2], [hall, zHall])
+        floor = Floor.Floor([room, room2], [hall, zHall])
         self.assertEqual([(14, 5), (14, 14)], room.doors)
 
 if __name__ == '__main__':
