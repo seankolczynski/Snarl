@@ -1,9 +1,7 @@
 import io
 import sys
 import unittest
-import Hallway
-import Level
-import Room
+import Hallway, Level, Room
 
 
 class MyTestCase(unittest.TestCase):
@@ -93,6 +91,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(70, level.rows)
         self.assertEqual(70, level.cols)
 
+    #Checks that a room's doors are updated
     def testDoors(self):
         example = [[" " for i in range(10)] for j in range(10)]
         hall = Hallway.Hallway((14, 5), (21, 5), [])

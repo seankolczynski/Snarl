@@ -1,4 +1,4 @@
-from src import Hallway, Room, Tile
+import Hallway, Room, Tile
 import random as r
 
 """
@@ -141,12 +141,12 @@ class Level:
             self.makeExit()
 
 
-# if __name__ == "__main__":
-#     example = [[" " for i in range(10)] for j in range(10)]
-#     hall = Hallway.Hallway((14, 5), (21, 5), [])
-#     zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
-#     room = Room.Room(example, (5, 5))
-#     room2 = Room.Room(example, (20, 5))
-#     level = Level([room, room2], [hall, zHall])
-#     level.draw()
+if __name__ == "__main__":
+    example = [[" " for i in range(10)] for j in range(10)]
+    hall = Hallway.Hallway((14, 5), (21, 5), [])
+    zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
+    room = Room.Room(example, (5, 5))
+    room2 = Room.Room(example, (20, 5))
+    level = Level([room, room2], [hall, zHall])
+    level.draw()
 

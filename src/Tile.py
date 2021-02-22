@@ -12,6 +12,8 @@ class Tile:
         self.room = room
 
     def draw(self):
+        if self.object == "Exit":
+            return "e"
         return " "
 
 
