@@ -90,6 +90,7 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room], [])
         self.assertEqual(70, floor.rows)
         self.assertEqual(70, floor.cols)
+        floor.draw()
 
     #Checks that a room's doors are updated
     def testDoors(self):
