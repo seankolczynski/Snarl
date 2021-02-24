@@ -1,8 +1,9 @@
 import json
 import re
 import sys
-from Tile import WallTile, Tile
-from Room import Room
+from src import Tile
+from Tile import Tile
+from src import Room
 
 
 def roomMaker(room):
