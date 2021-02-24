@@ -9,10 +9,8 @@ class Character:
     def move(self, tile):
         if self.current_tile is not None:
             self.current_tile.remove_character()
-            self.current_tile = tile
-            tile.add_character(self)
-        else:
-            self.current_tile = tile
+        self.current_tile = tile
+        tile.add_character(self)
 
     # Character
     def get_char_position(self):
