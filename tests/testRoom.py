@@ -45,7 +45,7 @@ def roomChecker(room, point):
     points = []
 
     if point[0] < minRow or point[0] > maxRow or point[1] < minCol or point[1] > maxCol:
-        return json.dumps(["Failure: Point ", point, " in not in room at ", origin_translated])
+        return json.dumps(["Failure: Point ", point, " in not in room at ", origin])
     if minRow <= up[0] <= maxRow and minCol <= up[1] <= maxCol:
         if not isinstance(room.get_tile((up[1], up[0])), WallTile):
             points.append(up)
@@ -58,7 +58,7 @@ def roomChecker(room, point):
     if minRow <= down[0] <= maxRow and minCol <= down[1] <= maxCol:
         if not isinstance(room.get_tile((down[1], down[0])), WallTile):
             points.append(down)
-    return json.dumps(["Success: Traversable points from ", point, " in room at ", origin_translated, " are ", points])
+    return json.dumps(["Success: Traversable points from ", point, " in room at ", origin, " are ", points])
 
 
 class testSuite(unittest.TestCase):
