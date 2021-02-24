@@ -1,9 +1,9 @@
 import json
 import re
 import sys
-from src import Tile
-from Tile import Tile
-from src import Room
+sys.path.append("../src/")
+import Room
+import Tile
 
 
 def roomMaker(room):

@@ -3,8 +3,7 @@ import sys
 import os
 sys.path.append("../src/")
 import unittest
-import Hallway, Floor, Room, GameState, Player, Adversary 
-from Tile import Tile, WallTile
+import Hallway, Floor, Room, GameState, Player, Adversary
 
 
 class MyTestCase(unittest.TestCase):
