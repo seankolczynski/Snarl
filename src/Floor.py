@@ -1,5 +1,6 @@
-import Hallway, Room, Tile
+import Hallway, Room
 import random as r
+from Tile import Tile, WallTile
 
 """
 A floor is a data representation of the current floor being played on by the users. It maintains the entire layout of 
@@ -9,7 +10,7 @@ class Floor:
 
     def __init__(self, rooms, halls):
         self.rows, self.cols = (50, 50)
-        self.grid = [[Tile.WallTile((i, j)) for i in range(self.cols)] for j in range(self.rows)]
+        self.grid = [[WallTile((i, j)) for i in range(self.cols)] for j in range(self.rows)]
         self.rooms = rooms
         self.halls = halls
         self.setupRooms()
@@ -19,9 +20,9 @@ class Floor:
     """Increases the default size of the board if needed"""
     def expandGrid(self, new_height, new_width):
         for j in range(self.rows):
-            self.grid[j] = self.grid[j] + [Tile.WallTile((i, j)) for i in range(new_width - self.cols)]
+            self.grid[j] = self.grid[j] + [WallTile((i, j)) for i in range(new_width - self.cols)]
         for i in range(new_width - self.rows):
-            self.grid.append([Tile.WallTile((i, j)) for j in range(new_height)])
+            self.grid.append([WallTile((i, j)) for j in range(new_height)])
         self.rows, self.cols = (new_height, new_width)
 
     """Creates a low-res visual of the current game layout"""
@@ -134,7 +135,7 @@ class Floor:
         coordY = r.randint(0, roomChoice.height - 1)
         offX, offY = roomChoice.upperLeft
 
-        if type(self.grid[offX + coordX][offY + coordY]) == Tile.Tile:
+        if type(self.grid[offX + coordX][offY + coordY]) == Tile:
             self.grid[offX + coordX][offY + coordY].add_object("Exit")
             return self.grid[offX + coordX][offY + coordY]
         else:
@@ -155,9 +156,14 @@ class Floor:
     def get_exit(self):
         return self.exit
 
+    def place_item(self, item, pos):
+        receiving = self.grid[pos[0]][pos[1]]
+        if isinstance(receiving, Tile):
+            receiving.add_object(item)
+
 
 if __name__ == "__main__":
-    example = [[Tile.Tile((i, j)) for i in range(10)] for j in range(10)]
+    example = [[Tile((i, j)) for i in range(10)] for j in range(10)]
     hall = Hallway.Hallway((14, 5), (21, 5), [])
     zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
     room = Room.Room(example, (5, 5))

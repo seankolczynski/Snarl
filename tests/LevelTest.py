@@ -108,9 +108,24 @@ class MyTestCase(unittest.TestCase):
         adversary1 = Adversary.Adversary(2)
         GameManger.add_adversary(adversary1)
         GameManger.add_player(player1)
-
-        
         self.assertEqual(GameManger.get_intermediate_state(), "Players: (5, 5) \nAdversaries: (20, 5) \nExit Positions: (9, 6) ")
+
+    def testIntermediateOutput(self):
+        self.maxDiff = None
+        example = [[1 for i in range(10)] for j in range(10)]
+        hall = Hallway.Hallway((14, 5), (21, 5), [])
+        zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
+        room = Room.Room(example, (5, 5))
+        room2 = Room.Room(example, (20, 5))
+        floor = Floor.Floor([room, room2], [hall, zHall])
+        floor.set_exit((9, 6))
+        GameManger = GameState.GameState([floor])
+        player1 = Player.Player(2)
+        adversary1 = Adversary.Adversary(2)
+        GameManger.add_adversary(adversary1)
+        GameManger.add_player(player1)
+        self.assertEqual(GameManger.get_intermediate_state(),
+                         "Players: (5, 5) \nAdversaries: (20, 5) \nExit Positions: (9, 6) ")
 
     #Checks that a room's doors are updated
     def testDoors(self):
