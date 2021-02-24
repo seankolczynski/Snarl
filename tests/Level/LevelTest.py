@@ -11,7 +11,7 @@ class MyTestCase(unittest.TestCase):
     # Tests that our floor draws properly
     def testDefaultRoom(self):
         self.maxDiff = None
-        example = [[Tile(i, j) for i in range(10)] for j in range(10)]
+        example = [[1 for i in range(10)] for j in range(10)]
         hall = Hallway.Hallway((14, 5), (21, 5), [])
         zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
         room = Room.Room(example, (5, 5))
@@ -80,7 +80,7 @@ class MyTestCase(unittest.TestCase):
 
     # Tests that floors will not allow invalid layouts
     def testValidation(self):
-        example = [[Tile((i, j)) for i in range(10)] for j in range(10)]
+        example = [[1 for i in range(10)] for j in range(10)]
         room = Room.Room(example, (5, 5))
         room2 = Room.Room(example, (6, 5))
         with self.assertRaises(ValueError):
@@ -88,7 +88,7 @@ class MyTestCase(unittest.TestCase):
 
     # Tests that floors will not allow invalid layouts
     def testExpand(self):
-        example = [[Tile((i, j)) for i in range(10)] for j in range(10)]
+        example = [[1 for i in range(10)] for j in range(10)]
         room = Room.Room(example, (60, 60))
         floor = Floor.Floor([room], [])
         self.assertEqual(70, floor.rows)
@@ -97,7 +97,7 @@ class MyTestCase(unittest.TestCase):
     
     def testIntermediateOutput(self):
         self.maxDiff = None
-        example = [[Tile((i, j)) for i in range(10)] for j in range(10)]
+        example = [[1 for i in range(10)] for j in range(10)]
         hall = Hallway.Hallway((14, 5), (21, 5), [])
         zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
         room = Room.Room(example, (5, 5))
@@ -115,7 +115,7 @@ class MyTestCase(unittest.TestCase):
 
     #Checks that a room's doors are updated
     def testDoors(self):
-        example = [[Tile(i, j) for i in range(10)] for j in range(10)]
+        example = [[1 for i in range(10)] for j in range(10)]
         hall = Hallway.Hallway((14, 5), (21, 5), [])
         zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
         #room = Room.Room(exam)ple, (5, 5))
