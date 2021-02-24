@@ -103,7 +103,8 @@ class testSuite(unittest.TestCase):
         expected_f.close()
      
 if __name__ == "__main__":
-    input_str = input("Please provide your JSONS. When you are done, hit CTRL-D twice\n")
+    print("Please provide your JSONS. When you are done, hit CTRL-D twice\n")
+    input_str = sys.stdin.read()
     if input_str == "-test":
         unittest.main() 
     valid = json.loads(input_str)
