@@ -92,7 +92,7 @@ class testSuite(unittest.TestCase):
 
     def test3(self):
         input_string_f = open("./Level/3-in.json")
-        input_string =  input_string_f.read()
+        input_string = input_string_f.read()
         expected_f = open("./Level/3-out.json")
         expected = expected_f.read()
         valid = json.loads(input_string)
@@ -104,7 +104,8 @@ class testSuite(unittest.TestCase):
         expected_f.close()
      
 if __name__ == "__main__":
-    input_str = input("Please provide your JSONS. When you are done, hit CTRL-D twice\n")
+    print("Please input json, then push ctrl-d")
+    input_str = sys.stdin.read()
     if input_str == "-test":
         unittest.main() 
     valid = json.loads(input_str)

@@ -108,6 +108,7 @@ class MyTestCase(unittest.TestCase):
         adversary1 = Adversary.Adversary(2)
         GameManger.add_adversary(adversary1)
         GameManger.add_player(player1)
+        GameManger.draw()
         self.assertEqual(GameManger.get_intermediate_state(), "Players: (5, 5) \nAdversaries: (20, 5) \nExit Positions: (9, 6) ")
 
     def testPostMove(self):
