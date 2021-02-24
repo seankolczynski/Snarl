@@ -1,6 +1,7 @@
 import json
 import re
 import sys
+sys.path.append("../src/")
 from Tile import WallTile, Tile
 from Room import Room
 import fileinput
@@ -67,7 +68,7 @@ def roomChecker(room, point):
 
 if __name__ == "__main__":
     print("Please provide your JSONS. When you are done, hit CTRL-D twice")
-    sys.stdin = open("3-in.json")
+    sys.stdin = open("./Level/3-in.json")
     input_str = sys.stdin.read()
     valid = json.loads(input_str)
     room = valid[0]
