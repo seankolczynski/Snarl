@@ -64,25 +64,53 @@ def roomChecker(room, point):
 class testSuite(unittest.TestCase):
 
     def test1(self):
-        input_string = open("./Level/1-in.json").read()
-        expected = open("./Level/1-out.json").read()
+        input_string_f = open("./Level/1-in.json")
+        input_string =  input_string_f.read()
+        expected_f = open("./Level/1-out.json")
+        expected = expected_f.read()
         valid = json.loads(input_string)
         room = valid[0]
         point = valid[1]
         finalRoom = roomMaker(room)
         self.assertEqual(expected, roomChecker(finalRoom, point))
+        input_string_f.close()
+        expected_f.close()
 
+    def test2(self):
+        input_string_f = open("./Level/2-in.json")
+        input_string =  input_string_f.read()
+        expected_f = open("./Level/2-out.json")
+        expected = expected_f.read()
+        valid = json.loads(input_string)
+        room = valid[0]
+        point = valid[1]
+        finalRoom = roomMaker(room)
+        self.assertEqual(expected, roomChecker(finalRoom, point))
+        input_string_f.close()
+        expected_f.close()
 
+    def test3(self):
+        input_string_f = open("./Level/3-in.json")
+        input_string =  input_string_f.read()
+        expected_f = open("./Level/3-out.json")
+        expected = expected_f.read()
+        valid = json.loads(input_string)
+        room = valid[0]
+        point = valid[1]
+        finalRoom = roomMaker(room)
+        self.assertEqual(expected, roomChecker(finalRoom, point))
+        input_string_f.close()
+        expected_f.close()
+     
 if __name__ == "__main__":
-    #
     input_str = input("Please provide your JSONS. When you are done, hit CTRL-D twice\n")
-
+    if input_str == "-test":
+        unittest.main() 
     valid = json.loads(input_str)
     room = valid[0]
     point = valid[1]
     finalRoom = roomMaker(room)
     print(roomChecker(finalRoom, point))
-    unittest.main()
 
 
 
