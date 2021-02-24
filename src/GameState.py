@@ -41,7 +41,7 @@ class GameState:
 
 
     def add_adversary(self, adversary):
-        start = self.current_floor.rooms[len(self.current_floor.rooms)]
+        start = self.current_floor.rooms[len(self.current_floor.rooms) - 1]
         offX, offY = self.start_adversary_position
         self.adversaries.append(adversary)
         tile = self.current_floor.grid[offX][offY]
@@ -57,15 +57,16 @@ class GameState:
         self.players[playerID].move()
 
 
-    def get_intermediate_state():
+    def get_intermediate_state(self):
         acc = ""
         acc += "Players: "
-        for player in self.players():
+        for player in self.players:
             acc += str(player.get_char_position()) + " "
         acc += "\nAdversaries: "
-        for adv in self.advseraries():
+        for adv in self.adversaries:
             acc += str(adv.get_char_position()) + " "
         acc += "\nExit Positions: "
-        for level in dungeon:
-            acc += str(level.get_exit()) + " "
+        for level in self.dungeon:
+            acc += str(level.get_exit().get_position()) + " "
+        return acc
      

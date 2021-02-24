@@ -11,4 +11,4 @@ class Character:
 
     # Character
     def get_char_position(self):
-        return self.tile.get_position()
+        return self.current_tile.get_position()

@@ -1,4 +1,4 @@
-class Tile:
+class Tile(object):
 
     def __init__(self, pos):
         self.position = pos
@@ -28,10 +28,10 @@ class Tile:
     def remove_character(self):
         self.character = None
 
-    def get_position():
-        return self.position()
+    def get_position(self):
+        return self.position
 
-class WallTile:
+class WallTile(Tile):
 
     def __init__(self, pos):
         self.position = pos

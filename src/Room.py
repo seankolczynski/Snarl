@@ -10,6 +10,15 @@ class Room:
         self.upperLeft = position
         self.doors = []
 
+    def get_tile(self, pos):
+        return self.layout[pos[0]][pos[1]]
+
+    def get_origin(self):
+        return self.upperLeft
+
     def addDoor(self, door):
         self.doors.append(door)
+
+
+
 

@@ -136,7 +136,7 @@ class Floor:
 
         if type(self.grid[offX + coordX][offY + coordY]) == Tile.Tile:
             self.grid[offX + coordX][offY + coordY].add_object("Exit")
-            return (offX + coordX, offY + coordY)
+            return self.grid[offX + coordX][offY + coordY]
         else:
             self.makeExit()
 
@@ -145,7 +145,13 @@ class Floor:
         if x < self.cols and y < self.rows:
             return self.grid[x][y]
         # Else?
-    
+
+    def set_exit(self, pos):
+        if self.exit is not None:
+            self.exit.remove_object("Exit")
+        self.exit = self.grid[pos[0]][pos[1]]
+        self.exit.add_object("Exit")
+
     def get_exit(self):
         return self.exit
 
