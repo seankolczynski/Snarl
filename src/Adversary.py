@@ -1,4 +1,4 @@
-import Character
+from Character import Character
 
 
 class Adversary (Character):
