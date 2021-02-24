@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.append("../src/")
 import unittest
-import Hallway, Floor, Room, GameState, Player, Adversary
+import Hallway, Floor, Room, GameState, Player, Adversary, Item
 
 
 class MyTestCase(unittest.TestCase):
@@ -110,7 +110,7 @@ class MyTestCase(unittest.TestCase):
         GameManger.add_player(player1)
         self.assertEqual(GameManger.get_intermediate_state(), "Players: (5, 5) \nAdversaries: (20, 5) \nExit Positions: (9, 6) ")
 
-    def testIntermediateOutput(self):
+    def testPostMove(self):
         self.maxDiff = None
         example = [[1 for i in range(10)] for j in range(10)]
         hall = Hallway.Hallway((14, 5), (21, 5), [])
@@ -121,11 +121,15 @@ class MyTestCase(unittest.TestCase):
         floor.set_exit((9, 6))
         GameManger = GameState.GameState([floor])
         player1 = Player.Player(2)
+        item = "Potion"
         adversary1 = Adversary.Adversary(2)
         GameManger.add_adversary(adversary1)
         GameManger.add_player(player1)
-        self.assertEqual(GameManger.get_intermediate_state(),
-                         "Players: (5, 5) \nAdversaries: (20, 5) \nExit Positions: (9, 6) ")
+        GameManger.add_item(item, (5, 6))
+        GameManger.move_player(1, (5, 6))
+        GameManger.draw()
+        #self.assertEqual(GameManger.get_intermediate_state(),
+                         #"Players: (5, 6) \nAdversaries: (20, 5) \nExit Positions: (9, 6) ")
 
     #Checks that a room's doors are updated
     def testDoors(self):

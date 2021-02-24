@@ -7,13 +7,19 @@ class Character:
 
 
     def move(self, tile):
-        self.current_tile.remove_character()
-        self.current_tile = tile
-        tile.add_character(self)
+        if self.current_tile is not None:
+            self.current_tile.remove_character()
+            self.current_tile = tile
+            tile.add_character(self)
+        else:
+            self.current_tile = tile
 
     # Character
     def get_char_position(self):
-        return self.current_tile.get_position()
+        if self.current_tile is not None:
+            return self.current_tile.get_position()
+        else:
+            return None
 
 
     def add_to_inventory(self, item):

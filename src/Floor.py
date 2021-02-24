@@ -53,7 +53,7 @@ class Floor:
             for x in range(roomie.width):
                 for y in range(roomie.height):
                     self.validateTile(x + offX, y + offY)
-                    spot = Tile.Tile((x + offX, y + offY))
+                    spot = Tile((x + offX, y + offY))
                     spot.setRoom(roomie)
                     self.grid[x + offX][y + offY] = spot
 
@@ -70,7 +70,7 @@ class Floor:
             for way in range(len(hallway) - 1):
                 if way != 0:
                     self.validateTile(hallway[way][0], hallway[way][1])
-                    self.grid[hallway[way][0]][hallway[way][1]] = Tile.Tile((hallway[way][0], hallway[way][1]))
+                    self.grid[hallway[way][0]][hallway[way][1]] = Tile((hallway[way][0], hallway[way][1]))
             while point < length - 2:
                 nextWay = hallway[point + 1]
                 point = point + 1
@@ -84,7 +84,7 @@ class Floor:
                     cursor = lil + 1
                     while cursor < big:
                         self.validateTile(cursor, startY)
-                        self.grid[cursor][startY] = Tile.Tile((cursor, startY))
+                        self.grid[cursor][startY] = Tile((cursor, startY))
                         cursor = cursor + 1
                 if startX == nextX:
                     lil = min(startY, nextY)
@@ -92,7 +92,7 @@ class Floor:
                     cursor = lil + 1
                     while cursor < big:
                         self.validateTile(startX, cursor)
-                        self.grid[startX][cursor] = Tile.Tile((startX, cursor))
+                        self.grid[startX][cursor] = Tile((startX, cursor))
                         cursor = cursor + 1
                 start = nextWay
             nextWay = hallway[len(hallway) - 1]
@@ -109,7 +109,7 @@ class Floor:
                 cursor = lil + 1
                 while cursor < big - 1:
                     self.validateTile(cursor, startY)
-                    self.grid[cursor][startY] = Tile.Tile((cursor, startY))
+                    self.grid[cursor][startY] = Tile((cursor, startY))
                     cursor = cursor + 1
             if startX == nextX:
                 lil = min(startY, nextY)
@@ -117,13 +117,13 @@ class Floor:
                 cursor = lil
                 while cursor < big - 1:
                     self.validateTile(startX, cursor)
-                    self.grid[startX][cursor] = Tile.Tile((startX, cursor))
+                    self.grid[startX][cursor] = Tile((startX, cursor))
                     cursor = cursor + 1
 
     """Ensures that no Tile is placed where another exists. If one is, it throws an error, as the layout is invalid."""
     def validateTile(self, x, y):
         currentVal = self.grid[x][y]
-        if type(currentVal) == Tile.Tile:
+        if type(currentVal) is not WallTile:
             raise ValueError("Given Invalid Layout. Please ensure your rooms and hallways do not overlap")
 
     """Randomly places the exit in a room of the floor"""
@@ -158,7 +158,7 @@ class Floor:
 
     def place_item(self, item, pos):
         receiving = self.grid[pos[0]][pos[1]]
-        if isinstance(receiving, Tile):
+        if not isinstance(receiving, WallTile):
             receiving.add_object(item)
 
 

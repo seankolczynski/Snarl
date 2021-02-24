@@ -1,6 +1,6 @@
 from Floor import Floor
 import Character
-import Tile
+from Tile import Tile, WallTile
 
 class GameState:
 
@@ -30,7 +30,7 @@ class GameState:
         offX, offY = self.start_player_position
         self.players.append(player)
         tile = self.current_floor.grid[offX][offY]
-        while type(tile) != Tile.Tile or tile.character is not None or tile.room is not start:
+        while type(tile) != Tile or tile.character is not None or tile.room is not start:
             offX = offX + 1
             if offX > start.width:
                 offX = start.upperLeft[0]
@@ -38,14 +38,12 @@ class GameState:
             tile = self.current_floor.grid[offX][offY]
         player.move(tile)
 
-
-
     def add_adversary(self, adversary):
         start = self.current_floor.rooms[len(self.current_floor.rooms) - 1]
         offX, offY = self.start_adversary_position
         self.adversaries.append(adversary)
         tile = self.current_floor.grid[offX][offY]
-        while type(tile) != Tile.Tile or tile.character is not None or tile.room is not start:
+        while type(tile) != Tile or tile.character is not None or tile.room is not start:
             offX = offX + 1
             if offX > start.width:
                 offX = start.upperLeft[0]
@@ -53,8 +51,16 @@ class GameState:
             tile = self.current_floor.grid[offX][offY]
         adversary.move(tile)
 
+    def add_item(self, item, pos):
+        self.current_floor.place_item(item, pos)
+
     def move_player(self, playerID, pos):
-        self.players[playerID].move()
+        destination = self.current_floor.grid[pos[0]][pos[1]]
+        if not isinstance(destination, WallTile):
+            self.players[playerID - 1].move(destination)
+
+    def draw(self):
+        self.current_floor.draw()
 
 
     def get_intermediate_state(self):

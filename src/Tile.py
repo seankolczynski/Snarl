@@ -1,3 +1,7 @@
+from Item import Item
+from Adversary import Adversary
+from Player import Player
+
 class Tile(object):
 
     def __init__(self, pos):
@@ -7,10 +11,11 @@ class Tile(object):
         self.character = None
 
     def add_object(self, obj):
-        self.items.append(obj)
+        self.items.append(Item(obj))
 
     def remove_object(self, obj):
-        self.items.remove(obj)
+        new_items = filter(lambda x: x.name != obj, self.items)
+        self.items = new_items
 
     def remove_character(self):
         self.character = None
@@ -19,8 +24,15 @@ class Tile(object):
         self.room = room
 
     def draw(self):
-        if "Exit" in self.items:
-            return "e"
+        if isinstance(self.character, Player):
+            return "P"
+        if isinstance(self.character, Adversary):
+            return "A"
+        for item in self.items:
+            if item.get_name() == "Exit":
+                return "e"
+            if item.get_name() == "Potion":
+                return "p"
         return " "
 
     def add_character(self, character):
@@ -28,12 +40,10 @@ class Tile(object):
             raise ValueError("Occupied!")
         self.character = character
         for item in self.items:
-            if item.name is not "Exit":
+            if item.name != "Exit":
                 character.add_to_inventory(item)
         new_items = filter(lambda x: x.name == "Exit", self.items)
         self.items = new_items
-
-
 
     def get_position(self):
         return self.position
