@@ -3,7 +3,6 @@ import re
 import sys
 from Tile import WallTile, Tile
 from Room import Room
-import fileinput
 
 
 def roomMaker(room):
@@ -13,21 +12,17 @@ def roomMaker(room):
     layout = room["layout"]
     doors = []
     grid = []
-    for row in range(rows):
-        grid.append([])
-        for col in range(cols):
+    for col in range(cols):
+        column = []
+        for row in range(rows):
             print("Col: " + str(col) + " Rows: " + str(row))
-            if layout[row][col] == 0:
-                grid[row].append(WallTile((col, row)))
-            elif layout[row][col] == 2:
-                tile = Tile((col, row))
-                doors.append(tile)
-                grid[row].append(tile)
+            if layout[row][col] == 2:
+                column.append(1)
             else:
-                tile = Tile((col, row))
-                grid[row].append(tile)
+                column.append(layout[row][col])
+        grid.append(column)
 
-    final = Room(layout, origin)
+    final = Room(grid, origin)
     for door in doors:
         final.addDoor(door)
 
@@ -43,26 +38,26 @@ def roomChecker(room, point):
     height = room.height
     width = room.width
     minRow = origin_translated[0]
-    maxRow = origin_translated[0] + width - 1
+    maxRow = origin_translated[0] + height - 1
     minCol = origin_translated[1]
-    maxCol = origin_translated[1] + height - 1
+    maxCol = origin_translated[1] + width - 1
     points = []
 
     if point[0] < minRow or point[0] > maxRow or point[1] < minCol or point[1] > maxCol:
-        return json.dumps(["Failure: Point ", point, " in not in room at ", origin])
+        return json.dumps(["Failure: Point ", point, " in not in room at ", origin_translated])
     if minRow <= up[0] <= maxRow and minCol <= up[1] <= maxCol:
-        if not isinstance(room.get_tile(up), WallTile):
+        if not isinstance(room.get_tile((up[1], up[0])), WallTile):
             points.append(up)
     if minRow <= left[0] <= maxRow and minCol <= left[1] <= maxCol:
-        if not isinstance(room.get_tile(left), WallTile):
+        if not isinstance(room.get_tile((left[1], left[0])), WallTile):
             points.append(left)
     if minRow <= right[0] <= maxRow and minCol <= right[1] <= maxCol:
-        if not isinstance(room.get_tile(right), WallTile):
+        if not isinstance(room.get_tile((right[1], right[0])), WallTile):
             points.append(right)
     if minRow <= down[0] <= maxRow and minCol <= down[1] <= maxCol:
-        if not isinstance(room.get_tile(down), WallTile):
+        if not isinstance(room.get_tile((down[1], down[0])), WallTile):
             points.append(down)
-    return json.dumps(["Success: Traversable points from ", point, " in room at ", origin, " are ", points])
+    return json.dumps(["Success: Traversable points from ", point, " in room at ", origin_translated, " are ", points])
 
 
 if __name__ == "__main__":
