@@ -127,9 +127,6 @@ class MyTestCase(unittest.TestCase):
         GameManger.add_player(player1)
         GameManger.add_item(item, (5, 6))
         GameManger.move_player(1, (5, 6))
-        GameManger.draw()
-        #self.assertEqual(GameManger.get_intermediate_state(),
-                         #"Players: (5, 6) \nAdversaries: (20, 5) \nExit Positions: (9, 6) ")
 
     #Checks that a room's doors are updated
     def testDoors(self):
