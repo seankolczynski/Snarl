@@ -1,4 +1,4 @@
-import Floor
+from Floor import Floor
 import Character
 import Tile
 
@@ -24,6 +24,8 @@ class GameState:
 
 
     def add_player(self, player):
+        if len(self.players) == 4:
+            raise UserWarning("No more than 4 players can play at one time")
         start = self.current_floor.rooms[0]
         offX, offY = self.start_player_position
         self.players.append(player)
@@ -35,12 +37,12 @@ class GameState:
                 offY = offY + 1
             tile = self.current_floor.grid[offX][offY]
         player.move(tile)
-        
+
 
 
     def add_adversary(self, adversary):
         start = self.current_floor.rooms[len(self.current_floor.rooms)]
-        offX, offY = self.start_player_position
+        offX, offY = self.start_adversary_position
         self.adversaries.append(adversary)
         tile = self.current_floor.grid[offX][offY]
         while type(tile) != Tile.Tile or tile.character is not None or tile.room is not start:
@@ -51,3 +53,19 @@ class GameState:
             tile = self.current_floor.grid[offX][offY]
         adversary.move(tile)
 
+    def move_player(self, playerID, pos):
+        self.players[playerID].move()
+
+
+    def get_intermediate_state():
+        acc = ""
+        acc += "Players: "
+        for player in self.players():
+            acc += str(player.get_char_position()) + " "
+        acc += "\nAdversaries: "
+        for adv in self.advseraries():
+            acc += str(adv.get_char_position()) + " "
+        acc += "\nExit Positions: "
+        for level in dungeon:
+            acc += str(level.get_exit()) + " "
+     

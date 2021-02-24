@@ -28,6 +28,8 @@ class Tile:
     def remove_character(self):
         self.character = None
 
+    def get_position():
+        return self.position()
 
 class WallTile:
 

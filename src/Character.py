@@ -9,3 +9,6 @@ class Character:
         self.current_tile = tile
         tile.add_character(self)
 
+    # Character
+    def get_char_position(self):
+        return self.tile.get_position()

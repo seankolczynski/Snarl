@@ -140,6 +140,15 @@ class Floor:
         else:
             self.makeExit()
 
+    def get_tile_at(self, pos):
+        x, y = pos
+        if x < self.cols and y < self.rows:
+            return self.grid[x][y]
+        # Else?
+    
+    def get_exit(self):
+        return self.exit
+
 
 if __name__ == "__main__":
     example = [[Tile.Tile((i, j)) for i in range(10)] for j in range(10)]
