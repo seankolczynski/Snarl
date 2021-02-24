@@ -1,9 +1,10 @@
 import json
-import re
+import unittest
 import sys
 sys.path.append("../src/")
-import Room
-import Tile
+from Tile import WallTile, Tile
+from Room import Room
+
 
 
 def roomMaker(room):
@@ -16,7 +17,6 @@ def roomMaker(room):
     for col in range(cols):
         column = []
         for row in range(rows):
-            print("Col: " + str(col) + " Rows: " + str(row))
             if layout[row][col] == 2:
                 column.append(1)
             else:
@@ -61,15 +61,30 @@ def roomChecker(room, point):
     return json.dumps(["Success: Traversable points from ", point, " in room at ", origin_translated, " are ", points])
 
 
+class testSuite(unittest.TestCase):
+
+    def test1(self):
+        input_string = open("./Level/1-in.json").read()
+        expected = open("./Level/1-out.json").read()
+        valid = json.loads(input_string)
+        room = valid[0]
+        point = valid[1]
+        finalRoom = roomMaker(room)
+        self.assertEqual(expected, roomChecker(finalRoom, point))
+
+
 if __name__ == "__main__":
-    print("Please provide your JSONS. When you are done, hit CTRL-D twice")
-    sys.stdin = open("3-in.json")
-    input_str = sys.stdin.read()
+    #
+    input_str = input("Please provide your JSONS. When you are done, hit CTRL-D twice\n")
+
     valid = json.loads(input_str)
     room = valid[0]
     point = valid[1]
     finalRoom = roomMaker(room)
     print(roomChecker(finalRoom, point))
+    unittest.main()
+
+
 
 
 
