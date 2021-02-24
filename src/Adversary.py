@@ -3,5 +3,5 @@ import Character
 
 class Adversary (Character):
 
-def __init__(self):
-    super(Player,self).__init__()
+    def __init__(self):
+        super(Adversary, self).__init__()
