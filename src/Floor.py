@@ -6,6 +6,8 @@ from Tile import Tile, WallTile
 A floor is a data representation of the current floor being played on by the users. It maintains the entire layout of 
 the game, including rooms and hallways, as well as where objects are. See examples in floorTest.py
 """
+
+
 class Floor:
 
     def __init__(self, rooms, halls):
@@ -17,7 +19,9 @@ class Floor:
         self.setupHallways(halls)
         self.exit = self.makeExit()
 
+
     """Increases the default size of the board if needed"""
+
     def expandGrid(self, new_height, new_width):
         for j in range(self.rows):
             self.grid[j] = self.grid[j] + [WallTile((i, j)) for i in range(new_width - self.cols)]
@@ -26,6 +30,7 @@ class Floor:
         self.rows, self.cols = (new_height, new_width)
 
     """Creates a low-res visual of the current game layout"""
+
     def draw(self):
         image = ""
         image += "┌"
@@ -45,6 +50,7 @@ class Floor:
         print(image)
 
     """Places the rooms in the floor and ensures they are valid"""
+
     def setupRooms(self):
         for roomie in self.rooms:
             offX, offY = roomie.upperLeft
@@ -58,6 +64,7 @@ class Floor:
                     self.grid[x + offX][y + offY] = spot
 
     """Places Hallways in the floor and confirms validity"""
+
     def setupHallways(self, halls):
         for h in halls:
             hallway = h.connectDots
@@ -121,12 +128,14 @@ class Floor:
                     cursor = cursor + 1
 
     """Ensures that no Tile is placed where another exists. If one is, it throws an error, as the layout is invalid."""
+
     def validateTile(self, x, y):
         currentVal = self.grid[x][y]
         if type(currentVal) is not WallTile:
             raise ValueError("Given Invalid Layout. Please ensure your rooms and hallways do not overlap")
 
     """Randomly places the exit in a room of the floor"""
+
     def makeExit(self):
         roomRange = len(self.rooms)
         roomChoiceNum = r.randint(0, roomRange - 1)
@@ -170,4 +179,3 @@ if __name__ == "__main__":
     room2 = Room.Room(example, (20, 5))
     floor = Floor([room, room2], [hall, zHall])
     floor.draw()
-
