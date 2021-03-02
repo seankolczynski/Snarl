@@ -170,6 +170,9 @@ class Floor:
         if not isinstance(receiving, WallTile):
             receiving.add_object(item)
 
+    def get_room_from_pos(self, pos):
+       raw_tile = self.grid[pos[0]][pos[1]] 
+       return raw_tile.getRoom()
 
 if __name__ == "__main__":
     example = [[Tile((i, j)) for i in range(10)] for j in range(10)]

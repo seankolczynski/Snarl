@@ -23,6 +23,15 @@ class Tile(object):
     def setRoom(self, room):
         self.room = room
 
+     def getRoom(self, room):
+        return self.room 
+
+    def get_item_with_name(self, name):
+        for item in self.items():
+            if item.get_name() == name:
+                return item
+        return None
+
     def draw(self):
         if isinstance(self.character, Player):
             return "P"
