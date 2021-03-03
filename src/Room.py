@@ -10,21 +10,16 @@ class Room:
         self.width = len(tiles)
         self.height = len(tiles[0])
         self.layout = self.generate_tiles(tiles)
-        self.doors = []
+        self.doors = {}
 
     def get_tile(self, pos):
-        one = pos[0]
-        two = pos[1]
-        thre = self.upperLeft[0]
-        four = self.upperLeft[1]
-        lay = self.layout
         return self.layout[pos[0] - self.upperLeft[0]][pos[1] - self.upperLeft[1]]
 
     def get_origin(self):
         return self.upperLeft
 
-    def addDoor(self, door):
-        self.doors.append(door)
+    def addDoor(self, door, hall):
+        self.doors[door] = hall
 
     def generate_tiles(self, tiles):
         grid = []
@@ -35,12 +30,24 @@ class Room:
         for i in range(x):
             column = []
             for j in range(y):
+                new_tile = None
                 if tiles[i][j] == 0:
-                    column.append(WallTile((i + offX, j + offY)))
+                    new_tile = WallTile((i + offX, j + offY))
                 elif tiles[i][j] == 1:
-                    column.append(Tile((i + offX, j + offY)))
+                    new_tile = Tile((i + offX, j + offY))
+                new_tile.set_room(self)
+                column.append(new_tile)
             grid.append(column)
         return grid
+
+    def return_neighbors(self):
+        neighbors = []
+        for door in self.doors:
+            hall = self.doors[door]
+            other = hall.otherside(self)
+            neighbors.append(other)
+        return neighbors
+
 
 
 

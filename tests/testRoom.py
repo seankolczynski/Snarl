@@ -2,10 +2,10 @@
 import json
 import unittest
 import sys
+
 sys.path.append("../src/")
 from Tile import WallTile, Tile
 from Room import Room
-
 
 
 def roomMaker(room):
@@ -29,6 +29,7 @@ def roomMaker(room):
         final.addDoor(door)
 
     return final
+
 
 def roomChecker(room, point):
     up = (point[0] - 1, point[1])
@@ -66,7 +67,7 @@ class testSuite(unittest.TestCase):
 
     def test1(self):
         input_string_f = open("Room/1-in.json")
-        input_string =  input_string_f.read()
+        input_string = input_string_f.read()
         expected_f = open("Room/1-out.json")
         expected = expected_f.read()
         valid = json.loads(input_string)
@@ -79,7 +80,7 @@ class testSuite(unittest.TestCase):
 
     def test2(self):
         input_string_f = open("Room/2-in.json")
-        input_string =  input_string_f.read()
+        input_string = input_string_f.read()
         expected_f = open("Room/2-out.json")
         expected = expected_f.read()
         valid = json.loads(input_string)
@@ -102,12 +103,13 @@ class testSuite(unittest.TestCase):
         self.assertEqual(expected, roomChecker(finalRoom, point))
         input_string_f.close()
         expected_f.close()
-     
+
+
 if __name__ == "__main__":
     print("Please input json, then push ctrl-d")
     input_str = sys.stdin.read()
     if input_str == "-test":
-        unittest.main() 
+        unittest.main()
     valid = json.loads(input_str)
     room = valid[0]
     point = valid[1]

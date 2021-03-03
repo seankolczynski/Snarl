@@ -1,1 +1,1 @@
-["Failure: Point ", [5, 4], " in not in room at ", [0, 1]]
+{"traversable": true, "object": null, "type": "room", "reachable": [[4, 14], [12, 6]]}

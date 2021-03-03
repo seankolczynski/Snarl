@@ -1,6 +1,8 @@
-import Hallway, Room
+
 import random as r
 from Tile import Tile, WallTile
+from Room import Room
+from Hallway import Hallway
 
 """
 A floor is a data representation of the current floor being played on by the users. It maintains the entire layout of 
@@ -11,13 +13,13 @@ the game, including rooms and hallways, as well as where objects are. See exampl
 class Floor:
 
     def __init__(self, rooms, halls):
-        self.rows, self.cols = (50, 50)
+        self.rows, self.cols = (30, 30)
         self.grid = [[WallTile((i, j)) for i in range(self.cols)] for j in range(self.rows)]
         self.rooms = rooms
         self.halls = halls
         self.setupRooms()
         self.setupHallways(halls)
-        self.exit = self.makeExit()
+        self.exit = None #self.makeExit()
 
 
     """Increases the default size of the board if needed"""
@@ -40,6 +42,8 @@ class Floor:
         for y in range(self.rows):
             image += "│ "
             for x in range(self.cols):
+                if x == 2and y == 5:
+                    print()
                 image += self.grid[x][y].draw()
                 image += " "
             image += "│\n"
@@ -59,73 +63,27 @@ class Floor:
             for x in range(roomie.width):
                 for y in range(roomie.height):
                     self.validateTile(x + offX, y + offY)
-                    spot = Tile((x + offX, y + offY))
-                    spot.setRoom(roomie)
+                    spot = roomie.get_tile((x + offX, y + offY))
                     self.grid[x + offX][y + offY] = spot
 
     """Places Hallways in the floor and confirms validity"""
 
     def setupHallways(self, halls):
         for h in halls:
-            hallway = h.connectDots
-            length = len(hallway)
-            point = 0
-            start = hallway[point]
+            start, end, tiles = h.generate_tiles()
             door1 = self.grid[start[0]][start[1]]
-            roomie = door1.room
-            roomie.addDoor(start)
-            for way in range(len(hallway) - 1):
-                if way != 0:
-                    self.validateTile(hallway[way][0], hallway[way][1])
-                    self.grid[hallway[way][0]][hallway[way][1]] = Tile((hallway[way][0], hallway[way][1]))
-            while point < length - 2:
-                nextWay = hallway[point + 1]
-                point = point + 1
-                startX = start[0]
-                startY = start[1]
-                nextX = nextWay[0]
-                nextY = nextWay[1]
-                if startY == nextY:
-                    lil = min(startX, nextX)
-                    big = max(startX, nextX)
-                    cursor = lil + 1
-                    while cursor < big:
-                        self.validateTile(cursor, startY)
-                        self.grid[cursor][startY] = Tile((cursor, startY))
-                        cursor = cursor + 1
-                if startX == nextX:
-                    lil = min(startY, nextY)
-                    big = max(startY, nextY)
-                    cursor = lil + 1
-                    while cursor < big:
-                        self.validateTile(startX, cursor)
-                        self.grid[startX][cursor] = Tile((startX, cursor))
-                        cursor = cursor + 1
-                start = nextWay
-            nextWay = hallway[len(hallway) - 1]
-            door2 = self.grid[nextWay[0]][nextWay[1]]
-            roomie = door2.room
-            roomie.addDoor(nextWay)
-            startX = start[0]
-            startY = start[1]
-            nextX = nextWay[0]
-            nextY = nextWay[1]
-            if startY == nextY:
-                lil = min(startX, nextX)
-                big = max(startX, nextX)
-                cursor = lil + 1
-                while cursor < big - 1:
-                    self.validateTile(cursor, startY)
-                    self.grid[cursor][startY] = Tile((cursor, startY))
-                    cursor = cursor + 1
-            if startX == nextX:
-                lil = min(startY, nextY)
-                big = max(startY, nextY)
-                cursor = lil
-                while cursor < big - 1:
-                    self.validateTile(startX, cursor)
-                    self.grid[startX][cursor] = Tile((startX, cursor))
-                    cursor = cursor + 1
+            room1 = door1.get_room()
+            room1.addDoor(door1, h)
+            h.add_start(door1)
+            door2 = self.grid[end[0]][end[1]]
+            room2 = door2.get_room()
+            room2.addDoor(door2, h)
+            h.add_end(door2)
+            for t in tiles:
+                x, y = t.get_position()
+                self.validateTile(x, y)
+                self.grid[x][y] = t
+
 
     """Ensures that no Tile is placed where another exists. If one is, it throws an error, as the layout is invalid."""
 
@@ -169,16 +127,21 @@ class Floor:
         receiving = self.grid[pos[0]][pos[1]]
         if not isinstance(receiving, WallTile):
             receiving.add_object(item)
+            self.grid[pos[0]][pos[1]] = receiving
 
     def get_room_from_pos(self, pos):
        raw_tile = self.grid[pos[0]][pos[1]] 
        return raw_tile.getRoom()
 
+    def reaches(self, structure):
+        return structure.return_neighbors()
+
+
 if __name__ == "__main__":
     example = [[Tile((i, j)) for i in range(10)] for j in range(10)]
-    hall = Hallway.Hallway((14, 5), (21, 5), [])
-    zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
-    room = Room.Room(example, (5, 5))
-    room2 = Room.Room(example, (20, 5))
+    hall = Hallway((14, 5), (21, 5), [])
+    zHall = Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
+    room = Room(example, (5, 5))
+    room2 = Room(example, (20, 5))
     floor = Floor([room, room2], [hall, zHall])
     floor.draw()

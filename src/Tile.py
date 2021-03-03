@@ -14,20 +14,20 @@ class Tile(object):
         self.items.append(Item(obj))
 
     def remove_object(self, obj):
-        new_items = filter(lambda x: x.name != obj, self.items)
+        new_items = filter(lambda x: x.get_name != obj, self.items)
         self.items = new_items
 
     def remove_character(self):
         self.character = None
 
-    def setRoom(self, room):
+    def set_room(self, room):
         self.room = room
 
-     def getRoom(self, room):
+    def get_room(self):
         return self.room 
 
     def get_item_with_name(self, name):
-        for item in self.items():
+        for item in self.items:
             if item.get_name() == name:
                 return item
         return None
@@ -42,6 +42,8 @@ class Tile(object):
                 return "e"
             if item.get_name() == "Potion":
                 return "p"
+            if item.get_name() == "Key" or item.get_name() == "key":
+                return "k"
         return " "
 
     def add_character(self, character):
@@ -61,6 +63,13 @@ class WallTile(Tile):
 
     def __init__(self, pos):
         self.position = pos
+        self.room = None
 
     def draw(self):
         return "X"
+
+    def set_room(self, room):
+        self.room = room
+
+    def get_room(self):
+        return self.room
