@@ -16,7 +16,7 @@ class Character:
         else:
             if self.current_tile is not None:
                 self.current_tile.remove_character()
-            if self.current_tile == None or self.current_tile.get_item_with_name("Exit") == None:
+            if self.current_tile == None or tile.get_item_with_name("Exit") == None:
                 self.current_tile = tile
                 tile.add_character(self)
             else:

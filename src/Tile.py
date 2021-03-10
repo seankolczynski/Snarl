@@ -14,7 +14,7 @@ class Tile(object):
         self.items.append(Item(obj))
 
     def remove_object(self, obj):
-        new_items = filter(lambda x: x.get_name != obj, self.items)
+        new_items = list(filter(lambda x: x.get_name != obj, self.items))
         self.items = new_items
     
     def get_character(self):
@@ -57,7 +57,7 @@ class Tile(object):
             for item in self.items:
                 if item.name != "Exit":
                     character.add_to_inventory(item)
-            new_items = filter(lambda x: x.name == "Exit", self.items)
+            new_items = list(filter(lambda x: x.name == "Exit", self.items))
             self.items = new_items
 
     def get_position(self):
