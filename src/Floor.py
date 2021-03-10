@@ -42,7 +42,7 @@ class Floor:
         for y in range(self.rows):
             image += "│ "
             for x in range(self.cols):
-                if x == 2and y == 5:
+                if x == 2 and y == 5:
                     print()
                 image += self.grid[x][y].draw()
                 image += " "

@@ -16,6 +16,9 @@ class Tile(object):
     def remove_object(self, obj):
         new_items = filter(lambda x: x.get_name != obj, self.items)
         self.items = new_items
+    
+    def get_character(self):
+        return self.add_character
 
     def remove_character(self):
         self.character = None
