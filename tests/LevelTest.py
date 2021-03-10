@@ -17,58 +17,24 @@ class MyTestCase(unittest.TestCase):
         room2 = Room.Room(example, (20, 5))
         floor = Floor.Floor([room, room2], [hall, zHall])
         newout = io.StringIO()
-        expected = '\n┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐\n'\
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                                                   X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X                           X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                           X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└─────────────────────────────────────────────────────────────────────────────────────────────────────┘\n'
+        expected = '┌───────────────────────────────────────────────────────────────┐\n'\
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X                                                   X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X                           X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                           X X                     X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '└───────────────────────────────────────────────────────────────┘\n'
         sys.stdout = newout
         floor.draw()
         endVal = newout.getvalue()
@@ -105,62 +71,28 @@ class MyTestCase(unittest.TestCase):
         floor.set_exit((9, 6))
         GameManager = GameState.GameState([floor])
         player1 = Player.Player(2, 1)
-        adversary1 = Adversary.Adversary(2, "zombie")
+        adversary1 = Adversary.Adversary(2, 2, "zombie")
         GameManager.add_adversary(adversary1)
         GameManager.add_player(player1)
         newout = io.StringIO()
-        expected = '\n┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X P                             A                   X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X         e           X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X                           X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                           X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└─────────────────────────────────────────────────────────────────────────────────────────────────────┘\n'
+        expected = '┌───────────────────────────────────────────────────────────────┐\n'\
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X P                             A                   X │\n' \
+                   '│ X X X X X         e           X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X                           X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                           X X                     X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '└───────────────────────────────────────────────────────────────┘\n'
         sys.stdout = newout
         floor.draw()
         endVal = newout.getvalue()
@@ -178,64 +110,30 @@ class MyTestCase(unittest.TestCase):
         GameManager = GameState.GameState([floor])
         player1 = Player.Player(2, 1)
         item = "Potion"
-        adversary1 = Adversary.Adversary(2, "zombie")
+        adversary1 = Adversary.Adversary(2, 2, "zombie")
         GameManager.add_adversary(adversary1)
         GameManager.add_player(player1)
         GameManager.add_item(item, (5, 6))
         GameManager.move_player(1, (5, 6))
         newout = io.StringIO()
-        expected = '\n┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                               A                   X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X P       e           X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X X X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X                           X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                     X X   X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                           X X                     X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└─────────────────────────────────────────────────────────────────────────────────────────────────────┘\n'
+        expected = '┌───────────────────────────────────────────────────────────────┐\n'\
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X                               A                   X │\n' \
+                   '│ X X X X X P       e           X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X                           X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                           X X                     X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '└───────────────────────────────────────────────────────────────┘\n'
         sys.stdout = newout
         floor.draw()
         endVal = newout.getvalue()
@@ -247,3 +145,56 @@ class MyTestCase(unittest.TestCase):
         hall = Hallway.Hallway((14, 5), (21, 5), [])
         zHall = Hallway.Hallway((14, 14), (21, 10), [(17, 14), (17, 10)])
         #room = Room.Room(exam)ple, (5, 5))
+
+    def testItemPickup(self):
+        self.maxDiff = None
+        example = [[1 for i in range(10)] for j in range(10)]
+        hall = Hallway.Hallway((14, 5), (20, 5), [])
+        zHall = Hallway.Hallway((14, 14), (20, 10), [(17, 14), (17, 10)])
+        room = Room.Room(example, (5, 5))
+        room2 = Room.Room(example, (20, 5))
+        floor = Floor.Floor([room, room2], [hall, zHall])
+        floor.set_exit((9, 6))
+        GameManager = GameState.GameState([floor])
+        player1 = Player.Player(2, 1)
+        item = "Potion"
+        adversary1 = Adversary.Adversary(2, 2, "zombie")
+        GameManager.add_adversary(adversary1)
+        GameManager.add_player(player1)
+        GameManager.add_item(item, (5, 6))
+        # Draw initial
+        expected = '┌───────────────────────────────────────────────────────────────┐\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '│ X X X X X P                             A                   X │\n' \
+                   '│ X X X X X p       e           X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X X X X                     X │\n' \
+                   '│ X X X X X                     X X                           X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                     X X   X X                     X │\n' \
+                   '│ X X X X X                           X X                     X │\n' \
+                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '└───────────────────────────────────────────────────────────────┘\n'
+        newout = io.StringIO()
+        sys.stdout = newout
+        floor.draw()
+        initial = newout.getvalue()
+        self.assertEqual(expected, initial)
+        GameManager.move_player(1, (5, 6))
+        GameManager.move_player(1, (6, 6))
+        GameManager.move_player(1, (7, 6))
+        GameManager.move_player(1, (8, 6))
+        GameManager.move_player(1, (9, 6))
+        GameManager.move_player(1, (10, 6))
+        floor.draw()
+        initial = newout.getvalue()
+        self.assertEqual(expected, initial)
+
+
+

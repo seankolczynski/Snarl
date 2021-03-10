@@ -16,6 +16,9 @@ class Tile(object):
     def remove_object(self, obj):
         new_items = filter(lambda x: x.get_name != obj, self.items)
         self.items = new_items
+    
+    def get_character(self):
+        return self.character
 
     def remove_character(self):
         self.character = None
@@ -50,11 +53,12 @@ class Tile(object):
         if self.character != None:
             raise ValueError("Occupied!")
         self.character = character
-        for item in self.items:
-            if item.name != "Exit":
-                character.add_to_inventory(item)
-        new_items = filter(lambda x: x.name == "Exit", self.items)
-        self.items = new_items
+        if isinstance(character, Player):
+            for item in self.items:
+                if item.name != "Exit":
+                    character.add_to_inventory(item)
+            new_items = filter(lambda x: x.name == "Exit", self.items)
+            self.items = new_items
 
     def get_position(self):
         return self.position

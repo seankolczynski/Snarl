@@ -1,18 +1,27 @@
 class Character:
 
-    def __init__(self, speed, id, type):
+    def __init__(self, speed, id, ctype):
         self.speed = speed
+        self.ctype = ctype
         self.current_tile = None
         self.inventory = []
+        self.exited = False
         self.id = id
-        self.type = type
 
 
     def move(self, tile):
-        if self.current_tile is not None:
-            self.current_tile.remove_character()
-        self.current_tile = tile
-        tile.add_character(self)
+        if tile.get_character() is not None and tile.get_character().get_ctype() != "player":
+            if self.current_tile is not None:
+                self.current_tile.remove_character()
+        else:
+            if self.current_tile is not None:
+                self.current_tile.remove_character()
+            if self.current_tile == None or self.current_tile.get_item_with_name("Exit") == None:
+                self.current_tile = tile
+                tile.add_character(self)
+            else:
+                self.exited = True
+
 
     # Character
     def get_char_position(self):
@@ -24,3 +33,6 @@ class Character:
 
     def add_to_inventory(self, item):
         self.inventory.append(item)
+    
+    def get_ctype(self):
+        return self.ctype

@@ -12,6 +12,9 @@ class Hallway:
         dots.append(end)
         self.connectDots = dots
 
+    def get_waypoints(self):
+        return self.connectDots
+
     def generate_tiles(self):
         tiles = []
         length = len(self.connectDots)

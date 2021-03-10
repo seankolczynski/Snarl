@@ -14,7 +14,7 @@ class Floor:
 
     def __init__(self, rooms, halls):
         self.rows, self.cols = (50, 50)
-        self.grid = [[WallTile((i, j)) for i in range(self.cols)] for j in range(self.rows)]
+        self.grid = self.minGridSize(rooms, halls)
         self.rooms = rooms
         self.halls = halls
         self.setupRooms()
@@ -22,14 +22,26 @@ class Floor:
         self.exit = None #self.makeExit()
 
 
-    """Increases the default size of the board if needed"""
+    def minGridSize(self, rooms, halls):
+        maxX = 0
+        maxY = 0
+        for room in rooms:
+            offX, offY = room.upperLeft
+            width = room.room_width()
+            height = room.room_height()
+            maxX = max(maxX, offX + width)
+            maxY = max(maxY, offY + height)
+        for hall in halls:
+            points = hall.get_waypoints()
+            for point in points:
+                maxX = max(maxX, point[0])
+                maxY = max(maxY, point[1])
+        maxX = maxX + 1
+        maxY = maxY + 1
+        self.cols = maxX
+        self.rows = maxY
+        return [[WallTile((i, j)) for j in range(maxY)] for i in range(maxX)]
 
-    def expandGrid(self, new_height, new_width):
-        for j in range(self.rows):
-            self.grid[j] = self.grid[j] + [WallTile((i, j)) for i in range(new_width - self.cols)]
-        for i in range(new_width - self.rows):
-            self.grid.append([WallTile((i, j)) for j in range(new_height)])
-        self.rows, self.cols = (new_height, new_width)
 
     """Creates a low-res visual of the current game layout"""
 
@@ -42,8 +54,6 @@ class Floor:
         for y in range(self.rows):
             image += "│ "
             for x in range(self.cols):
-                if x == 2and y == 5:
-                    print()
                 image += self.grid[x][y].draw()
                 image += " "
             image += "│\n"
@@ -58,8 +68,6 @@ class Floor:
     def setupRooms(self):
         for roomie in self.rooms:
             offX, offY = roomie.upperLeft
-            if offX + roomie.width > self.cols or offY + roomie.height > self.rows:
-                self.expandGrid(offX + roomie.width, offY + roomie.height)
             for x in range(roomie.width):
                 for y in range(roomie.height):
                     self.validateTile(x + offX, y + offY)

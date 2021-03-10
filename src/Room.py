@@ -2,8 +2,6 @@
 from Tile import WallTile, Tile
 
 class Room:
-    width = 0
-    height = 0
 
     def __init__(self, tiles, position):
         self.upperLeft = position
@@ -17,6 +15,13 @@ class Room:
 
     def get_origin(self):
         return self.upperLeft
+
+    def room_width(self):
+        return self.width
+
+
+    def room_height(self):
+        return self.height
 
     def addDoor(self, door, hall):
         self.doors[door] = hall
