@@ -1,9 +1,11 @@
 class Character:
 
-    def __init__(self, speed):
+    def __init__(self, speed, id, type):
         self.speed = speed
         self.current_tile = None
         self.inventory = []
+        self.id = id
+        self.type = type
 
 
     def move(self, tile):

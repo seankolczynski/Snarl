@@ -13,7 +13,7 @@ the game, including rooms and hallways, as well as where objects are. See exampl
 class Floor:
 
     def __init__(self, rooms, halls):
-        self.rows, self.cols = (30, 30)
+        self.rows, self.cols = (50, 50)
         self.grid = [[WallTile((i, j)) for i in range(self.cols)] for j in range(self.rows)]
         self.rooms = rooms
         self.halls = halls
