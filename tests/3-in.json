@@ -26,7 +26,7 @@
                            [ 0, 1, 1, 1, 0 ],
                            [ 0, 1, 1, 1, 0 ],
                            [ 0, 0, 0, 0, 0 ] ] } ],
-  "objects": [ { "type": "key", "position": [ 14, 8 ] },
+  "objects": [ { "type": "key", "position": [ 5, 15 ] },
                { "type": "exit", "position": [ 7, 17 ] } ],
   "hallways": [ { "type": "hallway",
                   "from": [ 5, 4 ],
@@ -46,8 +46,12 @@
     "type": "zombie",
     "name": "Steve",
     "position": [6, 3]
+  }, {
+    "type": "Ghost",
+    "name": "Bill",
+    "position": [6, 4]
   }],
   "exit-locked": false
   },
-  "Reggie", [5, 16]
+  "Reggie", [7, 17]
 ]

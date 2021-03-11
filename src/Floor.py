@@ -20,6 +20,7 @@ class Floor:
         self.setupRooms()
         self.setupHallways(halls)
         self.exit = None #self.makeExit()
+        self.itemTiles = []
 
 
     def minGridSize(self, rooms, halls):
@@ -111,7 +112,7 @@ class Floor:
         offX, offY = roomChoice.upperLeft
 
         if type(self.grid[offX + coordX][offY + coordY]) == Tile:
-            self.grid[offX + coordX][offY + coordY].add_object("Exit")
+            self.grid[offX + coordX][offY + coordY].add_item("Exit")
             return self.grid[offX + coordX][offY + coordY]
         else:
             self.makeExit()
@@ -125,9 +126,11 @@ class Floor:
 
     def set_exit(self, pos):
         if self.exit is not None:
-            self.exit.remove_object("Exit")
-        self.exit = self.grid[pos[0]][pos[1]]
-        self.exit.add_object("Exit")
+            self.exit.remove_item("Exit")
+        self.exit = self.place_item("Exit", pos)
+
+
+
 
     def get_exit(self):
         return self.exit
@@ -135,8 +138,10 @@ class Floor:
     def place_item(self, item, pos):
         receiving = self.grid[pos[0]][pos[1]]
         if not isinstance(receiving, WallTile):
-            receiving.add_object(item)
+            receiving.add_item(item)
             self.grid[pos[0]][pos[1]] = receiving
+            self.itemTiles.append(receiving)
+            return receiving
 
     def get_room_from_pos(self, pos):
        raw_tile = self.grid[pos[0]][pos[1]] 
@@ -144,6 +149,23 @@ class Floor:
 
     def reaches(self, structure):
         return structure.return_neighbors()
+
+    def get_items(self):
+        itemPosns = []
+        for tile in self.itemTiles:
+            pos = tile.get_position()
+            items = tile.get_all_items()
+            for item in items:
+                itemPosns.append((item.get_name(), pos))
+        return itemPosns
+
+    def check_if_unlocked(self):
+        itemPosns = self.get_items()
+        for item in itemPosns:
+            if item[0] == "key" or item[1] == "Key":
+                return False
+        return True
+
 
 
 if __name__ == "__main__":

@@ -21,12 +21,16 @@ class Character:
                 self.current_tile.remove_character()
             self.current_tile = tile
             tile.add_character(self)
+            message = {"success": True, "message":""}
+            return message
         elif occupant.get_ctype() != "player":
             if self.current_tile is not None:
                 self.current_tile.remove_character()
-            return json.dumps({"success": True, "message": "Ejected by " + occupant.get_name()})
+            message = {"success": True, "message": "Ejected by " + occupant.get_name()}
+            return message
         else:
-            return json.dumps({"success": False, "message": "Occupied by another player"})
+            message = {"success": True, "message":"Occupied by another player"}
+            return message
 
 
     # Character
@@ -48,3 +52,6 @@ class Character:
 
     def get_name(self):
         return self.name
+
+    def get_id(self):
+        return self.id

@@ -46,8 +46,14 @@
     "type": "zombie",
     "name": "Steve",
     "position": [6, 3]
-  }],
+  },
+    {
+    "type": "ghost",
+    "name": "Boo",
+    "position": [14, 9]
+  }
+  ],
   "exit-locked": false
   },
-  "Reggie", [5, 16]
+  "Reggie", [6, 3]
 ]

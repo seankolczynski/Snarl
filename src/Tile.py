@@ -10,10 +10,11 @@ class Tile(object):
         self.room = None
         self.character = None
 
-    def add_object(self, obj):
+    def add_item(self, obj):
         self.items.append(Item(obj))
+        return self
 
-    def remove_object(self, obj):
+    def remove_item(self, obj):
         new_items = list(filter(lambda x: x.get_name != obj, self.items))
         self.items = new_items
     
@@ -34,6 +35,9 @@ class Tile(object):
             if item.get_name() == name:
                 return item
         return None
+
+    def get_all_items(self):
+        return self.items
 
     def draw(self):
         if isinstance(self.character, Player):

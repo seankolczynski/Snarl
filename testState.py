@@ -1,4 +1,5 @@
 import json
+import sys
 import unittest
 
 from Tile import WallTile, Tile
@@ -61,11 +62,13 @@ def stateMaker(state):
     ident = 0
     for player in players:
         p = Player(2, ident, player["name"])
+        game.add_player(p)
         tile = level.get_tile_at(translate_to_xy(player["position"]))
         p.move(tile)
         ident = ident + 1
     for adver in advers:
         a = Adversary(2, ident, adver["name"], adver["type"])
+        game.add_adversary(a)
         tile = level.get_tile_at(translate_to_xy(adver["position"]))
         a.move(tile)
         ident = ident + 1
@@ -135,9 +138,52 @@ def stateChecker(game, state, name, goal):
     ident = 0
     for player in players:
         if player["name"] == name:
-            game.move_player(ident, goal)
+            result = game.move_player(ident, goal)
+            stateJSON = stateToJSON(game, state)
+            success = result["success"]
+            message = result["message"]
+            if success:
+                if "Exited" in message:
+                    return json.dumps(["Success", "Player ", (name), " exited.", (stateJSON)])
+                elif "Ejected" in message:
+                    return json.dumps([ "Success", "Player ", (name), " was ejected.", (stateJSON) ])
+                else:
+                    return json.dumps([ "Success", (stateJSON)])
+            else:
+                json.dumps(["Failure", "The destination position ", (point), " is invalid." ])
         ident = ident + 1
     return json.dumps(["Failure", "Player ", name, " is not a part of the game."])
+
+
+def stateToJSON(game, state):
+    typo = "state"
+    level = levelToJSON(game, state["level"])
+    players = playersToJSON(game)
+    adversaries = adversariesToJSON(game)
+    exitLocked = game.get_unlocked()
+    return {"type": typo, "level": level, "players": players, "adversaries": adversaries, "exit-locked": exitLocked}
+
+
+def levelToJSON(game, level):
+    objects = game.get_items()
+    objectJSONs = []
+    for obj in objects:
+        objectJSONs.append({"type": obj[0], "position": obj[1]})
+    return {"type": level["type"], "rooms": level["rooms"], "objects": objectJSONs, "hallways": level["hallways"]}
+
+def playersToJSON(game):
+    players = game.get_players()
+    playerJSON = []
+    for player in players:
+        playerJSON.append({"type": "player", "name": player.get_name(), "position": player.get_char_position()})
+    return playerJSON
+
+def adversariesToJSON(game):
+    adversaries = game.get_adversaries()
+    adversaryJSON = []
+    for adversary in adversaries:
+        adversaryJSON.append({"type": "player", "name": adversary.get_name(), "position": adversary.get_char_position()})
+    return adversaryJSON
 
 
 def translate_to_xy(rowCol):
@@ -151,59 +197,68 @@ class testSuite(unittest.TestCase):
         input_string_f = open("tests/1-in.json")
         input_string = input_string_f.read()
         input_string_f.close()
-        expected_f = open("1-out.json")
+        expected_f = open("tests/1-out.json")
         expected = expected_f.read()
+        input_string_f.close()
+        expected_f.close()
         valid = json.loads(input_string)
         state = valid[0]
         name = valid[1]
         point = translate_to_xy(valid[2])
         game = stateMaker(state)
-        stateChecker(game, state, name, point)
-        finalFloor = floorMaker(floor)
-        self.assertEqual(expected, floorChecker(finalFloor, point))
+        self.assertEqual(expected, stateChecker(game, state, name, point))
+        game.draw()
 
     def test2(self):
-        input_string_f = open("2-in.json")
+        input_string_f = open("tests/2-in.json")
         input_string = input_string_f.read()
         input_string_f.close()
-        expected_f = open("2-out.json")
+        expected_f = open("tests/2-out.json")
         expected = expected_f.read()
-        valid = json.loads(input_string)
-        floor = valid[0]
-        point = translate_to_xy(valid[1])
-        finalFloor = floorMaker(floor)
-        finalFloor.draw()
-        self.assertEqual(expected, floorChecker(finalFloor, point))
         input_string_f.close()
         expected_f.close()
+        valid = json.loads(input_string)
+        state = valid[0]
+        name = valid[1]
+        point = translate_to_xy(valid[2])
+        game = stateMaker(state)
+        result = stateChecker(game, state, name, point)
+        game.draw()
+        self.assertEqual(expected, result)
+
 
     def test3(self):
-        input_string_f = open("3-in.json")
+        input_string_f = open("tests/3-in.json")
         input_string = input_string_f.read()
         input_string_f.close()
-        expected_f = open("3-out.json")
+        expected_f = open("tests/3-out.json")
         expected = expected_f.read()
-        valid = json.loads(input_string)
-        floor = valid[0]
-        point = translate_to_xy(valid[1])
-        finalFloor = floorMaker(floor)
-        self.assertEqual(expected, floorChecker(finalFloor, point))
         input_string_f.close()
         expected_f.close()
+        valid = json.loads(input_string)
+        state = valid[0]
+        name = valid[1]
+        point = translate_to_xy(valid[2])
+        game = stateMaker(state)
+        result = stateChecker(game, state, name, point)
+        game.draw()
+        self.assertEqual(expected, result)
 
     def test4(self):
-        input_string_f = open("4-in.json")
+        input_string_f = open("tests/4-in.json")
         input_string = input_string_f.read()
         input_string_f.close()
-        expected_f = open("4-out.json")
+        expected_f = open("tests/4-out.json")
         expected = expected_f.read()
-        valid = json.loads(input_string)
-        floor = valid[0]
-        point = translate_to_xy(valid[1])
-        finalFloor = floorMaker(floor)
-        self.assertEqual(expected, floorChecker(finalFloor, point))
         input_string_f.close()
         expected_f.close()
+        valid = json.loads(input_string)
+        state = valid[0]
+        name = valid[1]
+        point = translate_to_xy(valid[2])
+        game = stateMaker(state)
+        self.assertEqual(expected, stateChecker(game, state, name, point))
+        game.draw()
 
 
 if __name__ == "__main__":
