@@ -62,7 +62,11 @@ class GameState:
         destination = self.current_floor.grid[pos[0]][pos[1]]
         if not isinstance(destination, WallTile):
             message = self.players[playerID - 1].move(destination)
-            if destination == self.current_floor.get_exit()
+            # Checks if the player just moved to the exit
+            if self.unlocked and destination == self.current_floor.get_exit():
+                destination.remove_character()
+                return json.dumps({"success": True, "message": "Exited"})
+            return message
         else:
             return json.dumps({"success": False, "message": "WallTile"})
 

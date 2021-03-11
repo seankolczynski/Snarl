@@ -69,6 +69,9 @@ class Tile(object):
     def __ne__(self, other):
         return not self == other
 
+    def __hash__(self):
+        return hash(self.position)
+
 class WallTile(Tile):
 
     def __init__(self, pos):
