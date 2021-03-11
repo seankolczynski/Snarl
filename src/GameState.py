@@ -1,3 +1,5 @@
+import json
+
 from Floor import Floor
 import Character
 from Tile import Tile, WallTile
@@ -21,6 +23,8 @@ class GameState:
         self.adversaries = []
         self.start_player_position = self.current_floor.rooms[0].upperLeft
         self.start_adversary_position = self.current_floor.rooms[len(self.current_floor.rooms) - 1].upperLeft
+        self.unlocked = False
+
 
 
     def add_player(self, player):
@@ -57,10 +61,16 @@ class GameState:
     def move_player(self, playerID, pos):
         destination = self.current_floor.grid[pos[0]][pos[1]]
         if not isinstance(destination, WallTile):
-            self.players[playerID - 1].move(destination)
+            message = self.players[playerID - 1].move(destination)
+            if destination == self.current_floor.get_exit()
+        else:
+            return json.dumps({"success": False, "message": "WallTile"})
 
     def draw(self):
         self.current_floor.draw()
+
+    def get_current_floor(self):
+        return self.current_floor
 
 
     def get_intermediate_state(self):

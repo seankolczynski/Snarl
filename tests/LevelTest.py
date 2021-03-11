@@ -156,9 +156,9 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room, room2], [hall, zHall])
         floor.set_exit((9, 6))
         GameManager = GameState.GameState([floor])
-        player1 = Player.Player(2, 1)
+        player1 = Player.Player(2, 1, "Stan")
         item = "Potion"
-        adversary1 = Adversary.Adversary(2, 2, "zombie")
+        adversary1 = Adversary.Adversary(2, 2, "Jeff", "zombie")
         GameManager.add_adversary(adversary1)
         GameManager.add_player(player1)
         GameManager.add_item(item, (5, 6))

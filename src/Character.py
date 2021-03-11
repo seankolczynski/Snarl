@@ -1,26 +1,32 @@
+import json
+
+
 class Character:
 
-    def __init__(self, speed, id, ctype):
+    def __init__(self, speed, id, name, ctype):
         self.speed = speed
         self.ctype = ctype
+        self.name = name
         self.current_tile = None
         self.inventory = []
         self.exited = False
         self.id = id
+        self.alive = True
 
 
     def move(self, tile):
-        if tile.get_character() is not None and tile.get_character().get_ctype() != "player":
+        occupant = tile.get_character()
+        if occupant is None:
             if self.current_tile is not None:
                 self.current_tile.remove_character()
+            self.current_tile = tile
+            tile.add_character(self)
+        elif occupant.get_ctype() != "player":
+            if self.current_tile is not None:
+                self.current_tile.remove_character()
+            return json.dumps({"success": True, "message": "Ejected by " + occupant.get_name()})
         else:
-            if self.current_tile is not None:
-                self.current_tile.remove_character()
-            if self.current_tile == None or tile.get_item_with_name("Exit") == None:
-                self.current_tile = tile
-                tile.add_character(self)
-            else:
-                self.exited = True
+            return json.dumps({"success": False, "message": "Occupied by another player"})
 
 
     # Character
@@ -36,3 +42,9 @@ class Character:
     
     def get_ctype(self):
         return self.ctype
+
+    def get_speed(self):
+        return self.speed
+
+    def get_name(self):
+        return self.name

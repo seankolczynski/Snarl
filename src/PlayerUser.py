@@ -5,13 +5,19 @@ class PlayerUser:
         self.ID = ID
         self.type = type
 
+    def get_id(self):
+        return self.ID
+
+    def get_type(self):
+        return self.type
+
+    def request_move(self):
+        self.move_sequence.pop()
 
 
-    def connect(self):
-        # TODO Connect gamemanager logic
-
-
-    def move(self, pos):
+    # THis is a stub for testing
+    def set_moves(self, moves):
+        self.move_sequence = moves
 
 
 # TODO Add Main Loop Logic

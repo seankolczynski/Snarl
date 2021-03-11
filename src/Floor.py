@@ -120,7 +120,8 @@ class Floor:
         x, y = pos
         if x < self.cols and y < self.rows:
             return self.grid[x][y]
-        # Else?
+        else:
+            raise ValueError("Out of Level Bounds. Please move somewhere within")
 
     def set_exit(self, pos):
         if self.exit is not None:

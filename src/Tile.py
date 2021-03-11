@@ -63,6 +63,12 @@ class Tile(object):
     def get_position(self):
         return self.position
 
+    def __eq__(self, other):
+        return self.position == other.get_position
+
+    def __ne__(self, other):
+        return not self == other
+
 class WallTile(Tile):
 
     def __init__(self, pos):
