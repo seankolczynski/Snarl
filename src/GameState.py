@@ -38,7 +38,7 @@ class GameState:
                 offX = start.upperLeft[0]
                 offY = offY + 1
             tile = self.current_floor.grid[offX][offY]
-        self.move_player(player.get_id(), tile.get_position())
+        self.move_character(player, tile.get_position())
 
     def add_adversary(self, adversary):
         start = self.current_floor.rooms[len(self.current_floor.rooms) - 1]
@@ -56,23 +56,22 @@ class GameState:
     def add_item(self, item, pos):
         self.current_floor.place_item(item, pos)
 
-
-
-    def move_player(self, playerID, pos):
+    def move_character(self, character, pos):
         destination = self.current_floor.grid[pos[0]][pos[1]]
         if not isinstance(destination, WallTile):
-            message = self.players[playerID].move(destination)
+            message = character.move(destination)
             # Checks if the player just moved to the exit
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
             if self.unlocked and destination == self.current_floor.get_exit():
                 destination.remove_character()
-                return json.dumps({"success": True, "message": "Exited"})
+                return {"success": True, "message": "Exited"}
             return message
         else:
-            return json.dumps({"success": False, "message": "WallTile"})
+            return {"success": False, "message": "WallTile"}
 
-
+    def move_player_via_id(self, id, pos):
+        return self.move_character(self.players[id - 1], pos)
 
     def draw(self):
         self.current_floor.draw()

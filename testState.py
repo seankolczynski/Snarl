@@ -2,7 +2,7 @@ import json
 import sys
 import unittest
 
-from Tile import WallTile, Tile
+from Tile import WallTile
 from Room import Room
 from Floor import Floor
 from Item import Item
@@ -12,6 +12,7 @@ from Character import Character
 from Player import Player
 from Adversary import Adversary
 
+sys.path.append("../src/")
 
 def roomMaker(room):
     origin = (room["origin"][1], room["origin"][0])
@@ -138,7 +139,7 @@ def stateChecker(game, state, name, goal):
     ident = 0
     for player in players:
         if player["name"] == name:
-            result = game.move_player(ident, goal)
+            result = game.move_player_via_id(ident, goal)
             stateJSON = stateToJSON(game, state)
             success = result["success"]
             message = result["message"]
@@ -150,7 +151,7 @@ def stateChecker(game, state, name, goal):
                 else:
                     return json.dumps([ "Success", (stateJSON)])
             else:
-                json.dumps(["Failure", "The destination position ", (point), " is invalid." ])
+                return json.dumps(["Failure", "The destination position ", (goal), " is invalid." ])
         ident = ident + 1
     return json.dumps(["Failure", "Player ", name, " is not a part of the game."])
 
@@ -257,6 +258,25 @@ class testSuite(unittest.TestCase):
         name = valid[1]
         point = translate_to_xy(valid[2])
         game = stateMaker(state)
+        result = stateChecker(game, state, name, point)
+        game.draw()
+        self.assertEqual(expected, result)
+
+
+
+    def test5(self):
+        input_string_f = open("tests/5-in.json")
+        input_string = input_string_f.read()
+        input_string_f.close()
+        expected_f = open("tests/5-out.json")
+        expected = expected_f.read()
+        input_string_f.close()
+        expected_f.close()
+        valid = json.loads(input_string)
+        state = valid[0]
+        name = valid[1]
+        point = translate_to_xy(valid[2])
+        game = stateMaker(state)
         self.assertEqual(expected, stateChecker(game, state, name, point))
         game.draw()
 
@@ -267,8 +287,8 @@ if __name__ == "__main__":
     if input_str == "-test":
         unittest.main()
     valid = json.loads(input_str)
-    floor = valid[0]
-    point = valid[1]
-    finalRoom = floorMaker(floor)
-    print(finalRoom.draw())
-    # print(roomChecker(finalRoom, point))
+    state = valid[0]
+    name = valid[1]
+    point = translate_to_xy(valid[2])
+    game = stateMaker(state)
+    print(stateChecker(game, state, name, point))

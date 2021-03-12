@@ -4,7 +4,7 @@ from Tile import Tile, WallTile
 
 class RuleChecker:
 
-    def __int__(self, game, playerIDs):
+    def __init__(self, game, playerIDs):
         self.game = game
         self.playerIDs = playerIDs
 
@@ -17,10 +17,8 @@ class RuleChecker:
         target = floor.get_tile_at(position)
         current = charact.get_char_position()
         if not isinstance(target, WallTile):
-            if self.manhattan_distance(current, target.get_position()) < charact.get_speed():
-                return len()
-
-
+            if self.manhattan_distance(current, target.get_position()) <= charact.get_speed():
+                return True
         else:
             return False
 

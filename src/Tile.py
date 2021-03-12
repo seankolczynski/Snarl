@@ -68,7 +68,9 @@ class Tile(object):
         return self.position
 
     def __eq__(self, other):
-        return self.position == other.get_position
+        if isinstance(other, Tile):
+            return self.position == other.get_position()
+        return False
 
     def __ne__(self, other):
         return not self == other

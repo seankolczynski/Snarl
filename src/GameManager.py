@@ -18,9 +18,9 @@ Outside of this loop, it also needs to start and end the game
 
 class GameManager:
 
-    def __int__(self, initial_gamestate):
+    def __init__(self, initial_gamestate):
         # TODO Add Websocket logic???
-        self.game = GameState.GameState([])
+        self.game = initial_gamestate
         self.ID_to_char = {}
         self.ID_to_user = {}
         self.rule_checker = None
@@ -56,7 +56,7 @@ class GameManager:
                 move = current_user.request_move()
                 if self.rule_checker.validateMove(current_character_turn, move):
                     break
-            self.move(move, current_character_turn)
+            self.game.move_character(current_character_turn, move)
             self.update_gamestate()
             current_character_turn = ((current_character_turn + 1) % len(self.ID_to_user))
             current_character = self.ID_to_char[current_character_turn]
@@ -86,7 +86,4 @@ class GameManager:
         self.game = GameState.GameState([])
 
 
-    def move(self, pos, playerID):
-        player = self.ID_to_char[playerID]
-        if self.rule_checker.check_move(playerID, pos):
-            player.move(pos)
+

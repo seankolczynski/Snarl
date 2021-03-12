@@ -130,8 +130,6 @@ class Floor:
         self.exit = self.place_item("Exit", pos)
 
 
-
-
     def get_exit(self):
         return self.exit
 
