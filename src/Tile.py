@@ -81,14 +81,17 @@ class Tile(object):
 class WallTile(Tile):
 
     def __init__(self, pos):
-        self.position = pos
-        self.room = None
+        super().__init__(pos)
 
     def draw(self):
         return "X"
 
-    def set_room(self, room):
-        self.room = room
 
-    def get_room(self):
-        return self.room
+class ExitTile(Tile):
+
+    def __init__(self, pos):
+        super().__init__(pos)
+
+    def draw(self):
+        return "E"
+

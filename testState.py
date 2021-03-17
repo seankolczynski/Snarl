@@ -2,7 +2,7 @@ import json
 import sys
 import unittest
 
-from Tile import WallTile
+from Tile import WallTile, Tile, ExitTile
 from Room import Room
 from Floor import Floor
 from Item import Item
@@ -124,7 +124,7 @@ def floorChecker(floor, point):
     if trav:
         if specific_tile.get_item_with_name("Key") != None:
             item = "key"
-        if specific_tile.get_item_with_name("Exit") != None:
+        if isinstance(specific_tile, ExitTile):
             item = "exit"
         reached = floor.reaches(inside)
         for r in reached:
@@ -168,6 +168,8 @@ def stateToJSON(game, state):
 def levelToJSON(game, level):
     objects = game.get_items()
     objectJSONs = []
+    exit = game.get_exit()
+    objectJSONs.append({"type": "Exit", "position": exit.get_position()})
     for obj in objects:
         objectJSONs.append({"type": obj[0], "position": obj[1]})
     return {"type": level["type"], "rooms": level["rooms"], "objects": objectJSONs, "hallways": level["hallways"]}

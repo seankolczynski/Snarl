@@ -1,6 +1,6 @@
 
 import random as r
-from Tile import Tile, WallTile
+from Tile import Tile, WallTile, ExitTile
 from Room import Room
 from Hallway import Hallway
 
@@ -112,7 +112,7 @@ class Floor:
         offX, offY = roomChoice.upperLeft
 
         if type(self.grid[offX + coordX][offY + coordY]) == Tile:
-            self.grid[offX + coordX][offY + coordY].add_item("Exit")
+            self.grid[offX + coordX][offY + coordY] = ExitTile((offX + coordX,offY + coordY))
             return self.grid[offX + coordX][offY + coordY]
         else:
             self.makeExit()
@@ -125,9 +125,12 @@ class Floor:
             raise ValueError("Out of Level Bounds. Please move somewhere within")
 
     def set_exit(self, pos):
+        new_exit = ExitTile(pos)
         if self.exit is not None:
-            self.exit.remove_item("Exit")
-        self.exit = self.place_item("Exit", pos)
+            old_exit_x, old_exit_y = self.exit.get_position()
+            self.grid[old_exit_x][old_exit_y] = Tile((old_exit_x, old_exit_y))
+        self.grid[pos[0]][pos[1]] = new_exit
+        self.exit = new_exit
 
 
     def get_exit(self):
