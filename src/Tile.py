@@ -86,6 +86,14 @@ class WallTile(Tile):
     def draw(self):
         return "X"
 
+    def add_item(self, obj):
+        raise TypeError("WallTile cannot have items")
+
+    def add_character(self, character):
+        raise TypeError("WallTile cannot have characters")
+
+    def remove_character(self):
+        raise TypeError("WallTile cannot have characters")
 
 class ExitTile(Tile):
 
