@@ -97,7 +97,6 @@ class GameState:
     def unlock(self):
         self.unlocked = True
 
-
     def get_intermediate_state(self):
         acc = ""
         acc += "Players: "

@@ -48,20 +48,20 @@ class Floor:
 
     def draw(self):
         image = ""
-        image += "┌"
+        image += "+"
         for x in range(self.cols):
-            image += "──"
-        image += "─┐\n"
+            image += "--"
+        image += "-+\n"
         for y in range(self.rows):
             image += "│ "
             for x in range(self.cols):
                 image += self.grid[x][y].draw()
                 image += " "
             image += "│\n"
-        image += "└"
+        image += "+"
         for x in range(self.cols):
-            image += "──"
-        image += "─┘"
+            image += "--"
+        image += "-+"
         print(image)
 
     """Places the rooms in the floor and ensures they are valid"""

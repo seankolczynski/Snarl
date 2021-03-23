@@ -101,5 +101,5 @@ class ExitTile(Tile):
         super().__init__(pos)
 
     def draw(self):
-        return "E"
+        return "e"
 
