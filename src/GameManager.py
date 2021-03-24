@@ -2,6 +2,7 @@ import GameState
 from Player import Player
 from Adversary import Adversary
 from RuleChecker import RuleChecker
+from SimpleState import SimpleState
 
 """
 The cycle of the game manager:
@@ -66,7 +67,8 @@ class GameManager:
 
     def update_gamestate(self):
         for user in self.ID_to_user.keys():
-            self.ID_to_user[user].update_state(self.game)
+            userPos = self.ID_to_char[user].get_char_position()
+            self.ID_to_user[user].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
 
     # Associates player with an ID, that returns a new player or new adversary
     def create_new_character(self, type, id, name):

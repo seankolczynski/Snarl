@@ -17,7 +17,7 @@ class MyTestCase(unittest.TestCase):
         room2 = Room.Room(example, (20, 5))
         floor = Floor.Floor([room, room2], [hall, zHall])
         newout = io.StringIO()
-        expected = '┌───────────────────────────────────────────────────────────────┐\n'\
+        expected = '+---------------------------------------------------------------+\n'\
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
@@ -34,7 +34,7 @@ class MyTestCase(unittest.TestCase):
                    '│ X X X X X                     X X   X X                     X │\n' \
                    '│ X X X X X                           X X                     X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└───────────────────────────────────────────────────────────────┘\n'
+                   '+---------------------------------------------------------------+\n'
         sys.stdout = newout
         floor.draw()
         endVal = newout.getvalue()
@@ -56,8 +56,8 @@ class MyTestCase(unittest.TestCase):
         example = [[1 for i in range(10)] for j in range(10)]
         room = Room.Room(example, (60, 60))
         floor = Floor.Floor([room], [])
-        self.assertEqual(70, floor.rows)
-        self.assertEqual(70, floor.cols)
+        self.assertEqual(71, floor.rows)
+        self.assertEqual(71, floor.cols)
         floor.draw()
     
     def testIntermediateOutput(self):
@@ -70,12 +70,12 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room, room2], [hall, zHall])
         floor.set_exit((9, 6))
         GameManager = GameState.GameState([floor])
-        player1 = Player.Player(2, 1)
-        adversary1 = Adversary.Adversary(2, 2, "zombie")
+        player1 = Player.Player(2, 1, "Jeff")
+        adversary1 = Adversary.Adversary(2, 2, "Zomb", "zombie")
         GameManager.add_adversary(adversary1)
         GameManager.add_player(player1)
         newout = io.StringIO()
-        expected = '┌───────────────────────────────────────────────────────────────┐\n'\
+        expected = '+---------------------------------------------------------------+\n'\
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
@@ -92,7 +92,7 @@ class MyTestCase(unittest.TestCase):
                    '│ X X X X X                     X X   X X                     X │\n' \
                    '│ X X X X X                           X X                     X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└───────────────────────────────────────────────────────────────┘\n'
+                   '+---------------------------------------------------------------+\n'
         sys.stdout = newout
         floor.draw()
         endVal = newout.getvalue()
@@ -108,15 +108,15 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room, room2], [hall, zHall])
         floor.set_exit((9, 6))
         GameManager = GameState.GameState([floor])
-        player1 = Player.Player(2, 1)
+        player1 = Player.Player(2, 1, "Mike")
         item = "Potion"
-        adversary1 = Adversary.Adversary(2, 2, "zombie")
+        adversary1 = Adversary.Adversary(2, 2, "Bill", "zombie")
         GameManager.add_adversary(adversary1)
         GameManager.add_player(player1)
         GameManager.add_item(item, (5, 6))
-        GameManager.move_character(1, (5, 6))
+        GameManager.move_player_via_id(1, (5, 6))
         newout = io.StringIO()
-        expected = '┌───────────────────────────────────────────────────────────────┐\n'\
+        expected = '+---------------------------------------------------------------+\n'\
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
@@ -133,7 +133,7 @@ class MyTestCase(unittest.TestCase):
                    '│ X X X X X                     X X   X X                     X │\n' \
                    '│ X X X X X                           X X                     X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└───────────────────────────────────────────────────────────────┘\n'
+                   '+---------------------------------------------------------------+\n'
         sys.stdout = newout
         floor.draw()
         endVal = newout.getvalue()
@@ -163,7 +163,7 @@ class MyTestCase(unittest.TestCase):
         GameManager.add_player(player1)
         GameManager.add_item(item, (5, 6))
         # Draw initial
-        expected = '┌───────────────────────────────────────────────────────────────┐\n' \
+        expected = '+---------------------------------------------------------------+\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
@@ -180,8 +180,8 @@ class MyTestCase(unittest.TestCase):
                    '│ X X X X X                     X X   X X                     X │\n' \
                    '│ X X X X X                           X X                     X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└───────────────────────────────────────────────────────────────┘\n' \
-                   '┌───────────────────────────────────────────────────────────────┐\n' \
+                   '+---------------------------------------------------------------+\n' \
+                   '+---------------------------------------------------------------+\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
@@ -198,18 +198,18 @@ class MyTestCase(unittest.TestCase):
                    '│ X X X X X                     X X   X X                     X │\n' \
                    '│ X X X X X                           X X                     X │\n' \
                    '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '└───────────────────────────────────────────────────────────────┘\n'
+                   '+---------------------------------------------------------------+\n'
         newout = io.StringIO()
         sys.stdout = newout
         floor.draw()
         initial = newout.getvalue()
         #self.assertEqual(expected, initial)
-        GameManager.move_character(1, (5, 6))
-        GameManager.move_character(1, (6, 6))
-        GameManager.move_character(1, (7, 6))
-        GameManager.move_character(1, (8, 6))
-        GameManager.move_character(1, (9, 6))
-        GameManager.move_character(1, (10, 6))
+        GameManager.move_player_via_id(1, (5, 6))
+        GameManager.move_player_via_id(1, (6, 6))
+        GameManager.move_player_via_id(1, (7, 6))
+        GameManager.move_player_via_id(1, (8, 6))
+        GameManager.move_player_via_id(1, (9, 6))
+        GameManager.move_player_via_id(1, (10, 6))
         floor.draw()
         initial = newout.getvalue()
         self.assertEqual(expected, initial)

@@ -88,12 +88,14 @@ class GameState:
     def get_players(self):
         return self.players
 
+    def get_exit(self):
+        return self.current_floor.get_exit()
+
     def get_adversaries(self):
         return self.adversaries
 
     def unlock(self):
         self.unlocked = True
-
 
     def get_intermediate_state(self):
         acc = ""

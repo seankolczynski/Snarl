@@ -81,14 +81,25 @@ class Tile(object):
 class WallTile(Tile):
 
     def __init__(self, pos):
-        self.position = pos
-        self.room = None
+        super().__init__(pos)
 
     def draw(self):
         return "X"
 
-    def set_room(self, room):
-        self.room = room
+    def add_item(self, obj):
+        raise TypeError("WallTile cannot have items")
 
-    def get_room(self):
-        return self.room
+    def add_character(self, character):
+        raise TypeError("WallTile cannot have characters")
+
+    def remove_character(self):
+        raise TypeError("WallTile cannot have characters")
+
+class ExitTile(Tile):
+
+    def __init__(self, pos):
+        super().__init__(pos)
+
+    def draw(self):
+        return "e"
+
