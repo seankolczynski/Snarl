@@ -20,23 +20,8 @@ class PlayerUser:
         self.gameState = gs
         self.render(pos)
 
-    def render(self):
-        image = ""
-        image += "+"
-        for x in range(3):
-            image += "--"
-        image += "-+\n"
-        for y in range(3):
-            image += "│ "
-            for x in range(3):
-                image += self.grid[x][y].draw()
-                image += " "
-            image += "│\n"
-        image += "+"
-        for x in range(3):
-            image += "--"
-        image += "-+"
-        print(image)
+    def render(self, pos):
+        self.gameState.render_in_range(pos, 2)
 
 
 
