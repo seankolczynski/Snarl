@@ -102,3 +102,6 @@ class Hallway:
 
     def add_end(self, tile):
         self.end = tile
+
+    def door_at(self, pos):
+        return pos == self.connectDots[0] or pos == self.connectDots[len(self.connectDots) - 1]

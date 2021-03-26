@@ -16,26 +16,26 @@ class Character:
 
     def move(self, tile):
         occupant = tile.get_character()
-        if occupant is None:
+        if occupant is None or occupant == self:
             if self.current_tile is not None:
                 self.current_tile.remove_character()
             self.current_tile = tile
-            tile.add_character(self)
-            message = {"success": True, "message":""}
+            message = tile.add_character(self)
             return message
         elif occupant.get_ctype() != "player":
             if self.current_tile is not None:
                 self.current_tile.remove_character()
+            self.alive = False
             message = {"success": True, "message": "Ejected by " + occupant.get_name()}
             return message
         else:
-            message = {"success": True, "message":"Occupied by another player"}
+            message = {"success": False, "message": "Occupied by another player"}
             return message
 
 
     # Character
     def get_char_position(self):
-        if self.current_tile is not None:
+        if self.current_tile is not None and self.alive:
             return self.current_tile.get_position()
         else:
             return None
@@ -55,3 +55,6 @@ class Character:
 
     def get_id(self):
         return self.id
+
+    def is_alive(self):
+        return self.alive

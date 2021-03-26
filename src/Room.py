@@ -19,7 +19,6 @@ class Room:
     def room_width(self):
         return self.width
 
-
     def room_height(self):
         return self.height
 
@@ -53,7 +52,12 @@ class Room:
             neighbors.append(other)
         return neighbors
 
-
+    """Checks if there is a door at this position."""
+    def door_at(self, pos):
+        for door in self.doors:
+            if pos == door.get_position():
+                return True
+        return False
 
 
 

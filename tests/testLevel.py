@@ -4,7 +4,7 @@ import unittest
 import sys
 
 sys.path.append("../src/")
-from Tile import WallTile, Tile
+from Tile import WallTile, Tile, ExitTile
 from Room import Room
 from Floor import Floor
 from Item import Item
@@ -98,7 +98,7 @@ def floorChecker(floor, point):
     if trav:
         if specific_tile.get_item_with_name("Key") != None:
             item = "key"
-        if specific_tile.get_item_with_name("Exit") != None:
+        if isinstance(specific_tile, ExitTile):
             item = "exit"
         reached = floor.reaches(inside)
         for r in reached:
@@ -171,6 +171,8 @@ class testSuite(unittest.TestCase):
         self.assertEqual(expected, floorChecker(finalFloor, point))
         input_string_f.close()
         expected_f.close()
+
+
 
 if __name__ == "__main__":
     print("Please input json, then push ctrl-d")

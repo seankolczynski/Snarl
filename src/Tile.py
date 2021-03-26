@@ -54,18 +54,32 @@ class Tile(object):
         return " "
 
     def add_character(self, character):
+        response = {"success": True, "message": "OK"}
         if self.character != None:
             raise ValueError("Occupied!")
         self.character = character
         if isinstance(character, Player):
             for item in self.items:
-                if item.name != "Exit":
-                    character.add_to_inventory(item)
-            new_items = list(filter(lambda x: x.name == "Exit", self.items))
+                if item.name == "key" or item.name == "Key":
+                    response = {"success": True, "message": "Key"}
+                character.add_to_inventory(item)
+            new_items = []
             self.items = new_items
+            return response
 
     def get_position(self):
         return self.position
+
+    def transfer_info(self, other):
+        other.set_room(self.room)
+        for item in self.items:
+            other.add_item(item.get_name())
+        return other
+
+    def num_val(self):
+        if self.room.door_at(self.position):
+            return 2
+        return 1
 
     def __eq__(self, other):
         if isinstance(other, Tile):
@@ -85,6 +99,10 @@ class WallTile(Tile):
 
     def draw(self):
         return "X"
+
+    def num_val(self):
+        return 0
+
 
     def add_item(self, obj):
         raise TypeError("WallTile cannot have items")

@@ -33,37 +33,54 @@ class GameManager:
     def add_adversary(self, adversary):
         self.game.add_adversary(adversary)
 
+    """
+    User -> Void
+    Registers the given User into the game.
+    Side Effects: Creates character that user will control, adds character to game. Adds user and character to dictionaries
+    """
     def register_player_user(self, user):
         id = user.get_id()
         type = user.get_type()
         if id in self.ID_to_char.keys() or id in self.ID_to_user.keys():
             raise ConnectionError("User ID Taken")
         else:
-            newly_created_character = self.create_new_character(type, id, "")
+            newly_created_character = self.create_new_character(type, id, user.get_name())
             self.ID_to_user[id] = user
             self.ID_to_char[id] = newly_created_character
             if type == "player":
                 self.add_player(newly_created_character)
             else:
                 self.add_adversary(newly_created_character)
-
+    """
+    Initialize the game and maintains the loop that keeps it running
+    """
     def start_game(self):
         self.add_Rule_Checker()
         current_character_turn = 0
-        current_character = self.ID_to_char[current_character_turn]
-        current_user = self.ID_to_user[current_character_turn]
         while True:
-            while True:
+            self.take_turn(current_character_turn)
+            current_character_turn = current_character_turn + 1
+
+    """Executes a single turn the user whose turn it currently is. This includes receiving moves until one is approved, 
+    executing the move, and updating all users of the new state"""
+    def take_turn(self, turn_index):
+        responses = []
+        current_character = self.ID_to_char[turn_index]
+        current_user = self.ID_to_user[turn_index]
+        while True:
+            try:
                 move = current_user.request_move()
-                if self.rule_checker.validateMove(current_character_turn, move):
-                    break
-            self.game.move_character(current_character_turn, move)
-            self.update_gamestate()
-            current_character_turn = ((current_character_turn + 1) % len(self.ID_to_user))
-            current_character = self.ID_to_char[current_character_turn]
-            current_user = self.ID_to_user[current_character_turn]
-
-
+            except ValueError:
+                return "Done"
+            if self.rule_checker.validateMove(turn_index, move):
+                break
+            responses.append((move, "Invalid"))
+        if move is None:
+            responses.append((move, {"success": True, "message": "OK"}))
+            return responses
+        responses.append((move, self.game.move_character(current_character, move)))
+        self.update_gamestate()
+        return responses
 
     def update_gamestate(self):
         for user in self.ID_to_user.keys():

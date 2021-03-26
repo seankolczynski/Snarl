@@ -129,7 +129,10 @@ class Floor:
         if self.exit is not None:
             old_exit_x, old_exit_y = self.exit.get_position()
             self.grid[old_exit_x][old_exit_y] = Tile((old_exit_x, old_exit_y))
+            new_exit = self.exit.transfer_info(new_exit)
+        oldTile = self.grid[pos[0]][pos[1]]
         self.grid[pos[0]][pos[1]] = new_exit
+        new_exit = oldTile.transfer_info(new_exit)
         self.exit = new_exit
 
 

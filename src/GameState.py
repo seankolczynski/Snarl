@@ -71,7 +71,7 @@ class GameState:
             return {"success": False, "message": "WallTile"}
 
     def move_player_via_id(self, id, pos):
-        return self.move_character(self.players[id - 1], pos)
+        return self.move_character(self.players[id], pos)
 
     def draw(self):
         self.current_floor.draw()
