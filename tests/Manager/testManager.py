@@ -14,7 +14,6 @@ from PlayerUser import PlayerUser
 from Adversary import Adversary
 import random
 import pprint
-import jq
 
 
 
@@ -52,6 +51,7 @@ def artificial_game_run(maxi, manager, users, level):
     for user2 in users:
         JSON_response.append([user2.get_name(), player_update_gather(user2)])
     round_number = 0
+    manager.game.draw()
     while round_number < maxi:
         turn_index = 0
         for user in users:
@@ -69,6 +69,8 @@ def artificial_game_run(maxi, manager, users, level):
                     JSON_response.append([user2.get_name(), player_update_gather(user2)])
             turn_index = turn_index + 1
         round_number = round_number + 1
+        manager.game.draw()
+    manager.game.draw()
     return json.dumps([stateToJSON(manager.game, level), JSON_response])#, indent=4, sort_keys=True)
 
 def reinterpret(message):
@@ -282,6 +284,7 @@ def translate_to_xy(rowCol):
 
 class testSuite(unittest.TestCase):
     def test1(self):
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         self.maxDiff = None
         input_string_f = open("1-in.json")
         input_string = input_string_f.read()
@@ -293,59 +296,88 @@ class testSuite(unittest.TestCase):
         manager, maxi, users = managerMaker(info)
         #print(artificial_game_run(maxi, manager, users, info[1]))
         self.assertEqual(expected, artificial_game_run(maxi, manager, users, info[1]))
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     def test2(self):
-        input_string_f = open("../Level/2-in.json")
+        self.maxDiff = None
+        input_string_f = open("2-in.json")
         input_string = input_string_f.read()
         input_string_f.close()
-        expected_f = open("../Level/2-out.json")
+        expected_f = open("2-out.json")
         expected = expected_f.read()
-        valid = json.loads(input_string)
-        floor = valid[0]
-        point = translate_to_xy(valid[1])
-        finalFloor = floorMaker(floor)
-        finalFloor.draw()
-        self.assertEqual(expected, floorChecker(finalFloor, point))
-        input_string_f.close()
         expected_f.close()
-
+        info = json.loads(input_string)
+        manager, maxi, users = managerMaker(info)
+        # print(artificial_game_run(maxi, manager, users, info[1]))
+        self.assertEqual(expected, artificial_game_run(maxi, manager, users, info[1]))
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    
     def test3(self):
-        input_string_f = open("../Level/3-in.json")
+        self.maxDiff = None
+        input_string_f = open("3-in.json")
         input_string = input_string_f.read()
         input_string_f.close()
-        expected_f = open("../Level/3-out.json")
+        expected_f = open("3-out.json")
         expected = expected_f.read()
-        valid = json.loads(input_string)
-        floor = valid[0]
-        point = translate_to_xy(valid[1])
-        finalFloor = floorMaker(floor)
-        self.assertEqual(expected, floorChecker(finalFloor, point))
-        input_string_f.close()
         expected_f.close()
+        info = json.loads(input_string)
+        manager, maxi, users = managerMaker(info)
+        # print(artificial_game_run(maxi, manager, users, info[1]))
+        self.assertEqual(expected, artificial_game_run(maxi, manager, users, info[1]))
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-    def test4(self):
-        input_string_f = open("../Level/4-in.json")
-        input_string = input_string_f.read()
-        input_string_f.close()
-        expected_f = open("../Level/4-out.json")
-        expected = expected_f.read()
-        valid = json.loads(input_string)
-        floor = valid[0]
-        point = translate_to_xy(valid[1])
-        finalFloor = floorMaker(floor)
-        self.assertEqual(expected, floorChecker(finalFloor, point))
-        input_string_f.close()
-        expected_f.close()
+    # def test2(self):
+    #     input_string_f = open("2-in.json")
+    #     input_string = input_string_f.read()
+    #     input_string_f.close()
+    #     expected_f = open("2-out.json")
+    #     expected = expected_f.read()
+    #     valid = json.loads(input_string)
+    #     floor = valid[0]
+    #     point = translate_to_xy(valid[1])
+    #     finalFloor = floorMaker(floor)
+    #     finalFloor.draw()
+    #     self.assertEqual(expected, floorChecker(finalFloor, point))
+    #     input_string_f.close()
+    #     expected_f.close()
+
+    # def test3(self):
+    #     input_string_f = open("../Level/3-in.json")
+    #     input_string = input_string_f.read()
+    #     input_string_f.close()
+    #     expected_f = open("../Level/3-out.json")
+    #     expected = expected_f.read()
+    #     valid = json.loads(input_string)
+    #     floor = valid[0]
+    #     point = translate_to_xy(valid[1])
+    #     finalFloor = floorMaker(floor)
+    #     self.assertEqual(expected, floorChecker(finalFloor, point))
+    #     input_string_f.close()
+    #     expected_f.close()
+
+    # def test4(self):
+    #     input_string_f = open("../Level/4-in.json")
+    #     input_string = input_string_f.read()
+    #     input_string_f.close()
+    #     expected_f = open("../Level/4-out.json")
+    #     expected = expected_f.read()
+    #     valid = json.loads(input_string)
+    #     floor = valid[0]
+    #     point = translate_to_xy(valid[1])
+    #     finalFloor = floorMaker(floor)
+    #     self.assertEqual(expected, floorChecker(finalFloor, point))
+    #     input_string_f.close()
+    #     expected_f.close()
 
 
 if __name__ == "__main__":
-    print("Please input json, then push ctrl-d")
-    input_str = sys.stdin.read()
-    if input_str == "-test":
+    # print("Please input json, then push ctrl-d")
+    # input_str = sys.stdin.read()
+    # if input_str == "-test":
         unittest.main()
-    valid = json.loads(input_str)
-    floor = valid[0]
-    point = valid[1]
-    finalRoom = floorMaker(floor)
-    print(finalRoom.draw())
+    # valid = json.loads(input_str)
+    # floor = valid[0]
+    # point = valid[1]
+    # finalRoom = floorMaker(floor)
+    # print(finalRoom.draw())
     # print(roomChecker(finalRoom, point))
