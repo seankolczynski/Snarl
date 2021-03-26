@@ -76,8 +76,6 @@ def stateMaker(state):
     return game
 
 
-
-
 def roomChecker(room, point):
     up = (point[0] - 1, point[1])
     down = (point[0] + 1, point[1])
