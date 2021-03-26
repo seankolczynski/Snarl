@@ -55,7 +55,7 @@ class RuleChecker:
         x2, y2 = pos2
         return abs(x2 - x1) + abs(y2 - y1)
 
-
+    """Get surrounding points"""
     def get_around(self, pos):
         startx, starty = pos
         positions = []
