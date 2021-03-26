@@ -16,20 +16,25 @@ The cycle of the game manager:
 Outside of this loop, it also needs to start and end the game
 """
 
-
 class GameManager:
 
     def __init__(self, initial_gamestate):
-        # TODO Add Websocket logic???
         self.game = initial_gamestate
         self.ID_to_char = {}
         self.ID_to_user = {}
         self.rule_checker = None
 
-    # Adds a player to the gamestate
+    """
+    Player -> Void
+    Adds the given player to our gamestate
+    """
     def add_player(self, player):
         self.game.add_player(player)
 
+    """
+    Adversary -> Void
+    Adds the given adversary to the gamestate
+    """
     def add_adversary(self, adversary):
         self.game.add_adversary(adversary)
 
@@ -51,6 +56,7 @@ class GameManager:
                 self.add_player(newly_created_character)
             else:
                 self.add_adversary(newly_created_character)
+
     """
     Initialize the game and maintains the loop that keeps it running
     """
@@ -59,10 +65,16 @@ class GameManager:
         current_character_turn = 0
         while True:
             self.take_turn(current_character_turn)
-            current_character_turn = current_character_turn + 1
+            current_character_turn = (current_character_turn + 1) % len(self.ID_to_char)
+            if self.game.is_over():
+                break
 
-    """Executes a single turn the user whose turn it currently is. This includes receiving moves until one is approved, 
-    executing the move, and updating all users of the new state"""
+    """
+    int -> JSON
+    Executes a single turn the user whose turn it currently is. This includes receiving moves until one is approved, 
+    executing the move, and updating all users of the new state.
+    Also provides a JSON update of what occurred on the turn
+    """
     def take_turn(self, turn_index):
         responses = []
         current_character = self.ID_to_char[turn_index]
@@ -82,23 +94,34 @@ class GameManager:
         self.update_gamestate()
         return responses
 
+    """
+    Void
+    Updates all players on the most recent version of the game
+    """
     def update_gamestate(self):
         for user in self.ID_to_user.keys():
             userPos = self.ID_to_char[user].get_char_position()
             self.ID_to_user[user].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
 
-    # Associates player with an ID, that returns a new player or new adversary
+    """
+    String, int, String -> Character
+    Associates player with an ID, returns a new player or new adversary
+    """
     def create_new_character(self, type, id, name):
         if type == "player":
             return Player(2, id, name)
         else:
             return Adversary(1, id, type, name)
 
+    """
+    Genereates a new Rule Checker based on the current gamestate
+    """
     def add_Rule_Checker(self):
         self.rule_checker = RuleChecker(self.game, self.ID_to_char)
 
 
-    #The game is over, and this method will reset to the initial gamestate
+    """The game is over, and this method will reset to the initial gamestate
+    """
     def reset(self):
         self.rule_checker = None
         self.ID_to_char = {}

@@ -60,7 +60,7 @@ def artificial_game_run(maxi, manager, users, level):
                 return json.dumps([stateToJSON(manager.game, level), JSON_response])#, indent=4, sort_keys=True)
             results = manager.take_turn(turn_index)
             for result in results:
-                if result == "Done":
+                if result == "Done" or manager.game.is_over():
                     return json.dumps([stateToJSON(manager.game, level), JSON_response])#, indent=4, sort_keys=True)
                 simple = reinterpret(result[1])
                 JSON_response.append([user.get_name(), {"type": "move", "to": translate_to_xy(result[0])}, simple])
@@ -293,6 +293,7 @@ class testSuite(unittest.TestCase):
         manager, maxi, users = managerMaker(info)
         #print(artificial_game_run(maxi, manager, users, info[1]))
         self.assertEqual(expected, artificial_game_run(maxi, manager, users, info[1]))
+        manager.game.draw()
 
     def test2(self):
         input_string_f = open("../Level/2-in.json")
