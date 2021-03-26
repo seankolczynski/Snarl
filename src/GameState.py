@@ -24,6 +24,8 @@ class GameState:
         self.start_player_position = self.current_floor.rooms[0].upperLeft
         self.start_adversary_position = self.current_floor.rooms[len(self.current_floor.rooms) - 1].upperLeft
         self.unlocked = False
+        self.exited = []
+        self.ejected = []
 
     def add_player(self, player):
         if len(self.players) == 4:
@@ -60,10 +62,13 @@ class GameState:
         destination = self.current_floor.grid[pos[0]][pos[1]]
         if not isinstance(destination, WallTile):
             message = character.move(destination)
+            if message is not None and "ejected" in message['message']:
+                self.ejected.append(character)
             # Checks if the player just moved to the exit
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
             if self.unlocked and destination == self.current_floor.get_exit():
+                self.exited.append(character)
                 destination.remove_character()
                 return {"success": True, "message": "Exited"}
             return message
@@ -96,6 +101,10 @@ class GameState:
 
     def unlock(self):
         self.unlocked = True
+
+    def is_over(self):
+        return (len(self.exited) + len(self.ejected) == len(self.players))
+
 
     def get_intermediate_state(self):
         acc = ""

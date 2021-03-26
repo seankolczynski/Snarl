@@ -28,24 +28,17 @@ class RuleChecker:
         """Search the shallowest nodes in the search tree first."""
         frontier = []
         explored = []
-
         # We have to keep a record of the path to each point
-
         frontier.append((start_pos, []))
-
         while True:
-
             # Failed state, could not find end.
             if len(frontier) == 0:
                 return []
-
             # pop next state
             pos, path = frontier.pop()
             explored.append(pos)
-
             if pos == target_pos:
                 return path
-
             succers = self.get_around(pos)
             for node in succers:
                 if not (explored.__contains__(node[0])) and node[0] not in (nextGo[0] for nextGo in
@@ -54,10 +47,14 @@ class RuleChecker:
                     nextStep = path + [node[1]]
                     frontier.append((node[0], nextStep))
 
+    """
+    Calculates manhattan distance
+    """
     def manhattan_distance(self, pos1, pos2):
         x1, y1 = pos1
         x2, y2 = pos2
         return abs(x2 - x1) + abs(y2 - y1)
+
 
     def get_around(self, pos):
         startx, starty = pos
