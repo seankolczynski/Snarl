@@ -341,58 +341,12 @@ class testSuite(unittest.TestCase):
         self.assertEqual(expected, artificial_game_run(maxi, manager, users, info[1]))
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
-    # def test2(self):
-    #     input_string_f = open("2-in.json")
-    #     input_string = input_string_f.read()
-    #     input_string_f.close()
-    #     expected_f = open("2-out.json")
-    #     expected = expected_f.read()
-    #     valid = json.loads(input_string)
-    #     floor = valid[0]
-    #     point = translate_to_xy(valid[1])
-    #     finalFloor = floorMaker(floor)
-    #     finalFloor.draw()
-    #     self.assertEqual(expected, floorChecker(finalFloor, point))
-    #     input_string_f.close()
-    #     expected_f.close()
-
-    # def test3(self):
-    #     input_string_f = open("../Level/3-in.json")
-    #     input_string = input_string_f.read()
-    #     input_string_f.close()
-    #     expected_f = open("../Level/3-out.json")
-    #     expected = expected_f.read()
-    #     valid = json.loads(input_string)
-    #     floor = valid[0]
-    #     point = translate_to_xy(valid[1])
-    #     finalFloor = floorMaker(floor)
-    #     self.assertEqual(expected, floorChecker(finalFloor, point))
-    #     input_string_f.close()
-    #     expected_f.close()
-
-    # def test4(self):
-    #     input_string_f = open("../Level/4-in.json")
-    #     input_string = input_string_f.read()
-    #     input_string_f.close()
-    #     expected_f = open("../Level/4-out.json")
-    #     expected = expected_f.read()
-    #     valid = json.loads(input_string)
-    #     floor = valid[0]
-    #     point = translate_to_xy(valid[1])
-    #     finalFloor = floorMaker(floor)
-    #     self.assertEqual(expected, floorChecker(finalFloor, point))
-    #     input_string_f.close()
-    #     expected_f.close()
-
 
 if __name__ == "__main__":
-    # print("Please input json, then push ctrl-d")
-    # input_str = sys.stdin.read()
-    # if input_str == "-test":
+    print("Please input json, then push ctrl-d")
+    input_str = sys.stdin.read()
+    if input_str == "-test":
         unittest.main()
-    # valid = json.loads(input_str)
-    # floor = valid[0]
-    # point = valid[1]
-    # finalRoom = floorMaker(floor)
-    # print(finalRoom.draw())
-    # print(roomChecker(finalRoom, point))
+    valid = json.loads(input_str)
+    manager, maxi, users = managerMaker(valid)
+    print(artificial_game_run(maxi, manager, users, valid[1]))
