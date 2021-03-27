@@ -313,7 +313,7 @@ class testSuite(unittest.TestCase):
     #     # print(artificial_game_run(maxi, manager, users, info[1]))
     #     self.assertEqual(expected, artificial_game_run(maxi, manager, users, info[1]))
     #     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    
+
     # def test3(self):
     #     self.maxDiff = None
     #     input_string_f = open("3-in.json")
