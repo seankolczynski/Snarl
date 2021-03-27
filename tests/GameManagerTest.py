@@ -25,7 +25,7 @@ class MyTestCase(unittest.TestCase):
         gm = GameManager(game)
         gm.register_player_user(self.playerUser1)
         gm.register_player_user(self.playerUser2)
-        self.assertEqual(2, len(gm.ID_to_user))
+        self.assertEqual(2, len(gm.ID_to_user_character))
 
     def testUpdateUsers(self):
         example = [[1 for i in range(10)] for j in range(10)]
@@ -38,7 +38,7 @@ class MyTestCase(unittest.TestCase):
         gm = GameManager(game)
         gm.register_player_user(self.playerUser1)
         gm.register_player_user(self.playerUser2)
-        gm.add_Rule_Checker()
+        gm.init_Rule_Checker()
         gm.take_turn(0)
         p1State = self.playerUser1.gameState.grid
         p2State = self.playerUser2.gameState.grid
