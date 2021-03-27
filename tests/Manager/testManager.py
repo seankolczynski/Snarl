@@ -45,7 +45,7 @@ def managerMaker(jsonStuff):
     return (manager, natural, users)
 
 def artificial_game_run(maxi, manager, users, level):
-    manager.add_Rule_Checker()
+    manager.init_Rule_Checker()
     manager.update_gamestate()
     JSON_response = []
     for user2 in users:
@@ -60,7 +60,7 @@ def artificial_game_run(maxi, manager, users, level):
                 return json.dumps([stateToJSON(manager.game, level), JSON_response])#, indent=4, sort_keys=True)
             results = manager.take_turn(turn_index)
             for result in results:
-                if result == "Done" or manager.game.is_over():
+                if result == "Done":
                     return json.dumps([stateToJSON(manager.game, level), JSON_response])#, indent=4, sort_keys=True)
                 simple = reinterpret(result[1])
                 JSON_response.append([user.get_name(), {"type": "move", "to": translate_to_xy(result[0])}, simple])
@@ -68,7 +68,7 @@ def artificial_game_run(maxi, manager, users, level):
                 if user2.position is not None:
                     JSON_response.append([user2.get_name(), player_update_gather(user2)])
             if manager.game.is_over():
-                break
+                return json.dumps([stateToJSON(manager.game, level), JSON_response])
             turn_index = turn_index + 1
         round_number = round_number + 1
         manager.game.draw()

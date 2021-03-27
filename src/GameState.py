@@ -62,7 +62,7 @@ class GameState:
         destination = self.current_floor.grid[pos[0]][pos[1]]
         if not isinstance(destination, WallTile):
             message = character.move(destination)
-            if message is not None and "ejected" in message['message']:
+            if message is not None and "Ejected" in message['message']:
                 self.ejected.append(character)
             # Checks if the player just moved to the exit
             if not self.unlocked:

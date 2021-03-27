@@ -5,9 +5,9 @@ from Tile import Tile, WallTile
 
 class RuleChecker:
 
-    def __init__(self, game, playerIDs):
+    def __init__(self, game):
         self.game = game
-        self.playerIDs = playerIDs
+        self.characters = {}
 
     # (Character, Position) -> Boolean
     # given a character and tile, will check the gamestate to see if a move is possible
@@ -15,7 +15,7 @@ class RuleChecker:
         if position is None:
             return True
         floor = self.game.get_current_floor()
-        charact = self.playerIDs[id]
+        charact = self.characters[id]
         target = floor.get_tile_at(position)
         current = charact.get_char_position()
         if not isinstance(target, WallTile):
@@ -23,6 +23,9 @@ class RuleChecker:
                 return True
         else:
             return False
+
+    def add_characters(self, characters):
+        self.characters = characters
 
     def breadthFirstSearch(self, start_pos, target_pos):
         """Search the shallowest nodes in the search tree first."""

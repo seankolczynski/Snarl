@@ -20,9 +20,8 @@ class GameManager:
 
     def __init__(self, initial_gamestate):
         self.game = initial_gamestate
-        self.ID_to_char = {}
-        self.ID_to_user = {}
-        self.rule_checker = None
+        self.ID_to_user_character = {}
+        self.rule_checker = RuleChecker(initial_gamestate)
 
     """
     Player -> Void
@@ -46,12 +45,11 @@ class GameManager:
     def register_player_user(self, user):
         id = user.get_id()
         type = user.get_type()
-        if id in self.ID_to_char.keys() or id in self.ID_to_user.keys():
+        if id in self.ID_to_user_character.keys():
             raise ConnectionError("User ID Taken")
         else:
             newly_created_character = self.create_new_character(type, id, user.get_name())
-            self.ID_to_user[id] = user
-            self.ID_to_char[id] = newly_created_character
+            self.ID_to_user_character[id] = (user, newly_created_character)
             if type == "player":
                 self.add_player(newly_created_character)
             else:
@@ -61,11 +59,11 @@ class GameManager:
     Initialize the game and maintains the loop that keeps it running
     """
     def start_game(self):
-        self.add_Rule_Checker()
+        self.init_Rule_Checker()
         current_character_turn = 0
         while True:
             self.take_turn(current_character_turn)
-            current_character_turn = (current_character_turn + 1) % len(self.ID_to_char)
+            current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
             if self.game.is_over():
                 break
 
@@ -77,8 +75,8 @@ class GameManager:
     """
     def take_turn(self, turn_index):
         responses = []
-        current_character = self.ID_to_char[turn_index]
-        current_user = self.ID_to_user[turn_index]
+        current_character = self.ID_to_user_character[turn_index][1]
+        current_user = self.ID_to_user_character[turn_index][0]
         while True:
             try:
                 move = current_user.request_move()
@@ -99,9 +97,9 @@ class GameManager:
     Updates all players on the most recent version of the game
     """
     def update_gamestate(self):
-        for user in self.ID_to_user.keys():
-            userPos = self.ID_to_char[user].get_char_position()
-            self.ID_to_user[user].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
+        for user in self.ID_to_user_character.keys():
+            userPos = self.ID_to_user_character[user][1].get_char_position()
+            self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
 
     """
     String, int, String -> Character
@@ -116,8 +114,11 @@ class GameManager:
     """
     Genereates a new Rule Checker based on the current gamestate
     """
-    def add_Rule_Checker(self):
-        self.rule_checker = RuleChecker(self.game, self.ID_to_char)
+    def init_Rule_Checker(self):
+        just_chars = []
+        for pair in self.ID_to_user_character:
+            just_chars.append(self.ID_to_user_character[pair][1])
+        self.rule_checker.add_characters(just_chars)
 
 
     """The game is over, and this method will reset to the initial gamestate
