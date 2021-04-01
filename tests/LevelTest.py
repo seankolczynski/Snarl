@@ -1,9 +1,11 @@
 import io
 import sys
-import os
+
 sys.path.append("../src/")
 import unittest
-import Hallway, Floor, Room, GameState, Player, Adversary, Item
+import GameState, Player
+from Structures import Room, Floor, Hallway
+from Monsters import Adversary
 
 
 class MyTestCase(unittest.TestCase):

@@ -1,18 +1,19 @@
 import sys
 import unittest
-from typing import io
+
+sys.path.append("../src/")
 
 from GameManager import GameManager
 from GameState import GameState
-from Hallway import Hallway
-from Room import Room
-from Floor import Floor
-from PlayerUser import PlayerUser
+from Structures.Hallway import Hallway
+from Structures.Room import Room
+from Structures.Floor import Floor
+from Player.LocalPlayer import LocalPlayer
 
 class MyTestCase(unittest.TestCase):
 
-    playerUser1 = PlayerUser("Bob", "player", 0, [(5, 6)])
-    playerUser2 = PlayerUser("Rob", "player", 1, [(7, 7)])
+    LocalPlayer1 = LocalPlayer("Bob", "player", 0, [(5, 6)])
+    LocalPlayer2 = LocalPlayer("Rob", "player", 1, [(7, 7)])
 
     def testRegisterUsers(self):
         example = [[1 for i in range(10)] for j in range(10)]
@@ -23,8 +24,8 @@ class MyTestCase(unittest.TestCase):
         floor = Floor([room, room2], [hall, zHall])
         game = GameState([floor])
         gm = GameManager(game)
-        gm.register_player_user(self.playerUser1)
-        gm.register_player_user(self.playerUser2)
+        gm.register_player_user(self.LocalPlayer1)
+        gm.register_player_user(self.LocalPlayer2)
         self.assertEqual(2, len(gm.ID_to_user_character))
 
     def testUpdateUsers(self):
@@ -36,15 +37,16 @@ class MyTestCase(unittest.TestCase):
         floor = Floor([room, room2], [hall, zHall])
         game = GameState([floor])
         gm = GameManager(game)
-        gm.register_player_user(self.playerUser1)
-        gm.register_player_user(self.playerUser2)
+        gm.register_player_user(self.LocalPlayer1)
+        gm.register_player_user(self.LocalPlayer2)
         gm.init_Rule_Checker()
         gm.take_turn(0)
-        p1State = self.playerUser1.gameState.grid
-        p2State = self.playerUser2.gameState.grid
-        p1pos = self.playerUser1.get_position()
-        p2pos = self.playerUser2.get_position()
+        p1State = self.LocalPlayer1.gameState.grid
+        p2State = self.LocalPlayer2.gameState.grid
+        p1pos = self.LocalPlayer1.get_position()
+        p2pos = self.LocalPlayer2.get_position()
         self.assertEqual(p1State, p2State)
         self.assertEqual((5, 6), p1pos)
         self.assertEqual((6, 5), p2pos)
+
 

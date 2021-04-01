@@ -6,18 +6,14 @@ import sys
 sys.path.append("../../src/")
 sys.path.append("../../Common")
 sys.path.append("../../src/Player")
-from Tile import WallTile, Tile, ExitTile
-from Room import Room
-from Floor import Floor
-from Hallway import Hallway
+from Structures.Tile import WallTile, ExitTile
+from Structures.Room import Room
+from Structures.Floor import Floor
+from Structures.Hallway import Hallway
 from GameState import GameState
 from GameManager import GameManager
-from AdversaryUser import AdversaryUser
-from Adversary import Adversary
-import random
-import pprint
-
-
+from AdversaryDriver import AdversaryUser
+from Monsters.Adversary import Adversary
 
 monster_types = ["zombie", "ghost"]
 name_list = ["George", "Michael", "Lucille", "Andy", "Tobias"]
@@ -28,8 +24,20 @@ def managerMaker(jsonStuff):
     natural = jsonStuff[2]
     ptList = jsonStuff[3]
     actorMoveLL = moves_parser(jsonStuff[4])
-    levelMade = floorMaker(floor)
+    levelMade, objects = floorMaker(floor)
     testState = GameState([levelMade])
+    for objecto in objects:
+        if objecto['type'] == 'exit':
+            exit_pos = objecto["position"]
+            testState.set_exit(translate_to_xy(exit_pos))
+        elif objecto['type'] == 'key':
+            key_pos = objecto["position"]
+            testState.add_item("key", translate_to_xy(key_pos))
+        else:
+            testState.add_item(objecto["type"], translate_to_xy(objecto["position"]))
+
+
+
     manager = GameManager(testState)
     users = []
     index = 0
@@ -69,7 +77,7 @@ def artificial_game_run(maxi, manager, users, level):
             for user2 in users:
                 if user2.position is not None:
                     JSON_response.append([user2.get_name(), player_update_gather(user2)])
-            if manager.game.is_over():
+            if manager.rule_checker.is_game_over():
                 return json.dumps([stateToJSON(manager.game, level), JSON_response])
             turn_index = turn_index + 1
         round_number = round_number + 1
@@ -178,16 +186,8 @@ def floorMaker(floor):
     hallways = list(map(lambda x: hallMaker(x), floor["hallways"]))
     new_floor = Floor(rooms, hallways)
     objects = floor["objects"]
-    for objecto in objects:
-        if objecto['type'] == 'exit':
-            exit_pos = objecto["position"]
-            new_floor.set_exit(translate_to_xy(exit_pos))
-        elif objecto['type'] == 'key':
-            key_pos = objecto["position"]
-            new_floor.place_item("key", translate_to_xy(key_pos))
-        else:
-            new_floor.place_item(objecto["type"], translate_to_xy(objecto["position"]))
-    return new_floor
+
+    return (new_floor, objects)
 
 
 def roomChecker(room, point):

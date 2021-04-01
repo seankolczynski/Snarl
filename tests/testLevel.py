@@ -4,11 +4,10 @@ import unittest
 import sys
 
 sys.path.append("../src/")
-from Tile import WallTile, Tile, ExitTile
-from Room import Room
-from Floor import Floor
-from Item import Item
-from Hallway import Hallway
+from Structures.Tile import WallTile, ExitTile
+from Structures.Room import Room
+from Structures.Floor import Floor
+from Structures.Hallway import Hallway
 
 
 def roomMaker(room):
