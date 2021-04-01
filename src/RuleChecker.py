@@ -1,6 +1,5 @@
-from queue import Queue
-
-from Tile import Tile, WallTile
+from Structures.Tile import WallTile
+from Status import Status
 
 
 class RuleChecker:
@@ -68,14 +67,23 @@ class RuleChecker:
         positions.append((startx, starty - 1))
         return positions
 
-    # uses internal gamestate to check if a game is over
-    # this condition is if all players have been defeated
-    # def isGameOver():
+    def character_alive(self, charact):
+        return charact.is_alive()
+
+
+    def getGameStatus(self):
+        return self.game.get_status()
+
+
 
     # int -> boolean
     # given a floor index checks if floor is completed or not
     # dungeon will look up floor and see if all players are at the exit or not\
-    # def IsLevelCompleted(self, index):
+    def isLevelWon(self):
+        return self.getGameStatus() == Status.WON
+
+    def is_game_over(self):
+        return self.getGameStatus() == Status.LOST or self.isLevelWon()
 
     # (Character, Tile) -> Int
     # returns the shortest path it can take given the current dungeon; returns - 1 if not possible

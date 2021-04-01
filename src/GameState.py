@@ -1,8 +1,5 @@
-import json
-
-from Floor import Floor
-import Character
-from Tile import Tile, WallTile
+from Structures.Tile import Tile, WallTile
+from Status import Status
 
 class GameState:
 
@@ -23,9 +20,10 @@ class GameState:
         self.adversaries = []
         self.start_player_position = self.current_floor.rooms[0].upperLeft
         self.start_adversary_position = self.current_floor.rooms[len(self.current_floor.rooms) - 1].upperLeft
-        self.unlocked = False
+        self.unlocked = True
         self.exited = []
         self.ejected = []
+        self.current_status = Status.INPROGRESS
 
     def add_player(self, player):
         if len(self.players) == 4:
@@ -55,7 +53,12 @@ class GameState:
             tile = self.current_floor.grid[offX][offY]
         adversary.move(tile)
 
+    """
+    If the item is a key, the level becomes locked
+    """
     def add_item(self, item, pos):
+        if item == "key" or item == "Key":
+            self.unlocked = False
         self.current_floor.place_item(item, pos)
 
     def move_character(self, character, pos):
@@ -64,11 +67,13 @@ class GameState:
             message = character.move(destination)
             if message is not None and "Ejected" in message['message']:
                 self.ejected.append(character)
+                self.update_status()
             # Checks if the player just moved to the exit
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
             if self.unlocked and destination == self.current_floor.get_exit():
                 self.exited.append(character)
+                self.update_status()
                 destination.remove_character()
                 return {"success": True, "message": "Exited"}
             return message
@@ -96,14 +101,28 @@ class GameState:
     def get_exit(self):
         return self.current_floor.get_exit()
 
+    def set_exit(self, pos):
+        self.current_floor.set_exit(pos)
+
     def get_adversaries(self):
         return self.adversaries
 
     def unlock(self):
         self.unlocked = True
 
-    def is_over(self):
-        return (len(self.exited) + len(self.ejected) == len(self.players))
+    def update_status(self):
+        dead = len(self.ejected)
+        escaped = len(self.exited)
+        total_players = len(self.players)
+        if dead == total_players:
+            self.current_status = Status.LOST
+        elif escaped + dead == total_players:
+            self.current_status = Status.WON
+        elif escaped > 0:
+            self.current_status = Status.INPROGRESSWON
+
+    def get_status(self):
+        return self.current_status
 
 
     def get_intermediate_state(self):

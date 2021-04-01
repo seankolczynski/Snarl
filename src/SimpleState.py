@@ -50,4 +50,12 @@ class SimpleState:
     def is_in_window(self, x, y):
         return (self.downRight[0] >= x >= self.upLeft[0]) and (self.downRight[1] >= y >= self.upLeft[1])
 
+    def get_tile_at(self, pos):
+        x, y = pos
+        if 0 <= x < len(self.grid) and 0 <= y < len(self.grid[0]):
+            return self.grid[x][y]
+        else:
+            raise ValueError("Index out of range")
+
+
 

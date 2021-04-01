@@ -1,8 +1,10 @@
 import GameState
 from Player import Player
-from Adversary import Adversary
+from Monsters.Adversary import Adversary
 from RuleChecker import RuleChecker
 from SimpleState import SimpleState
+from Status import Status
+from Enums.CharacterType import CharacterType
 
 """
 The cycle of the game manager:
@@ -22,6 +24,8 @@ class GameManager:
         self.game = initial_gamestate
         self.ID_to_user_character = {}
         self.rule_checker = RuleChecker(initial_gamestate)
+        self.current_status = Status.NOGAME
+        self.char_types = CharacterType()
 
     """
     Player -> Void
@@ -44,13 +48,13 @@ class GameManager:
     """
     def register_player_user(self, user):
         id = user.get_id()
-        type = user.get_type()
+        type = self.char_types.reverse_translate(self.char_types, user.get_type())
         if id in self.ID_to_user_character.keys():
             raise ConnectionError("User ID Taken")
         else:
             newly_created_character = self.create_new_character(type, id, user.get_name())
             self.ID_to_user_character[id] = (user, newly_created_character)
-            if type == "player":
+            if type == CharacterType.PLAYER:
                 self.add_player(newly_created_character)
             else:
                 self.add_adversary(newly_created_character)
@@ -61,11 +65,12 @@ class GameManager:
     def start_game(self):
         self.init_Rule_Checker()
         current_character_turn = 0
-        while True:
-            self.take_turn(current_character_turn)
+        while self.current_status == Status.INPROGRESS or self.current_status == Status.INPROGRESSWON:
+            if self.rule_checker.character_alive(self.ID_to_user_character[current_character_turn][1]):
+                self.take_turn(current_character_turn)
+                self.current_status = self.rule_checker.getGameStatus()
             current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
-            if self.game.is_over():
-                break
+
 
     """
     int -> JSON
@@ -119,6 +124,8 @@ class GameManager:
         for pair in self.ID_to_user_character:
             just_chars.append(self.ID_to_user_character[pair][1])
         self.rule_checker.add_characters(just_chars)
+
+
 
 
     """The game is over, and this method will reset to the initial gamestate
