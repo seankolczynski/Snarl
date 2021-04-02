@@ -1,5 +1,6 @@
 from Structures.Tile import Tile, WallTile
 from Status import Status
+from random import randrange
 
 class GameState:
 
@@ -24,34 +25,45 @@ class GameState:
         self.exited = []
         self.ejected = []
         self.current_status = Status.INPROGRESS
+    
+    def get_random_empty_tile(self):
+        current_floor = self.get_current_floor()
+        (row, cols) = current_floor.get_row_and_cols()
+        for i in range(9223372036854775807):
+            rando_tile_pos = (randrange(row-1), randrange(cols-1))
+            rando_tile = current_floor.get_tile_at(rando_tile_pos)
+            if not isinstance(rando_tile, WallTile) and rando_tile.get_character() == None and rando_tile.get_items() == []:
+                return rando_tile
+        raise ValueError("Level given does not support a character being placed")
 
     def add_player(self, player):
-        if len(self.players) == 4:
-            raise UserWarning("No more than 4 players can play at one time")
-        start = self.current_floor.rooms[0]
-        offX, offY = self.start_player_position
-        self.players.append(player)
-        tile = self.current_floor.grid[offX][offY]
-        while type(tile) != Tile or tile.character is not None or tile.room is not start:
-            offX = offX + 1
-            if offX > start.upperLeft[0] + start.width:
-                offX = start.upperLeft[0]
-                offY = offY + 1
-            tile = self.current_floor.grid[offX][offY]
-        self.move_character(player, tile.get_position())
+        # if len(self.players) == 4:
+        #     raise UserWarning("No more than 4 players can play at one time")
+        # start = self.current_floor.rooms[0]
+        # offX, offY = self.start_player_position
+        # self.players.append(player)
+        # tile = self.current_floor.grid[offX][offY]
+        # while type(tile) != Tile or tile.character is not None or tile.room is not start:
+        #     offX = offX + 1
+        #     if offX > start.upperLeft[0] + start.width:
+        #         offX = start.upperLeft[0]
+        #         offY = offY + 1
+        #     tile = self.current_floor.grid[offX][offY]
+        self.move_character(player, self.get_random_empty_tile())
 
     def add_adversary(self, adversary):
-        start = self.current_floor.rooms[len(self.current_floor.rooms) - 1]
-        offX, offY = self.start_adversary_position
-        self.adversaries.append(adversary)
-        tile = self.current_floor.grid[offX][offY]
-        while type(tile) != Tile or tile.character is not None or tile.room is not start:
-            offX = offX + 1
-            if offX > start.upperLeft[0] + start.width:
-                offX = start.upperLeft[0]
-                offY = offY + 1
-            tile = self.current_floor.grid[offX][offY]
-        adversary.move(tile)
+        # start = self.current_floor.rooms[len(self.current_floor.rooms) - 1]
+        # offX, offY = self.start_adversary_position
+        # self.adversaries.append(adversary)
+        # tile = self.current_floor.grid[offX][offY]
+        # while type(tile) != Tile or tile.character is not None or tile.room is not start:
+        #     offX = offX + 1
+        #     if offX > start.upperLeft[0] + start.width:
+        #         offX = start.upperLeft[0]
+        #         offY = offY + 1
+        #     tile = self.current_floor.grid[offX][offY]
+        # adversary.move(tile)
+        adversary.move(self.get_random_empty_tile())
 
     """
     If the item is a key, the level becomes locked
