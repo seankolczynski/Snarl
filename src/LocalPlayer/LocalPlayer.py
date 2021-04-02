@@ -1,11 +1,13 @@
 import sys
+
 sys.path.append('../Common')
 from Player import Player
 
+
 class LocalPlayer(Player):
 
-    def __init__(self, name, ctype, ID, moves, speed):
-        super().__init__(speed, ID, name)
+    def __init__(self, name, ctype, ID, moves):
+        super().__init__(2, ID, name)
         self.layout = None
         self.move_sequence = moves
         self.ID = ID
@@ -26,7 +28,7 @@ class LocalPlayer(Player):
     def request_move(self):
         if len(self.move_sequence) > 0:
             move = self.move_sequence.pop(0)
-            #if move is None:
+            # if move is None:
             #    return self.position
             return move
         else:
@@ -42,6 +44,7 @@ class LocalPlayer(Player):
         self.gameState.render_in_range(pos, 2)
 
     """For Tests"""
+
     def get_next_move(self):
         if len(self.move_sequence) > 0:
             move = self.move_sequence[0]
@@ -57,15 +60,8 @@ class LocalPlayer(Player):
     def get_position(self):
         return self.position
 
-
-
-
-
-
-
     # This is a stub for testing
     def set_moves(self, moves):
         pass
-
 
 # TODO Add Main Loop Logic

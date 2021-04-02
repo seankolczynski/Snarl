@@ -6,6 +6,7 @@ import unittest
 import GameState, Player
 from Structures import Room, Floor, Hallway
 from Monsters import Adversary
+from Structures.Tile import Tile, WallTile
 
 
 class MyTestCase(unittest.TestCase):
@@ -20,22 +21,22 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room, room2], [hall, zHall])
         newout = io.StringIO()
         expected = '+---------------------------------------------------------------+\n'\
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                                                   X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X                           X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                           X X                     X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X                                                   X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X                           X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                           X X                     X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
                    '+---------------------------------------------------------------+\n'
         sys.stdout = newout
         floor.draw()
@@ -78,22 +79,22 @@ class MyTestCase(unittest.TestCase):
         GameManager.add_player(player1)
         newout = io.StringIO()
         expected = '+---------------------------------------------------------------+\n'\
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X P                             A                   X │\n' \
-                   '│ X X X X X         e           X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X                           X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                           X X                     X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X P                             A                   X |\n' \
+                   '| X X X X X         e           X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X                           X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                           X X                     X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
                    '+---------------------------------------------------------------+\n'
         sys.stdout = newout
         floor.draw()
@@ -119,22 +120,22 @@ class MyTestCase(unittest.TestCase):
         GameManager.move_player_via_id(1, (5, 6))
         newout = io.StringIO()
         expected = '+---------------------------------------------------------------+\n'\
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                               A                   X │\n' \
-                   '│ X X X X X P       e           X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X                           X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                           X X                     X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X                               A                   X |\n' \
+                   '| X X X X X P       e           X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X                           X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                           X X                     X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
                    '+---------------------------------------------------------------+\n'
         sys.stdout = newout
         floor.draw()
@@ -166,40 +167,40 @@ class MyTestCase(unittest.TestCase):
         GameManager.add_item(item, (5, 6))
         # Draw initial
         expected = '+---------------------------------------------------------------+\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X P                             A                   X │\n' \
-                   '│ X X X X X p       e           X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X                           X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                           X X                     X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X P                             A                   X |\n' \
+                   '| X X X X X p       e           X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X                           X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                           X X                     X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
                    '+---------------------------------------------------------------+\n' \
                    '+---------------------------------------------------------------+\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
-                   '│ X X X X X                               A                   X │\n' \
-                   '│ X X X X X         e P         X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X X X X                     X │\n' \
-                   '│ X X X X X                     X X                           X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                     X X   X X                     X │\n' \
-                   '│ X X X X X                           X X                     X │\n' \
-                   '│ X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X │\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
+                   '| X X X X X                               A                   X |\n' \
+                   '| X X X X X         e P         X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X X X X                     X |\n' \
+                   '| X X X X X                     X X                           X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                     X X   X X                     X |\n' \
+                   '| X X X X X                           X X                     X |\n' \
+                   '| X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X X |\n' \
                    '+---------------------------------------------------------------+\n'
         newout = io.StringIO()
         sys.stdout = newout

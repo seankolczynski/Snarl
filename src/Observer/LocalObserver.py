@@ -1,16 +1,13 @@
 import sys
-sys.path.append('../Common')
-import Common.Observer
+
+from Common.Observer import Observer
 
 
 class LocalObserver(Observer):
     def __init__(self):
         self.gameState = None
 
-
-    def update_gamestate(self, gs, pos):
+    def update_gamestate(self, gs):
         self.gameState = gs
-        self.render(pos)
+        self.gameState.render()
 
-    def render(self, pos):
-        self.gameState.render_in_range(pos, 2)

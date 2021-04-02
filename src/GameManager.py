@@ -5,6 +5,7 @@ from RuleChecker import RuleChecker
 from SimpleState import SimpleState
 from Status import Status
 from Enums.CharacterType import CharacterType
+import Enums.CharacterType as CT
 
 """
 The cycle of the game manager:
@@ -25,7 +26,7 @@ class GameManager:
         self.ID_to_user_character = {}
         self.rule_checker = RuleChecker(initial_gamestate)
         self.current_status = Status.NOGAME
-        self.char_types = CharacterType()
+        self.observers = []
 
     """
     Player -> Void
@@ -48,7 +49,7 @@ class GameManager:
     """
     def register_player_user(self, user):
         id = user.get_id()
-        type = self.char_types.reverse_translate(self.char_types, user.get_type())
+        type = CT.reverse_translate(user.get_type())
         if id in self.ID_to_user_character.keys():
             raise ConnectionError("User ID Taken")
         else:
@@ -58,6 +59,9 @@ class GameManager:
                 self.add_player(newly_created_character)
             else:
                 self.add_adversary(newly_created_character)
+
+    def register_observer(self, observer):
+        self.observers.append(observer)
 
     """
     Initialize the game and maintains the loop that keeps it running
@@ -105,6 +109,8 @@ class GameManager:
         for user in self.ID_to_user_character.keys():
             userPos = self.ID_to_user_character[user][1].get_char_position()
             self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
+        for observer in self.observers:
+            observer.update_state(SimpleState(self.game.get_current_floor().grid))
 
     """
     String, int, String -> Character
@@ -124,8 +130,6 @@ class GameManager:
         for pair in self.ID_to_user_character:
             just_chars.append(self.ID_to_user_character[pair][1])
         self.rule_checker.add_characters(just_chars)
-
-
 
 
     """The game is over, and this method will reset to the initial gamestate

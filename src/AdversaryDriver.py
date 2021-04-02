@@ -67,7 +67,6 @@ class AdversaryDriver:
             self.move_sequence = new_options
 
 
-
     """For Tests"""
 
     def get_next_move(self):

@@ -25,7 +25,7 @@ class SimpleState:
             image += "--"
         image += "-+\n"
         for y in range(len(self.grid[0])):
-            image += "│ "
+            image += "| "
             count = 0
             for x in range(len(self.grid)):
                 if observer or self.is_in_window(x, y, downRight, upLeft):
@@ -35,7 +35,7 @@ class SimpleState:
                 else:
                     image += " "
                 image += " "
-            image += "│\n"
+            image += "|\n"
         image += "+"
         for x in range(len(self.grid)):
             image += "--"

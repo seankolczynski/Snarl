@@ -1,8 +1,8 @@
 
 import random as r
-from Tile import Tile, WallTile, ExitTile
+from Structures.Tile import Tile, WallTile, ExitTile
 from Structures.Room import Room
-from Hallway import Hallway
+from Structures.Hallway import Hallway
 
 """
 A floor is a data representation of the current floor being played on by the users. It maintains the entire layout of 
@@ -53,11 +53,11 @@ class Floor:
             image += "--"
         image += "-+\n"
         for y in range(self.rows):
-            image += "│ "
+            image += "| "
             for x in range(self.cols):
                 image += self.grid[x][y].draw()
                 image += " "
-            image += "│\n"
+            image += "|\n"
         image += "+"
         for x in range(self.cols):
             image += "--"

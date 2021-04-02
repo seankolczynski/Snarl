@@ -1,5 +1,5 @@
 """Describes a layout of tiles. See examples in LevelTest.py"""
-from Tile import WallTile, Tile
+from Structures.Tile import WallTile, Tile
 
 class Room:
 
