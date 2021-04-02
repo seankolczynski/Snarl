@@ -4,9 +4,11 @@ from Monsters.Adversary import Adversary
 from RuleChecker import RuleChecker
 from SimpleState import SimpleState
 from Status import Status
+import Monsters.Zombie
+import Monsters.Ghost
 from Enums.CharacterType import CharacterType
 import Enums.CharacterType as CT
-
+import math
 """
 The cycle of the game manager:
 - Designate whose turn it is
@@ -43,23 +45,26 @@ class GameManager:
         self.game.add_adversary(adversary)
 
     def move_to_new_level(self):
-        self.current_floor_index += 1
-        self.adversaries = []
-        for player in self.players:
-            self.move_character(player, self.get_random_empty_tile()) 
-        num_zombies =  math.floor(self.current_floor_index / 2) + 1
-        num_ghosts = math.floor((self.current_floor_index  - 1) / 2)
-        a_uuid = 100
-        n = 0
+        self.game.current_floor_index += 1
+        # self.adversaries = []
+        for player in self.game.players:
+            self.game.move_character(player, self.game.get_random_empty_tile()) 
+        (already_z, already_g) = self.game.get_count_adversary()
+        num_zombies =  math.floor(self.game.current_floor_index / 2) + 1 - already_z
+        num_ghosts = math.floor((self.game.current_floor_index  - 1) / 2) - already_g
+        a_uuid = len(self.ID_to_char.keys())
+        n = already_g + 1
         for i in range(num_ghosts):
-            self.add_adversary(Ghost(1, a_uuid, str(n) + " Ghost", CharacterType.Ghost))
+            self.register_player_user(Ghost(1, a_uuid, str(n) + " Ghost", CT.Ghost))
             a_uuid += 1
             n += 1 
-        n = 0
+        n = already_z + 1
         for i in range(num_ghosts):
-            self.add_adversary(Zombie(1, a_uuid, str(n) + " Zombie", CharacterType.Zombie))
+            self.register_player_user(Zombie(1, a_uuid, str(n) + " Zombie", CT.Zombie))
             a_uuid += 1
             n += 1 
+        for adv in self.game.get_adversaries():
+            adv.move(self.game.get_random_empty_tile())
     """
     User -> Void
     Registers the given User into the game.
