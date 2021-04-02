@@ -1,5 +1,5 @@
 import GameState
-from Beings.Hero import Player
+from Beings.Hero import Hero
 from RuleChecker import RuleChecker
 from SimpleState import SimpleState
 from Enums.Status import Status
@@ -8,6 +8,7 @@ from Beings.Ghost import Ghost
 from Enums.CharacterType import CharacterType
 import Enums.CharacterType as CT
 import json
+from AdversaryDriver import AdversaryDriver
 import math
 """
 The cycle of the game manager:
@@ -55,16 +56,17 @@ class GameManager:
         a_uuid = len(self.ID_to_char.keys())
         n = already_g + 1
         for i in range(num_ghosts):
-            self.register_player_user(Ghost(a_uuid, str(n) + " Ghost"))
+            self.register_player_user(AdversaryDriver(a_uuid, CharacterType.GHOST, str(n) + " Ghost"))
             a_uuid += 1
             n += 1 
         n = already_z + 1
         for i in range(num_zombies):
-            self.register_player_user(Zombie() a_uuid, str(n) + " Zombie"))
+            self.register_player_user(AdversaryDriver(a_uuid, CharacterType.ZOMBIE, str(n) + " Zombie"))
             a_uuid += 1
             n += 1 
         for adv in self.game.get_adversaries():
             adv.move(self.game.get_random_empty_tile())
+
     """
     User -> Void
     Registers the given User into the game.
@@ -93,15 +95,18 @@ class GameManager:
         self.init_Rule_Checker()
         numLevels = self.game.get_num_levels()
         current_level = 1
-        while current_level <= numLevels:
+        while current_level <= numLevels and self.current_status != Status.LOST:
             self.run_level()
             if self.current_status == Status.WON:
                 self.move_to_new_level()
                 current_level = current_level + 1
                 self.update_gamestate()
-            if self.current_status == Status.LOST:
-                return self.player_message("Lost on level " + current_level)
-        return self.player_message("You won!")
+
+        if self.current_status == Status.WON:
+            self.player_message("You won!")
+        elif self.current_status == Status.LOST:
+            self.player_message("Lost on level " + current_level)
+        self.end_game_stats()
 
 
     def run_level(self):
@@ -111,6 +116,17 @@ class GameManager:
                 self.take_turn(current_character_turn)
                 self.current_status = self.rule_checker.getGameStatus()
             current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
+
+    def end_game_stats(self):
+        key_dict, exit_dict = self.game.get_stats()
+        final_stats = {}
+        for user in self.ID_to_user_character:
+            if user.get_type == CharacterType.PLAYER:
+                final_stats[user] = (0, 0)
+
+
+
+
 
     """
     int -> JSON
@@ -164,7 +180,10 @@ class GameManager:
         for message in ListOfMessages:
             if "key" in message or "Key" in message:
                 self.player_message("Player " + player_name + " found the key")
-
+            elif "Exited" in message:
+                self.player_message("Player  " + player_name + " exited")
+            elif "Ejected" in message:
+                self.player_message("Player  " + player_name + " was expelled")
 
 
     """
@@ -173,7 +192,7 @@ class GameManager:
     """
     def create_new_character(self, type, id, name):
         if type == CharacterType.PLAYER:
-            return Player(2, id, name)
+            return Hero(2, id, name)
         elif type == CharacterType.ZOMBIE:
             return Zombie(id, name)
         elif type == CharacterType.GHOST:

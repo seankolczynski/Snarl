@@ -1,8 +1,9 @@
 import Enums.CharacterType as CT
 from Enums.CharacterType import CharacterType
-from Beings.Hero import Player
-from Monsters.Zombie import Zombie
-from Monsters.Ghost import Ghost
+from Beings.Hero import Hero
+from Beings.Zombie import Zombie
+from Beings.Ghost import Ghost
+from Common.Player import Player
 
 
 def manhattan_distance(pos1, pos2):
@@ -14,19 +15,19 @@ def manhattan_distance(pos1, pos2):
 def make_of_type(name, ctype, ID):
     kind = CT.reverse_translate(ctype)
     if kind == "Player":
-        return Player(2, ID, name)
+        return Hero(2, ID, name)
     elif kind == CharacterType.ZOMBIE:
-        return Zombie(1, ID, name, kind)
+        return Zombie(ID, name)
     elif kind == CharacterType.GHOST:
-        return Ghost(1, ID, name, kind)
+        return Ghost(ID, name)
 
 
-class AdversaryDriver:
+class AdversaryDriver(Player):
 
-    def __init__(self, name, ctype, ID, moves):
+    def __init__(self, name, ctype, ID):
         self.adversary = make_of_type(name, ctype, ID)
         self.layout = None
-        self.move_sequence = moves
+        self.move_sequence = []
         self.gameState = None
         self.position = None
         self.vision = self.adversary.FOV_radius
