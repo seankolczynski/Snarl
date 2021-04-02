@@ -42,6 +42,24 @@ class GameManager:
     def add_adversary(self, adversary):
         self.game.add_adversary(adversary)
 
+    def move_to_new_level(self):
+        self.current_floor_index += 1
+        self.adversaries = []
+        for player in self.players:
+            self.move_character(player, self.get_random_empty_tile()) 
+        num_zombies =  math.floor(self.current_floor_index / 2) + 1
+        num_ghosts = math.floor((self.current_floor_index  - 1) / 2)
+        a_uuid = 100
+        n = 0
+        for i in range(num_ghosts):
+            self.add_adversary(Ghost(1, a_uuid, str(n) + " Ghost", CharacterType.Ghost))
+            a_uuid += 1
+            n += 1 
+        n = 0
+        for i in range(num_ghosts):
+            self.add_adversary(Zombie(1, a_uuid, str(n) + " Zombie", CharacterType.Zombie))
+            a_uuid += 1
+            n += 1 
     """
     User -> Void
     Registers the given User into the game.
