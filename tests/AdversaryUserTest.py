@@ -3,7 +3,7 @@ import unittest
 
 sys.path.append("../src/")
 
-from Player import Player
+from Beings.Hero import Player
 from Structures.Room import Room
 from Structures.Hallway import Hallway
 from Structures.Tile import Tile, WallTile

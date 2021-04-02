@@ -1,7 +1,6 @@
 from Item import Item
-from Enums.CharacterType import CharacterType
 import Enums.CharacterType as CT
-from Player import Player
+from Beings.Hero import Player
 
 
 class Tile(object):

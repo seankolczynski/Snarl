@@ -3,10 +3,10 @@ import sys
 
 sys.path.append("../src/")
 import unittest
-import GameState, Player
+import GameState
+from Beings import Hero
 from Structures import Room, Floor, Hallway
 from Monsters import Adversary
-from Structures.Tile import Tile, WallTile
 
 
 class MyTestCase(unittest.TestCase):
@@ -73,7 +73,7 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room, room2], [hall, zHall])
         floor.set_exit((9, 6))
         GameManager = GameState.GameState([floor])
-        player1 = Player.Player(2, 1, "Jeff")
+        player1 = Hero.Player(2, 1, "Jeff")
         adversary1 = Adversary.Adversary(2, 2, "Zomb", "zombie")
         GameManager.add_adversary(adversary1)
         GameManager.add_player(player1)
@@ -111,7 +111,7 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room, room2], [hall, zHall])
         floor.set_exit((9, 6))
         GameManager = GameState.GameState([floor])
-        player1 = Player.Player(2, 1, "Mike")
+        player1 = Hero.Player(2, 1, "Mike")
         item = "Potion"
         adversary1 = Adversary.Adversary(2, 2, "Bill", "zombie")
         GameManager.add_adversary(adversary1)
@@ -159,7 +159,7 @@ class MyTestCase(unittest.TestCase):
         floor = Floor.Floor([room, room2], [hall, zHall])
         floor.set_exit((9, 6))
         GameManager = GameState.GameState([floor])
-        player1 = Player.Player(2, 1, "Stan")
+        player1 = Hero.Player(2, 1, "Stan")
         item = "Potion"
         adversary1 = Adversary.Adversary(2, 2, "Jeff", "zombie")
         GameManager.add_adversary(adversary1)

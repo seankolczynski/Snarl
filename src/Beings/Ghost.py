@@ -6,8 +6,8 @@ import random
 
 class Ghost(Adversary):
 
-    def __init__(self, speed, id, name, ctype):
-        super().__init__(speed, id, name, ctype, 3)
+    def __init__(self, id, name):
+        super().__init__(1, id, name, CharacterType.GHOST, 3)
 
 
     def set_sights(self, tile):

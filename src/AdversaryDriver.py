@@ -1,7 +1,6 @@
 import Enums.CharacterType as CT
 from Enums.CharacterType import CharacterType
-import random
-from Player import Player
+from Beings.Hero import Player
 from Monsters.Zombie import Zombie
 from Monsters.Ghost import Ghost
 

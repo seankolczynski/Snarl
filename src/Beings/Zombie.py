@@ -2,12 +2,13 @@ import random
 
 from Monsters.Adversary import Adversary
 from Structures.Tile import Tile, ExitTile
+from Enums.CharacterType import CharacterType
 
 
 class Zombie(Adversary):
 
-    def __init__(self, speed, id, name, ctype):
-        super().__init__(speed, id, name, ctype, 3)
+    def __init__(self, id, name):
+        super().__init__(1, id, name, CharacterType.ZOMBIE, 3)
 
     def default_moves(self, position, map):
         default = []

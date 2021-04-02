@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append('../Common')
-from Player import Player
+from Beings.Hero import Player
 
 
 class LocalPlayer(Player):

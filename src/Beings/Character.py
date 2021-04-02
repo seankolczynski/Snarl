@@ -1,3 +1,4 @@
+from Enums.CharacterType import  CharacterType
 
 class Character:
 
@@ -21,7 +22,7 @@ class Character:
             self.current_tile = tile
             message = tile.add_character(self)
             return message
-        elif occupant.get_ctype() != "player":
+        elif occupant.get_ctype() != CharacterType.PLAYER:
             if self.current_tile is not None:
                 self.current_tile.remove_character()
             self.alive = False

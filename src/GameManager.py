@@ -1,6 +1,5 @@
 import GameState
-from Player import Player
-from Monsters.Adversary import Adversary
+from Beings.Hero import Player
 from RuleChecker import RuleChecker
 from SimpleState import SimpleState
 from Enums.Status import Status
@@ -129,7 +128,7 @@ class GameManager:
                 return "Done"
             if self.rule_checker.validateMove(turn_index, move):
                 break
-            responses.append((move, "Invalid"))
+            responses.append((move, {"success": False, "message": "Invalid"}))
         if move is None:
             responses.append((move, {"success": True, "message": "OK"}))
             return responses
@@ -153,8 +152,11 @@ class GameManager:
             user.transmit_message(message)
 
     def series_of_messages(self, ListOfMessages):
+        player_name = ""
         for message in ListOfMessages:
-            return
+            if "key" in message or "Key" in message:
+                self.player_message("Player " + player_name + " found the key")
+
 
 
     """
@@ -162,10 +164,12 @@ class GameManager:
     Associates player with an ID, returns a new player or new adversary
     """
     def create_new_character(self, type, id, name):
-        if type == "player":
+        if type == CharacterType.PLAYER:
             return Player(2, id, name)
-        else:
-            return Adversary(1, id, type, name)
+        elif type == CharacterType.ZOMBIE:
+            return Zombie(id, name)
+        elif type == CharacterType.GHOST:
+            return Ghost(id, name)
 
     """
     Genereates a new Rule Checker based on the current gamestate

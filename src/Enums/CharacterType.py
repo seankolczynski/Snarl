@@ -1,6 +1,5 @@
-import sys
+
 from enum import Enum
-sys.path.append("../src/")
 
 class CharacterType(Enum):
     PLAYER = "Player"

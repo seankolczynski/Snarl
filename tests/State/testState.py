@@ -2,14 +2,12 @@ import json
 import sys
 import unittest
 
-from Tile import WallTile, Tile, ExitTile
+from Tile import WallTile, ExitTile
 from Room import Room
 from Floor import Floor
-from Item import Item
 from Hallway import Hallway
 from GameState import GameState
-from Character import Character
-from Player import Player
+from Beings.Hero import Player
 from Adversary import Adversary
 
 sys.path.append("../src/")
