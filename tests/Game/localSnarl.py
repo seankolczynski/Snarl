@@ -1,5 +1,28 @@
 import argparse
-import PlayerUser
+import sys
+from os import system, name
+
+sys.path.append("../../src/")
+sys.path.append("../../src/Common")
+sys.path.append("../../src/Enums")
+sys.path.append("../../src/Monsters")
+sys.path.append("../../src/Observer")
+sys.path.append("../../src/Player")
+sys.path.append("../../src/Structures")
+
+
+
+# define our clear function
+def clear():
+  
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+  
+    # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
 
@@ -17,6 +40,7 @@ if __name__ == "__main__":
     list_of_players = []
     for i in range(0, args.players):
         char_name = input("enter a name for your character")
-        new_player = PlayerUser(char_name, "player, uuid, [])
+        new_player = LocalPlayer(char_name, "player", uuid, [])
         list_of_players.append(new_player)
+
     
