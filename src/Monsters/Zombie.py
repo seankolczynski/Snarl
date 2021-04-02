@@ -1,18 +1,25 @@
+import random
+
 from Monsters.Adversary import Adversary
 from Structures.Tile import Tile, ExitTile
 
 
 class Zombie(Adversary):
 
+    def __init__(self, speed, id, name, ctype):
+        super().__init__(speed, id, name, ctype, 3)
+
     def default_moves(self, position, map):
         default = []
         immediate_vicinity = self.get_around(position)
         for spot in immediate_vicinity:
             target = map.get_tile_at(spot)
-            if (isinstance(target, Tile) or isinstance(target, ExitTile)) and not target.get_room().door_at(
-                    target) and not isinstance(target.get_character(), Adversary):
-                default.append(target)
+            if self.fit_the_bill(target):
+                default.append(spot)
+        random.shuffle(default)
         default.append(position)
         return default
 
+    def fit_the_bill(self, target_tile):
+        return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) and not target_tile.is_door() and not isinstance(target_tile.get_character(), Adversary)
 

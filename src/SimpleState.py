@@ -1,28 +1,24 @@
 class SimpleState:
     def __init__(self, grid):
         self.grid = grid
-        self.layout = []
-
 
     def render(self):
         return self.render_in_range((0, 0), -1)
 
     def render_in_range(self, position, FOV):
-        if position is None:
-            return self.layout
-        self.layout = []
+        upLeft = (0,0)
+        downRight = (len(self.grid), len(self.grid[0]))
+        layout = []
         observer = True
         if (FOV > 0):
             observer = False
-            self.upLeft = ((position[0] - FOV), (position[1] - FOV))
-            self.upRight = ((position[0] + FOV), (position[1] - FOV))
-            self.downLeft = ((position[0] - FOV), (position[1] + FOV))
-            self.downRight = ((position[0] + FOV), (position[1] + FOV))
+            upLeft = ((position[0] - FOV), (position[1] - FOV))
+            downRight = ((position[0] + FOV), (position[1] + FOV))
             for ind in range((FOV * 2) + 1):
-                self.layout.append([])
+                layout.append([])
         else:
             for inde in range(len(self.grid)):
-                self.layout.append([])
+                layout.append([])
         image = ""
         image += "+"
         for x in range(len(self.grid)):
@@ -32,8 +28,8 @@ class SimpleState:
             image += "│ "
             count = 0
             for x in range(len(self.grid)):
-                if (observer or self.is_in_window(x, y)):
-                    self.layout[count].append(self.grid[x][y])
+                if observer or self.is_in_window(x, y, downRight, upLeft):
+                    layout[count].append(self.grid[x][y])
                     count = count + 1
                     image += self.grid[x][y].draw()
                 else:
@@ -45,17 +41,17 @@ class SimpleState:
             image += "--"
         image += "-+"
         #print(image)
-        return self.layout
+        return layout
 
-    def is_in_window(self, x, y):
-        return (self.downRight[0] >= x >= self.upLeft[0]) and (self.downRight[1] >= y >= self.upLeft[1])
+    def is_in_window(self, x, y, downRight, upLeft):
+        return (downRight[0] >= x >= upLeft[0]) and (downRight[1] >= y >= upLeft[1])
 
     def get_tile_at(self, pos):
         x, y = pos
         if 0 <= x < len(self.grid) and 0 <= y < len(self.grid[0]):
             return self.grid[x][y]
         else:
-            raise ValueError("Index out of range")
+            return None
 
 
 

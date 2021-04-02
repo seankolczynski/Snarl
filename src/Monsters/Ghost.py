@@ -1,25 +1,26 @@
 from Monsters.Adversary import Adversary
 from Enums.CharacterType import CharacterType
-from Structures.Tile import WallTile
+from Structures.Tile import WallTile, Tile, ExitTile
+import random
+
 
 class Ghost(Adversary):
 
-    def default_moves(self, position, map):
-        default = []
-        immediate_vicinity = self.get_around(position)
-        for spot in immediate_vicinity:
-            target = map.get_tile_at(spot)
+    def __init__(self, speed, id, name, ctype):
+        super().__init__(speed, id, name, ctype, 3)
 
 
     def set_sights(self, tile):
+        if tile is None:
+            return False
         chara = tile.get_character()
         return (chara is not None and chara.get_ctype() == CharacterType.PLAYER) or isinstance(tile, WallTile)
 
-    def prioritize(self, stuff, lay):
+    def prioritize(self, positions, lay):
         play_square = []
         wall_square = []
-        for position in stuff:
-            tile = lay[position[0]][position[1]]
+        for position in positions:
+            tile = lay.get_tile_at(position)
             if tile.get_character() is not None and tile.get_character().get_ctype() == CharacterType.PLAYER:
                 play_square.append(position)
             elif isinstance(tile, WallTile):
@@ -31,6 +32,5 @@ class Ghost(Adversary):
             ordered.append(wall)
         return ordered
 
-
-
-
+    def fit_the_bill(self, target_tile):
+        return target_tile is not None and not isinstance(target_tile.get_character(), Adversary)

@@ -1,7 +1,7 @@
 
 class Character:
 
-    def __init__(self, speed, id, name, ctype):
+    def __init__(self, speed, id, name, ctype, FOV_radius):
         self.speed = speed
         self.ctype = ctype
         self.name = name
@@ -10,6 +10,7 @@ class Character:
         self.exited = False
         self.id = id
         self.alive = True
+        self.FOV_radius = FOV_radius
 
 
     def move(self, tile):

@@ -1,13 +1,15 @@
 from abc import ABC
 import random
+import Enums.CharacterType as CT
 from Character import Character
 from Enums.CharacterType import CharacterType
+from Structures.Tile import Tile, WallTile, ExitTile
 
 
 class Adversary(Character):
 
-    def __init__(self, speed, id, name, ctype):
-        super().__init__(speed, id, name, ctype)
+    def __init__(self, speed, id, name, ctype, FOV_radius):
+        super().__init__(speed, id, name, ctype, FOV_radius)
         self.ID = id
         self.type = ctype
         self.name = name
@@ -20,6 +22,37 @@ class Adversary(Character):
 
     def get_name(self):
         return self.name
+
+    def default_moves(self, position, map):
+        default = []
+        immediate_vicinity = self.get_around(position)
+        for spot in immediate_vicinity:
+            target = map.get_tile_at(spot)
+            if self.fit_the_bill(target):
+                default.append(spot)
+        random.shuffle(default)
+        default.append(position)
+        return default
+
+    def get_around(self, pos):
+        startx, starty = pos
+        positions = []
+        positions.append((startx + 1, starty))
+        positions.append((startx, starty + 1))
+        positions.append((startx - 1, starty))
+        positions.append((startx, starty - 1))
+        return positions
+
+    def set_sights(self, tile):
+        chara = tile.get_character()
+        return chara is not None and chara.get_ctype() == CharacterType.PLAYER
+
+    def prioritize(self, stuff, lay):
+        return stuff
+
+    def fit_the_bill(self, target_tile):
+        return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) and not isinstance(
+            target_tile.get_character(), Adversary)
 
 
 
