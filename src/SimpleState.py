@@ -40,7 +40,7 @@ class SimpleState:
         for x in range(len(self.grid)):
             image += "--"
         image += "-+"
-        #print(image)
+        print(image)
         return layout
 
     def is_in_window(self, x, y, downRight, upLeft):

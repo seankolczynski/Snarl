@@ -36,7 +36,7 @@ class GameState:
         for i in range(9223372036854775807):
             rando_tile_pos = (randrange(row-1), randrange(cols-1))
             rando_tile = current_floor.get_tile_at(rando_tile_pos)
-            if not isinstance(rando_tile, WallTile) and rando_tile.get_character() == None and rando_tile.get_items() == []:
+            if not isinstance(rando_tile, WallTile) and rando_tile.get_character() == None and rando_tile.get_all_items() == []:
                 return rando_tile
         raise ValueError("Level given does not support a character being placed")
     def get_count_adversary(self):
@@ -64,7 +64,8 @@ class GameState:
         #         offX = start.upperLeft[0]
         #         offY = offY + 1
         #     tile = self.current_floor.grid[offX][offY]
-        self.move_character(player, self.get_random_empty_tile())
+        self.players.append(player)
+        self.move_character(player, self.get_random_empty_tile().get_position())
         self.character_to_exits[player] = 0
         self.character_to_keys[player] = 0
 
@@ -80,7 +81,8 @@ class GameState:
         #         offY = offY + 1
         #     tile = self.current_floor.grid[offX][offY]
         # adversary.move(tile)
-        adversary.move(self.get_random_empty_tile())
+        self.adversaries.append(adversary)
+        self.move_character(adversary, self.get_random_empty_tile().get_position())
 
     """
     If the item is a key, the level becomes locked
@@ -100,7 +102,7 @@ class GameState:
             # Checks if the player just moved to the exit
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
-            if "Key" in message:
+            if message is not None and "Key" in message:
                 self.character_to_keys[character] = self.character_to_keys[character] + 1
             if self.unlocked and destination == self.current_floor.get_exit():
                 self.exited.append(character)

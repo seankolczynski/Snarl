@@ -8,7 +8,7 @@ from GameState import GameState
 from Structures.Hallway import Hallway
 from Structures.Room import Room
 from Structures.Floor import Floor
-from Beings.Hero import LocalPlayer
+from LocalPlayer.LocalPlayer import LocalPlayer
 
 class MyTestCase(unittest.TestCase):
 

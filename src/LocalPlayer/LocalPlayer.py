@@ -6,9 +6,9 @@ from Common.Player import Player
 
 class LocalPlayer(Player):
 
-    def __init__(self, name, ctype, ID, moves):
+    def __init__(self, name, ctype, ID):
         self.layout = None
-        self.move_sequence = moves
+        self.move_sequence = []
         self.ID = ID
         self.type = ctype
         self.gameState = None
@@ -25,7 +25,16 @@ class LocalPlayer(Player):
         return self.name
 
     def request_move(self):
-        move = input("Make a move:")
+        if len(self.move_sequence) > 0:
+            move = self.move_sequence.pop(0)
+            # if move is None:
+            # if move is None:
+            #    return self.position
+            return move
+        else:
+            raise ValueError("Out of moves")
+
+        #move = input("Make a move:")
 
 
     def update_state(self, gs, pos):
@@ -35,7 +44,7 @@ class LocalPlayer(Player):
             self.render(pos)
 
     def render(self, pos):
-        self.gameState.render_in_range(pos, 2)
+        return self.gameState.render_in_range(pos, 2)
 
     """For Tests"""
 

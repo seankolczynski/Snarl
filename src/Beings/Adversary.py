@@ -1,9 +1,7 @@
-from abc import ABC
 import random
-import Enums.CharacterType as CT
-from Character import Character
+from Beings.Character import Character
 from Enums.CharacterType import CharacterType
-from Structures.Tile import Tile, WallTile, ExitTile
+from Structures.Tile import Tile, ExitTile
 
 
 class Adversary(Character):
@@ -51,8 +49,8 @@ class Adversary(Character):
         return stuff
 
     def fit_the_bill(self, target_tile):
-        return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) and not isinstance(
-            target_tile.get_character(), Adversary)
+        return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) \
+               and not isinstance(target_tile.get_character(), Adversary)
 
 
 

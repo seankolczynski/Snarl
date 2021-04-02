@@ -54,7 +54,6 @@ class AdversaryDriver(Player):
             raise ValueError("Out of moves")
 
     """Called by GameManager, provides our position and the simple gamestate. If position changes (aka we have moved), we update our current surroundings"""
-
     def update_state(self, gs, pos):
         self.gameState = gs
         if pos != self.position:

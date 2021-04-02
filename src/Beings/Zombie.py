@@ -1,6 +1,6 @@
 import random
 
-from Monsters.Adversary import Adversary
+from Beings.Adversary import Adversary
 from Structures.Tile import Tile, ExitTile
 from Enums.CharacterType import CharacterType
 

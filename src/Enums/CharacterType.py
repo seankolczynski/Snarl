@@ -2,9 +2,9 @@
 from enum import Enum
 
 class CharacterType(Enum):
-    PLAYER = "Player"
-    ZOMBIE = "Zombie"
-    GHOST = "Ghost"
+    PLAYER = "player"
+    ZOMBIE = "zombie"
+    GHOST = "ghost"
 
 
 def reverse_translate(ctype):
@@ -18,9 +18,12 @@ def reverse_translate(ctype):
 def draw(ctype):
     if ctype == CharacterType.PLAYER:
         return "P"
-    if ctype == CharacterType.ZOMBIE:
+    elif ctype == CharacterType.ZOMBIE:
         return "Z"
-    if ctype == CharacterType.GHOST:
+    elif ctype == CharacterType.GHOST:
         return "G"
+    else:
+        return "A"
+
 
 

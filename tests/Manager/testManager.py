@@ -9,8 +9,8 @@ from Structures.Floor import Floor
 from Structures.Hallway import Hallway
 from GameState import GameState
 from GameManager import GameManager
-from Monsters.Adversary import Adversary
-from LocalPlayer import LocalPlayer
+from Beings.Adversary import Adversary
+from LocalPlayer.LocalPlayer import LocalPlayer
 
 
 
@@ -29,13 +29,14 @@ def managerMaker(jsonStuff):
     users = []
     index = 0
     for name in names:
-        newUser = LocalPlayer(name, "player", index, actorMoveLL[index])
+        newUser = LocalPlayer(name, "player", index)
+        newUser.set_moves(actorMoveLL[index])
         manager.register_player_user(newUser)
         testState.move_player_via_id(index, translate_to_xy(ptList[index]))
         users.append(newUser)
         index = index + 1
     while index < len(ptList):
-        adverse = Adversary(3, index, name_list[index], monster_types[index - 2])
+        adverse = Adversary(3, index, name_list[index], monster_types[index - 2], 3)
         manager.add_adversary(adverse)
         testState.move_character(adverse, translate_to_xy(ptList[index]))
         index = index + 1
@@ -324,6 +325,7 @@ class testSuite(unittest.TestCase):
         # print(artificial_game_run(maxi, manager, users, info[1]))
         self.assertEqual(expected, artificial_game_run(maxi, manager, users, info[1]))
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
     def test4(self):
         self.maxDiff = None
         input_string_f = open("tests/4-in.json")

@@ -1,7 +1,7 @@
 from GameManager import GameManager
 from GameState import GameState
 from AdversaryDriver import AdversaryDriver
-from Monsters.Adversary import Adversary
+from Beings.Adversary import Adversary
 from Structures.Floor import Floor
 from Structures.Room import Room
 from Structures.Tile import Tile, WallTile, ExitTile
@@ -24,7 +24,8 @@ def managerMaker(jsonStuff):
     users = []
     index = 0
     for name in names:
-        newUser = AdversaryDriver(name, "player", index, actorMoveLL[index])
+        newUser = AdversaryDriver(name, "player", index)
+        newUser.set_moves(actorMoveLL[1])
         manager.register_player_user(newUser)
         testState.move_player_via_id(index, translate_to_xy(ptList[index]))
         users.append(newUser)
@@ -269,7 +270,7 @@ def adversariesToJSON(game):
     adversaries = game.get_adversaries()
     adversaryJSON = []
     for adversary in adversaries:
-        adversaryJSON.append({"type": adversary.get_ctype(), "name": adversary.get_name(),
+        adversaryJSON.append({"type": adversary.get_ctype().value, "name": adversary.get_name(),
                               "position": translate_to_xy(adversary.get_char_position())})
     return adversaryJSON
 

@@ -106,7 +106,7 @@ class GameManager:
             self.player_message("You won!")
         elif self.current_status == Status.LOST:
             self.player_message("Lost on level " + current_level)
-        self.end_game_stats()
+        #self.end_game_stats()
 
 
     def run_level(self):

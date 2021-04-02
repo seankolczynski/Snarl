@@ -1,4 +1,4 @@
-from Character import Character
+from Beings.Character import Character
 from Enums.CharacterType import CharacterType
 
 

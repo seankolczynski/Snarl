@@ -1,5 +1,7 @@
+from abc import ABC
 
-class PlayerUser:
+
+class PlayerUser(ABC):
 
     def __init__(self, name, type, ID, moves):
         self.layout = None
