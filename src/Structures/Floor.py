@@ -22,6 +22,8 @@ class Floor:
         self.exit = None #self.makeExit()
         self.itemTiles = []
 
+    def get_row_and_cols(self):
+        return (self.rows, self.cols)
 
     def minGridSize(self, rooms, halls):
         maxX = 0
