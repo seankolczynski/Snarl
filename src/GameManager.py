@@ -3,9 +3,9 @@ from Player import Player
 from Monsters.Adversary import Adversary
 from RuleChecker import RuleChecker
 from SimpleState import SimpleState
-from Status import Status
-import Monsters.Zombie
-import Monsters.Ghost
+from Enums.Status import Status
+from Monsters.Zombie import Zombie
+from Monsters.Ghost import Ghost
 from Enums.CharacterType import CharacterType
 import Enums.CharacterType as CT
 import math
@@ -50,17 +50,17 @@ class GameManager:
         for player in self.game.players:
             self.game.move_character(player, self.game.get_random_empty_tile()) 
         (already_z, already_g) = self.game.get_count_adversary()
-        num_zombies =  math.floor(self.game.current_floor_index / 2) + 1 - already_z
-        num_ghosts = math.floor((self.game.current_floor_index  - 1) / 2) - already_g
+        num_zombies = math.floor(self.game.current_floor_index / 2) + 1 - already_z
+        num_ghosts = math.floor((self.game.current_floor_index - 1) / 2) - already_g
         a_uuid = len(self.ID_to_char.keys())
         n = already_g + 1
         for i in range(num_ghosts):
-            self.register_player_user(Ghost(1, a_uuid, str(n) + " Ghost", CT.Ghost))
+            self.register_player_user(Ghost(1, a_uuid, str(n) + " Ghost", CharacterType.GHOST))
             a_uuid += 1
             n += 1 
         n = already_z + 1
-        for i in range(num_ghosts):
-            self.register_player_user(Zombie(1, a_uuid, str(n) + " Zombie", CT.Zombie))
+        for i in range(num_zombies):
+            self.register_player_user(Zombie(1, a_uuid, str(n) + " Zombie", CharacterType.ZOMBIE))
             a_uuid += 1
             n += 1 
         for adv in self.game.get_adversaries():
@@ -91,13 +91,26 @@ class GameManager:
     """
     def start_game(self):
         self.init_Rule_Checker()
+        numLevels = self.game.get_num_levels()
+        current_level = 1
+        while current_level <= numLevels:
+            self.run_level()
+            if self.current_status == Status.WON:
+                self.move_to_new_level()
+                current_level = current_level + 1
+                self.update_gamestate()
+            if self.current_status == Status.LOST:
+                return self.player_message("Lost on level " + current_level)
+        return self.player_message("You won!")
+
+
+    def run_level(self):
         current_character_turn = 0
         while self.current_status == Status.INPROGRESS or self.current_status == Status.INPROGRESSWON:
             if self.rule_checker.character_alive(self.ID_to_user_character[current_character_turn][1]):
                 self.take_turn(current_character_turn)
                 self.current_status = self.rule_checker.getGameStatus()
             current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
-
 
     """
     int -> JSON
@@ -134,6 +147,15 @@ class GameManager:
             self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
         for observer in self.observers:
             observer.update_state(SimpleState(self.game.get_current_floor().grid))
+
+    def player_message(self, message):
+        for user in self.ID_to_user_character.keys():
+            user.transmit_message(message)
+
+    def series_of_messages(self, ListOfMessages):
+        for message in ListOfMessages:
+            return
+
 
     """
     String, int, String -> Character

@@ -3,16 +3,14 @@ import json
 import unittest
 import sys
 
-from Tile import WallTile, Tile, ExitTile
-from Room import Room
-from Floor import Floor
-from Hallway import Hallway
+from Structures.Tile import WallTile, Tile, ExitTile
+from Structures.Room import Room
+from Structures.Floor import Floor
+from Structures.Hallway import Hallway
 from GameState import GameState
 from GameManager import GameManager
-from AdversaryDriver import AdversaryDriver
-from Adversary import Adversary
-import random
-import pprint
+from Monsters.Adversary import Adversary
+from LocalPlayer import LocalPlayer
 
 
 
@@ -31,7 +29,7 @@ def managerMaker(jsonStuff):
     users = []
     index = 0
     for name in names:
-        newUser = PlayerUser(name, "player", index, actorMoveLL[index])
+        newUser = LocalPlayer(name, "player", index, actorMoveLL[index])
         manager.register_player_user(newUser)
         testState.move_player_via_id(index, translate_to_xy(ptList[index]))
         users.append(newUser)

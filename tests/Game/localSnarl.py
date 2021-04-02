@@ -59,7 +59,7 @@ if __name__ == "__main__":
             floors.append(JLevel.floorMaker(json.loads(level)))
         init_gamestate = GameState(floors)
         init_gamemanager = GameManager(init_gamestate)
-        number_of_z = math.floor()
+        number_of_z = math.floor(len(floors))
 
 
 

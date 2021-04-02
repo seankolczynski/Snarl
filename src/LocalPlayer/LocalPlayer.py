@@ -26,13 +26,8 @@ class LocalPlayer(Player):
         return self.name
 
     def request_move(self):
-        if len(self.move_sequence) > 0:
-            move = self.move_sequence.pop(0)
-            # if move is None:
-            #    return self.position
-            return move
-        else:
-            raise ValueError("Out of moves")
+        move = input("Make a move:")
+
 
     def update_state(self, gs, pos):
         self.gameState = gs
@@ -63,5 +58,8 @@ class LocalPlayer(Player):
     # This is a stub for testing
     def set_moves(self, moves):
         pass
+
+    def transmit_message(self, message):
+        print(message)
 
 # TODO Add Main Loop Logic

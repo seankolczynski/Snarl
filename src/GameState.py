@@ -1,13 +1,8 @@
-from Structures.Tile import Tile, WallTile
-from Status import Status
+from Structures.Tile import WallTile
+from Enums.Status import Status
 from random import randrange
-import sys
-# sys.path.append("./Monsters")
-sys.path.append("./Enums")
-# from Zombie import Zombie
-# from Ghost import Ghost
-from CharacterType import CharacterType
-import math
+from Enums.CharacterType import CharacterType
+
 
 class GameState:
 
@@ -50,7 +45,7 @@ class GameState:
                 g_c += 1
             else:
                 z_c += 1
-        return(z_c, g_v)
+        return(z_c, g_c)
    
         
 
@@ -137,8 +132,13 @@ class GameState:
     def get_adversaries(self):
         return self.adversaries
 
+    def get_num_levels(self):
+        return len(self.dungeon)
+
     def unlock(self):
         self.unlocked = True
+
+
 
     def update_status(self):
         dead = len(self.ejected)

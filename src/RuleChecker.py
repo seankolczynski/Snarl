@@ -1,5 +1,5 @@
 from Structures.Tile import WallTile
-from Status import Status
+from Enums.Status import Status
 
 
 class RuleChecker:
