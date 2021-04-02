@@ -3,10 +3,11 @@ from Beings.Hero import Player
 from RuleChecker import RuleChecker
 from SimpleState import SimpleState
 from Enums.Status import Status
-from Monsters.Zombie import Zombie
-from Monsters.Ghost import Ghost
+from Beings.Zombie import Zombie
+from Beings.Ghost import Ghost
 from Enums.CharacterType import CharacterType
 import Enums.CharacterType as CT
+import json
 import math
 """
 The cycle of the game manager:
@@ -54,12 +55,12 @@ class GameManager:
         a_uuid = len(self.ID_to_char.keys())
         n = already_g + 1
         for i in range(num_ghosts):
-            self.register_player_user(Ghost(1, a_uuid, str(n) + " Ghost", CharacterType.GHOST))
+            self.register_player_user(Ghost(a_uuid, str(n) + " Ghost"))
             a_uuid += 1
             n += 1 
         n = already_z + 1
         for i in range(num_zombies):
-            self.register_player_user(Zombie(1, a_uuid, str(n) + " Zombie", CharacterType.ZOMBIE))
+            self.register_player_user(Zombie() a_uuid, str(n) + " Zombie"))
             a_uuid += 1
             n += 1 
         for adv in self.game.get_adversaries():
@@ -121,9 +122,16 @@ class GameManager:
         responses = []
         current_character = self.ID_to_user_character[turn_index][1]
         current_user = self.ID_to_user_character[turn_index][0]
+        move = None
         while True:
             try:
-                move = current_user.request_move()
+                move_raw = current_user.request_move()
+                move_json = json.loads(move_raw)
+                if not (isinstance(int, move_json[0])):
+                    raise ValueError("the first value is not a number")
+                if not (isinstance(int, move_json[1])):
+                    raise ValueError("the second value is not a number")
+                move = (move_json[0], move_json[1])
             except ValueError:
                 return "Done"
             if self.rule_checker.validateMove(turn_index, move):
