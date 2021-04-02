@@ -45,6 +45,10 @@ class GameManager:
     def add_adversary(self, adversary):
         self.game.add_adversary(adversary)
 
+    def set_starting_level(self, index):
+        for i in range(index):
+            self.move_to_new_level()
+            
     def move_to_new_level(self):
         self.game.current_floor_index += 1
         # self.adversaries = []
