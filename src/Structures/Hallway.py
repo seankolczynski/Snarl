@@ -1,4 +1,4 @@
-from Tile import Tile
+from Structures.Tile import Tile
 
 """Describes a layout of tiles connecting two rooms. See examples in LevelTest.py"""
 class Hallway:

@@ -1,5 +1,5 @@
 """Describes a layout of tiles. See examples in LevelTest.py"""
-from Tile import WallTile, Tile
+from Structures.Tile import WallTile, Tile
 
 class Room:
 
@@ -22,6 +22,10 @@ class Room:
     def room_height(self):
         return self.height
 
+    """
+    Tile, Hallway
+    Assigns the door to the hallway it leads to 
+    """
     def addDoor(self, door, hall):
         self.doors[door] = hall
 

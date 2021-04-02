@@ -1,60 +1,75 @@
+import Enums.CharacterType as CT
 from Enums.CharacterType import CharacterType
 import random
+from Player import Player
+from Monsters.Zombie import Zombie
+from Monsters.Ghost import Ghost
+
+
+def manhattan_distance(pos1, pos2):
+    x1, y1 = pos1
+    x2, y2 = pos2
+    return abs(x2 - x1) + abs(y2 - y1)
+
+
+def make_of_type(name, ctype, ID):
+    kind = CT.reverse_translate(ctype)
+    if kind == "Player":
+        return Player(2, ID, name)
+    elif kind == CharacterType.ZOMBIE:
+        return Zombie(1, ID, name, kind)
+    elif kind == CharacterType.GHOST:
+        return Ghost(1, ID, name, kind)
+
 
 class AdversaryDriver:
 
-    def __init__(self, name, type, ID, moves):
-        self.adversary = CharacterType.make_of_type(name, type, ID)
+    def __init__(self, name, ctype, ID, moves):
+        self.adversary = make_of_type(name, ctype, ID)
         self.layout = None
         self.move_sequence = moves
-        self.ID = ID
-        self.type = type
         self.gameState = None
-        self.name = name
         self.position = None
-        self.vision = 4
-        self.moveSpeed = 1
+        self.vision = self.adversary.FOV_radius
         self.defaults = []
 
     def get_id(self):
-        return self.ID
+        return self.adversary.get_id()
 
     def get_type(self):
-        return self.type
+        return self.adversary.get_type
 
     def get_name(self):
-        return self.name
+        return self.adversary.get_name
+
+    """Called by the GameManager, requests the first of the list of options"""
 
     def request_move(self):
         if len(self.move_sequence) > 0:
             move = self.move_sequence.pop(0)
-            #if move is None:
+            # if move is None:
             #    return self.position
             return move
         else:
             raise ValueError("Out of moves")
 
+    """Called by GameManager, provides our position and the simple gamestate. If position changes (aka we have moved), we update our current surroundings"""
+
     def update_state(self, gs, pos):
         self.gameState = gs
         if pos != self.position:
             self.position = pos
-            self.get_defaults()
+            self.defaults = self.adversary.default_moves(self.position, self.gameState)
         if pos is not None:
-            self.render(pos)
-            new_options = self.pick_move()
-            if len(new_options) == 0:
-                new_options = self.defaults
-                new_options.append(self.position)
-            else:
-                for d in self.defaults:
-                    new_options.append(d)
-                new_options.append(self.position)
+            self.render()
+            new_options = self.pick_moves()
+            new_options.extend(self.defaults)
+            self.move_sequence = new_options
 
 
-    def render(self, pos):
-        self.gameState.render_in_range(pos, 2)
 
     """For Tests"""
+
     def get_next_move(self):
         if len(self.move_sequence) > 0:
             move = self.move_sequence[0]
@@ -63,29 +78,35 @@ class AdversaryDriver:
             return move
         return None
 
-    def get_view(self):
+    """Draws the """
+
+    def render(self):
         self.layout = self.gameState.render_in_range(self.position, 2)
         return self.layout
 
     def get_position(self):
         return self.position
 
-
-    def pick_move(self):
-        sight = self.gameState.render_in_range(self.position, self.vision) ##TODO could make sight a field of AdversaryUser
-        radius_view = []
+    """
+    Returns a list of move options, in order of priority, based on the immediate area surrounding our position
+    """
+    def pick_moves(self):
+        targets_in_radius = []
         radius = 1
         moves = []
-        while radius <= self.vision and len(radius_view) == 0:
+        while radius <= self.vision:
             upLeft = (self.position[0] - radius, self.position[1] - radius)
             bottomRight = (self.position[0] + radius, self.position[1] + radius)
-            radius_view = self.ring(upLeft, bottomRight, sight)
+            targets_in_radius.extend(self.ring(upLeft, bottomRight))
             radius = radius + 1
-        if len(radius_view) > 0:
-            target = radius_view[random.randint(0, len(radius_view) - 1)]
-            moves = self.chase(target)
+        if len(targets_in_radius) > 0:
+            sorted_targets = self.adversary.prioritize(targets_in_radius, self.gameState)
+            for target in sorted_targets:
+                chased = self.chase(target)
+                for cha in chased:
+                    if cha not in moves:
+                        moves.append(cha)
         return moves
-
 
     def get_around(self, pos):
         startx, starty = pos
@@ -96,85 +117,76 @@ class AdversaryDriver:
         positions.append((startx, starty - 1))
         return positions
 
-    def ring(self, upLeft, downRight, sight):
+    def ring(self, upLeft, downRight):
         squares = []
         cursorX, cursorY = upLeft
         while cursorX < downRight[0]:
-            if(self.set_sights(sight[cursorX][cursorY])):
-                squares.append((cursorX, cursorY))
+            self.ring_helper(squares, (cursorX, cursorY))
             cursorX = cursorX + 1
         while cursorY < downRight[1]:
-            if (self.set_sights(sight[cursorX][cursorY])):
-                squares.append((cursorX, cursorY))
+            self.ring_helper(squares, (cursorX, cursorY))
             cursorY = cursorY + 1
         while cursorX > upLeft[0]:
-            if (self.set_sights(sight[cursorX][cursorY])):
-                squares.append((cursorX, cursorY))
+            self.ring_helper(squares, (cursorX, cursorY))
             cursorX = cursorX - 1
         while cursorY > upLeft[1]:
-            if (self.set_sights(sight[cursorX][cursorY])):
-                squares.append((cursorX, cursorY))
+            self.ring_helper(squares, (cursorX, cursorY))
             cursorY = cursorY - 1
         return squares
 
-    def set_sights(self, tile):
-        chara = tile.get_character()
-        return chara is not None and chara.get_ctype() == CharacterType.PLAYER
+    def ring_helper(self, squares, position):
+        attempted_tile = self.gameState.get_tile_at(position)
+        if attempted_tile is not None:
+            if self.adversary.set_sights(self.gameState.get_tile_at(position)):
+                squares.append(position)
 
     def chase(self, target):
         moves = []
-        if self.manhattan_distance(self.position, target) <= self.moveSpeed:
+        if manhattan_distance(self.position, target) <= self.adversary.get_speed():
             return [target]
         else:
             x, y = self.position
+            right = (x + 1, y)
+            left = (x - 1, y)
+            up = (x, y - 1)
+            down = (x, y + 1)
             diffX, diffY = x - target[0], y - target[1]
             if diffX == 0:
                 if diffY > 0:
-                    moves.append((x, y - 1))
+                    moves.append(up)
                 if diffY < 0:
-                    moves.append((x, y + 1))
+                    moves.append(down)
             elif diffY == 0:
                 if diffX > 0:
-                    moves.append((x - 1, y))
+                    moves.append(left)
                 if diffX < 0:
-                    moves.append((x + 1, y))
+                    moves.append(right)
             elif diffX > 0 and diffY > 0:
                 if diffX > diffY:
-                    moves.append((x - 1, y))
+                    moves.append(left)
                 else:
-                    moves.append((x, y - 1))
+                    moves.append(up)
             elif diffX > 0 and diffY < 0:
                 if diffX > diffY:
-                    moves.append((x - 1, y))
+                    moves.append(left)
                 else:
-                    moves.append((x, y + 1))
+                    moves.append(down)
             elif diffX < 0 and diffY < 0:
                 if diffX > diffY:
-                    moves.append((x + 1, y))
+                    moves.append(right)
                 else:
-                    moves.append((x, y + 1))
+                    moves.append(down)
             elif diffX < 0 and diffY > 0:
                 if diffX > diffY:
-                    moves.append((x + 1, y))
+                    moves.append(right)
                 else:
-                    moves.append((x, y - 1))
+                    moves.append(up)
             return moves
 
     """
     Calculates manhattan distance
     """
-    def manhattan_distance(self, pos1, pos2):
-        x1, y1 = pos1
-        x2, y2 = pos2
-        return abs(x2 - x1) + abs(y2 - y1)
 
     # This is a stub for testing
     def set_moves(self, moves):
         pass
-
-    def get_defaults(self):
-        around = self.get_around(self.position)
-        random.shuffle(around)
-        around.append(self.position)
-        return around
-

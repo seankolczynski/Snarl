@@ -1,5 +1,6 @@
 from Item import Item
-from Monsters.Adversary import Adversary
+from Enums.CharacterType import CharacterType
+import Enums.CharacterType as CT
 from Player import Player
 
 
@@ -40,11 +41,15 @@ class Tile(object):
     def get_all_items(self):
         return self.items
 
+    def is_door(self):
+        if self.room is None:
+            return False
+        else:
+            return self.room.door_at(self.position)
+
     def draw(self):
-        if isinstance(self.character, Player):
-            return "P"
-        if isinstance(self.character, Adversary):
-            return "A"
+        if self.character is not None:
+            return CT.draw(self.character.get_ctype())
         for item in self.items:
             if item.get_name() == "Exit":
                 return "e"
