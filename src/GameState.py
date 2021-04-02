@@ -27,7 +27,9 @@ class GameState:
         self.exited = []
         self.ejected = []
         self.current_status = Status.INPROGRESS
-    
+        self.character_to_exits = {}
+        self.character_to_keys = {}
+
     def get_random_empty_tile(self):
         current_floor = self.get_current_floor()
         (row, cols) = current_floor.get_row_and_cols()
@@ -63,6 +65,8 @@ class GameState:
         #         offY = offY + 1
         #     tile = self.current_floor.grid[offX][offY]
         self.move_character(player, self.get_random_empty_tile())
+        self.character_to_exits[player] = 0
+        self.character_to_keys[player] = 0
 
     def add_adversary(self, adversary):
         # start = self.current_floor.rooms[len(self.current_floor.rooms) - 1]
@@ -96,8 +100,11 @@ class GameState:
             # Checks if the player just moved to the exit
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
+            if "Key" in message:
+                self.character_to_keys[character] = self.character_to_keys[character] + 1
             if self.unlocked and destination == self.current_floor.get_exit():
                 self.exited.append(character)
+                self.character_to_exits[character] = self.character_to_exits[character] + 1
                 self.update_status()
                 destination.remove_character()
                 return {"success": True, "message": "Exited"}
@@ -134,6 +141,9 @@ class GameState:
 
     def get_num_levels(self):
         return len(self.dungeon)
+
+    def get_stats(self):
+        return self.character_to_keys, self.character_to_exits
 
     def unlock(self):
         self.unlocked = True

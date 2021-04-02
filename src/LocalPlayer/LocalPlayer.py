@@ -1,13 +1,12 @@
 import sys
 
 sys.path.append('../Common')
-from Beings.Hero import Player
+from Common.Player import Player
 
 
 class LocalPlayer(Player):
 
     def __init__(self, name, ctype, ID, moves):
-        super().__init__(2, ID, name)
         self.layout = None
         self.move_sequence = moves
         self.ID = ID
