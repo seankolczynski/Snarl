@@ -6,6 +6,7 @@ import json
 class LocalPlayer(PlayerUser):
 
     def __init__(self, name, ctype, ID):
+        super().__init__(name, ctype, ID)
         self.layout = None
         self.move_sequence = []
         self.ID = ID

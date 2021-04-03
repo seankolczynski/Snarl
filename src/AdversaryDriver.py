@@ -1,4 +1,3 @@
-import Enums.CharacterType as CT
 from Enums.CharacterType import CharacterType
 from Beings.Hero import Hero
 from Beings.Zombie import Zombie
@@ -24,7 +23,7 @@ def make_of_type(name, ctype, ID):
 class AdversaryDriver(PlayerUser):
 
     def __init__(self, name, ctype, ID):
-        super().__init__(name, type, ID)
+        super().__init__(name, ctype, ID)
         self.adversary = make_of_type(name, ctype, ID)
         self.layout = None
         self.move_sequence = []
@@ -102,7 +101,7 @@ class AdversaryDriver(PlayerUser):
             for target in sorted_targets:
                 chased = self.chase(target)
                 for cha in chased:
-                    if cha not in moves:
+                    if cha not in moves and self.adversary.fit_the_bill(self.gameState.get_tile_at(cha)):
                         moves.append(cha)
         return moves
 
@@ -141,7 +140,7 @@ class AdversaryDriver(PlayerUser):
     def chase(self, target):
         moves = []
         if manhattan_distance(self.position, target) <= self.adversary.get_speed():
-            return [target]
+            moves =  [target]
         else:
             x, y = self.position
             right = (x + 1, y)
@@ -179,7 +178,8 @@ class AdversaryDriver(PlayerUser):
                     moves.append(right)
                 else:
                     moves.append(up)
-            return moves
+
+        return moves
 
     """
     Calculates manhattan distance

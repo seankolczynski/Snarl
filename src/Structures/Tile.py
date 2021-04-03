@@ -128,4 +128,4 @@ class ExitTile(Tile):
         if self.character is None:
             return "e"
         else:
-            return self.character.get_ctype().draw()
+            return CT.draw(self.character.get_ctype())
