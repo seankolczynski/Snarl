@@ -24,6 +24,7 @@ class LocalPlayer(PlayerUser):
         return self.name
 
     def request_move(self):
+        print("your Position is: " + str(self.position))
         move = input("Make a move:")
         if move == "":
             return self.position
