@@ -101,18 +101,21 @@ class GameState:
         if not isinstance(destination, WallTile):
             message = character.move(destination)
             if message is not None and "Ejected" in message['message']:
+                print("Player " + character.get_name() + " was expelled")
                 self.ejected.append(character)
                 self.update_status()
             # Checks if the player just moved to the exit
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
             if message is not None and "Key" in message:
+                print("Player " + character.get_name() + " picked up a key")
                 self.character_to_keys[character] = self.character_to_keys[character] + 1
             if self.unlocked and destination == self.current_floor.get_exit():
                 self.exited.append(character)
                 self.character_to_exits[character] = self.character_to_exits[character] + 1
                 self.update_status()
                 destination.remove_character()
+                print("Player " + character.get_name() + " exited")
                 return {"success": True, "message": "Exited"}
             return message
         else:
