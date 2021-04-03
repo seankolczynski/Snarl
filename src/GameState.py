@@ -116,7 +116,10 @@ class GameState:
                 return {"success": True, "message": "Exited"}
             return message
         else:
-            return {"success": False, "message": "WallTile"}
+            if character.get_ctype() == CharacterType.GHOST:
+                return character.move(character.special_move(self.current_floor))
+            else:
+                return {"success": False, "message": "WallTile"}
 
     def move_player_via_id(self, id, pos):
         return self.move_character(self.players[id], pos)

@@ -34,3 +34,13 @@ class Ghost(Adversary):
 
     def fit_the_bill(self, target_tile):
         return target_tile is not None and not isinstance(target_tile.get_character(), Adversary)
+
+    def special_move(self, floor):
+        rooms = floor.rooms
+        while True:
+            goal_room = random.choice(rooms)
+            room_grid = goal_room.layout
+            goal_tile = random.choice(random.choice(room_grid))
+            occupant = goal_tile.get_character()
+            if not isinstance(goal_tile, WallTile) and occupant is None:
+                return goal_tile

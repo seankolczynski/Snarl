@@ -2,6 +2,7 @@ import random
 from Beings.Character import Character
 from Enums.CharacterType import CharacterType
 from Structures.Tile import Tile, ExitTile
+from Structures.Hallway import Hallway
 
 
 class Adversary(Character):
@@ -52,6 +53,22 @@ class Adversary(Character):
         return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) \
                and not isinstance(target_tile.get_character(), Adversary)
 
+    def move(self, tile):
+        special = self.special(tile)
+        occupant = tile.get_character()
+        if occupant is None or occupant == self:
+            if self.current_tile is not None:
+                self.current_tile.remove_character()
+            self.current_tile = tile
+            message = tile.add_character(self)
+            return message
+        elif occupant.get_ctype() == CharacterType.PLAYER:
+            occupant.kill()
+            message = {"success": True, "message": "Ejected " + occupant.get_name()}
+            return message
+        else:
+            message = {"success": False, "message": "Occupied by another adversary"}
+            return message
 
-
-
+    def special(self, tile):
+        return None

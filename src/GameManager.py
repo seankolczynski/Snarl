@@ -72,7 +72,11 @@ class GameManager:
             a_uuid += 1
             n += 1
         for adv in self.game.get_adversaries():
-            adv.move(self.game.get_random_empty_tile())
+            while True:
+                target = self.game.get_random_empty_tile()
+                if adv.fit_the_bill(target):
+                    adv.move(self.game.get_random_empty_tile())
+                    break
 
     """
     User -> Void
