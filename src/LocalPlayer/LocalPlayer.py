@@ -1,7 +1,6 @@
 import sys
-
-sys.path.append('../Common')
 from Common.Player import Player
+import json
 
 
 class LocalPlayer(Player):
@@ -25,16 +24,14 @@ class LocalPlayer(Player):
         return self.name
 
     def request_move(self):
-        # if len(self.move_sequence) > 0:
-        #     move = self.move_sequence.pop(0)
-        #     # if move is None:
-        #     # if move is None:
-        #     #    return self.position
-        #     return move
-        # else:
-        #     raise ValueError("Out of moves")
-
         move = input("Make a move:")
+        move_json = json.loads(move)
+        if not (isinstance(move_json[0], int)):
+            raise ValueError("the first value is not a number")
+        if not (isinstance(move_json[1], int)):
+            raise ValueError("the second value is not a number")
+        formatted_move = (move_json[0], move_json[1])
+        return formatted_move
 
 
     def update_state(self, gs, pos):

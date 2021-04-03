@@ -24,9 +24,10 @@ class GameState:
         self.adversaries = []
         self.start_player_position = self.current_floor.rooms[0].upperLeft
         self.start_adversary_position = self.current_floor.rooms[len(self.current_floor.rooms) - 1].upperLeft
-        self.unlocked = True
         self.exited = []
         self.ejected = []
+        self.items = self.current_floor.get_items()
+        self.unlocked = self.lock_status()
         self.current_status = Status.INPROGRESS
         self.character_to_exits = defaultdict(int)
         self.character_to_keys = defaultdict(int)
@@ -40,6 +41,7 @@ class GameState:
             if not isinstance(rando_tile, WallTile) and rando_tile.get_character() == None and rando_tile.get_all_items() == []:
                 return rando_tile
         raise ValueError("Level given does not support a character being placed")
+
     def get_count_adversary(self):
         z_c = 0
         g_c = 0
@@ -66,7 +68,8 @@ class GameState:
         #         offY = offY + 1
         #     tile = self.current_floor.grid[offX][offY]
         self.players.append(player)
-        self.move_character(player, self.get_random_empty_tile().get_position())
+        self.move_character(player, (3, 4))
+        # self.move_character(player, self.get_random_empty_tile().get_position())
         self.character_to_exits[player] = 0
         self.character_to_keys[player] = 0
 
@@ -124,6 +127,9 @@ class GameState:
     def get_current_floor(self):
         return self.current_floor
 
+    def get_current_floor_index(self):
+        return self.current_floor_index
+
     def get_unlocked(self):
         return self.unlocked
 
@@ -152,7 +158,6 @@ class GameState:
         self.unlocked = True
 
 
-
     def update_status(self):
         dead = len(self.ejected)
         escaped = len(self.exited)
@@ -166,6 +171,25 @@ class GameState:
 
     def get_status(self):
         return self.current_status
+
+    def next_level(self):
+        self.current_floor_index += 1
+        if self.current_floor_index < len(self.dungeon):
+            self.current_floor = self.dungeon[self.current_floor_index]
+            self.items = self.current_floor.get_items()
+            self.unlocked = self.lock_status()
+            self.exited = []
+            self.ejected = []
+            self.current_status = Status.INPROGRESS
+        else:
+            raise ValueError("Out of levels")
+
+    def lock_status(self):
+        for itemPosn in self.items:
+            if itemPosn[0] == "Key" or itemPosn[0] == "key":
+                return False
+        return True
+
 
 
     def get_intermediate_state(self):

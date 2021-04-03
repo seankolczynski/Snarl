@@ -13,12 +13,11 @@ def manhattan_distance(pos1, pos2):
 
 
 def make_of_type(name, ctype, ID):
-    kind = CT.reverse_translate(ctype)
-    if kind == "Player":
+    if ctype == CharacterType.PLAYER:
         return Hero(2, ID, name)
-    elif kind == CharacterType.ZOMBIE:
+    elif ctype == CharacterType.ZOMBIE:
         return Zombie(ID, name)
-    elif kind == CharacterType.GHOST:
+    elif ctype == CharacterType.GHOST:
         return Ghost(ID, name)
 
 
@@ -188,3 +187,6 @@ class AdversaryDriver(Player):
     # This is a stub for testing
     def set_moves(self, moves):
         pass
+
+    def get_adversary(self):
+        return self.adversary

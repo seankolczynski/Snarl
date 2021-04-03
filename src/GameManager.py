@@ -50,24 +50,27 @@ class GameManager:
             self.move_to_new_level()
             
     def move_to_new_level(self):
-        self.game.current_floor_index += 1
-        # self.adversaries = []
+        self.game.next_level()
+        self.generate_adversaryies()
+
+    def generate_adversaryies(self):
+        curr_floor = self.game.get_current_floor_index()
         for player in self.game.players:
-            self.game.move_character(player, self.game.get_random_empty_tile()) 
+            self.game.move_character(player, self.game.get_random_empty_tile().get_position())
         (already_z, already_g) = self.game.get_count_adversary()
-        num_zombies = math.floor(self.game.current_floor_index / 2) + 1 - already_z
-        num_ghosts = math.floor((self.game.current_floor_index - 1) / 2) - already_g
-        a_uuid = len(self.ID_to_char.keys())
+        num_zombies = math.floor(curr_floor / 2) + 1 - already_z
+        num_ghosts = math.floor((curr_floor - 1) / 2) - already_g
+        a_uuid = len(self.ID_to_user_character.keys())
         n = already_g + 1
         for i in range(num_ghosts):
-            self.register_player_user(AdversaryDriver(a_uuid, CharacterType.GHOST, str(n) + " Ghost"))
+            self.register_player_user(AdversaryDriver(str(n) + " Ghost", CharacterType.GHOST, a_uuid))
             a_uuid += 1
-            n += 1 
+            n += 1
         n = already_z + 1
         for i in range(num_zombies):
-            self.register_player_user(AdversaryDriver(a_uuid, CharacterType.ZOMBIE, str(n) + " Zombie"))
+            self.register_player_user(AdversaryDriver(str(n) + " Zombie", CharacterType.ZOMBIE, a_uuid))
             a_uuid += 1
-            n += 1 
+            n += 1
         for adv in self.game.get_adversaries():
             adv.move(self.game.get_random_empty_tile())
 
@@ -78,13 +81,16 @@ class GameManager:
     """
     def register_player_user(self, user):
         id = user.get_id()
-        type = CT.reverse_translate(user.get_type())
+        ctype = user.get_type()
         if id in self.ID_to_user_character.keys():
             raise ConnectionError("User ID Taken")
         else:
-            newly_created_character = self.create_new_character(type, id, user.get_name())
+            if isinstance(user, AdversaryDriver):
+                newly_created_character = user.get_adversary()
+            else:
+                newly_created_character = self.create_new_character(ctype, id, user.get_name())
             self.ID_to_user_character[id] = (user, newly_created_character)
-            if type == CharacterType.PLAYER:
+            if ctype == CharacterType.PLAYER:
                 self.add_player(newly_created_character)
             else:
                 self.add_adversary(newly_created_character)
@@ -96,8 +102,10 @@ class GameManager:
     Initialize the game and maintains the loop that keeps it running
     """
     def start_game(self):
+        self.generate_adversaryies()
         self.update_gamestate()
         self.init_Rule_Checker()
+        self.current_status = Status.INPROGRESS
         numLevels = self.game.get_num_levels()
         current_level = 1
         while current_level <= numLevels and self.current_status != Status.LOST:
@@ -109,7 +117,7 @@ class GameManager:
         if self.current_status == Status.WON:
             self.player_message("You won!")
         elif self.current_status == Status.LOST:
-            self.player_message("Lost on level " + current_level)
+            self.player_message("Lost on level " + str(current_level))
         #self.end_game_stats()
 
 
@@ -143,13 +151,7 @@ class GameManager:
         move = None
         while True:
             try:
-                move_raw = current_user.request_move()
-                move_json = json.loads(move_raw)
-                if not (isinstance(move_json[0], int)):
-                    raise ValueError("the first value is not a number")
-                if not (isinstance(move_json[1], int)):
-                    raise ValueError("the second value is not a number")
-                move = (move_json[0], move_json[1])
+                move = current_user.request_move()
             except ValueError:
                 return "Done"
             if self.rule_checker.validateMove(turn_index, move):
@@ -214,7 +216,7 @@ class GameManager:
     """
     def reset(self):
         self.rule_checker = None
-        self.ID_to_char = {}
+        self.ID_to_user_character = {}
         self.game = GameState.GameState([])
 
 
