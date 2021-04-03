@@ -38,12 +38,12 @@ if __name__ == "__main__":
         raise ValueError("Illegal amount of players given")
     # print(args.players)
 
-    uuid = 1
     list_of_players = []
-    for i in range(0, args.players):
+    for id in range(0, args.players):
         char_name = input("enter a name for your character: ")
-        new_player = LocalPlayer(char_name, CharacterType.PLAYER, uuid)
+        new_player = LocalPlayer(char_name, CharacterType.PLAYER, id)
         list_of_players.append(new_player)
+
 
     path_to_levels = args.levels
     try:
@@ -60,9 +60,11 @@ if __name__ == "__main__":
             floors.append(JLevel.floorMaker(json.loads(level)))
         if args.start > len(floors) or args.start < 1:
             raise ValueError("invalid floor index")
-        start_level_index = args.start -1
+        start_level_index = args.start - 1
         init_gamestate = GameState(floors)
         init_gamemanager = GameManager(init_gamestate)
+        for player in list_of_players:
+            init_gamemanager.register_player_user(player)
         init_gamemanager.set_starting_level(start_level_index)
         init_gamemanager.start_game()
  

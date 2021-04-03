@@ -18,7 +18,7 @@ def managerMaker(jsonStuff):
     natural = jsonStuff[2]
     ptList = jsonStuff[3]
     actorMoveLL = moves_parser(jsonStuff[4])
-    levelMade = floorMaker(floor)
+    levelMade, objects = floorMaker(floor)
     testState = GameState([levelMade])
     manager = GameManager(testState)
     users = []
