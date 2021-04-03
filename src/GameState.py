@@ -1,4 +1,4 @@
-from Structures.Tile import WallTile
+from Structures.Tile import WallTile, ExitTile
 from Enums.Status import Status
 from random import randrange
 from Enums.CharacterType import CharacterType
@@ -39,7 +39,7 @@ class GameState:
         for i in range(9223372036854775807):
             rando_tile_pos = (randrange(row-1), randrange(cols-1))
             rando_tile = current_floor.get_tile_at(rando_tile_pos)
-            if not isinstance(rando_tile, WallTile) and rando_tile.get_character() == None and rando_tile.get_all_items() == []:
+            if not isinstance(rando_tile, WallTile) and not isinstance(rando_tile, ExitTile)  and rando_tile.get_character() == None and rando_tile.get_all_items() == []:
                 return rando_tile
         raise ValueError("Level given does not support a character being placed")
 

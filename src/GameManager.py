@@ -72,6 +72,10 @@ class GameManager:
             self.register_player_user(AdversaryDriver(str(n) + " Zombie", CharacterType.ZOMBIE, a_uuid))
             a_uuid += 1
             n += 1
+        new_id_to_char_dict = {}
+        for key in self.ID_to_user_character.keys():
+            new_id_to_char_dict[key] = self.ID_to_user_character[key][1]
+        self.rule_checker.add_characters(new_id_to_char_dict)
         for adv in self.game.get_adversaries():
             while True:
                 target = self.game.get_random_empty_tile()
