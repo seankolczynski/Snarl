@@ -7,6 +7,7 @@ import math
 sys.path.append("../../src/")
 from LocalPlayer.LocalPlayer import LocalPlayer
 import Common.JSONToLevel as JLevel
+from Common.Observer import Observer
 from GameState import GameState
 from GameManager import GameManager
 from Enums.CharacterType import CharacterType
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     ap.add_argument("--levels", help="path to level spec", action="store", default="snarl.levels")
     ap.add_argument("--players", help="number of players", action="store", type=int, default=1)
     ap.add_argument("--start", help="Level to start from", action="store", type=int, default=1)
-    ap.add_argument("--observe", help="Level to start from", action="store", type=int, default=0)
+    ap.add_argument("--observe", help="Level to start from", action="store", type=int, default=1)
 
     args = ap.parse_args()
     if args.players != 1:
@@ -54,11 +55,14 @@ if __name__ == "__main__":
         floors.append(JLevel.floorMaker(json.loads(level)))
     if args.start > len(floors) or args.start < 1:
         raise ValueError("invalid floor index")
+
     start_level_index = args.start - 1
     init_gamestate = GameState(floors)
     init_gamemanager = GameManager(init_gamestate)
     for player in list_of_players:
         init_gamemanager.register_player_user(player)
+    if args.observe == 1:
+        init_gamemanager.register_observer(Observer(-1))
     init_gamemanager.set_starting_level(start_level_index)
     init_gamemanager.start_game()
 
