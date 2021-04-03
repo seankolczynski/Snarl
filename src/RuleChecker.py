@@ -1,5 +1,6 @@
 from Structures.Tile import WallTile
 from Enums.Status import Status
+from Beings.Ghost import Ghost
 
 
 class RuleChecker:
@@ -18,6 +19,9 @@ class RuleChecker:
         target = floor.get_tile_at(position)
         current = charact.get_char_position()
         if not isinstance(target, WallTile):
+            if self.manhattan_distance(current, target.get_position()) <= charact.get_speed():
+                return True
+        elif isinstance(charact, Ghost):
             if self.manhattan_distance(current, target.get_position()) <= charact.get_speed():
                 return True
         else:
