@@ -184,7 +184,7 @@ class GameManager:
             userPos = self.ID_to_user_character[user][1].get_char_position()
             self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
         for observer in self.observers:
-            observer.update_state(SimpleState(self.game.get_current_floor().grid))
+            observer.update_state(SimpleState(self.game.get_current_floor().grid), (0,0))
 
     def player_message(self, message):
         for user in self.ID_to_user_character.values():

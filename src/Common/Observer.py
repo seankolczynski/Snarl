@@ -13,6 +13,7 @@ class Observer(ABC):
             self.render(pos)
 
     def render(self, pos):
+        print("Observer View")
         return self.gameState.render()
 
 
