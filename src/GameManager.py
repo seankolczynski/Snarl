@@ -110,7 +110,7 @@ class GameManager:
             self.player_message("You won!")
         elif self.current_status == Status.LOST:
             self.player_message("Lost on level " + current_level)
-        #self.end_game_stats()
+        self.end_game_stats()
 
 
     def run_level(self):
@@ -124,9 +124,14 @@ class GameManager:
     def end_game_stats(self):
         key_dict, exit_dict = self.game.get_stats()
         final_stats = {}
-        for user in self.ID_to_user_character:
-            if user.get_type == CharacterType.PLAYER:
-                final_stats[user] = (0, 0)
+        get_name = (lambda x: self.ID_to_user_character[x].get_name)
+        for user in self.ID_to_user_character.keys():
+            if self.ID_to_user_character[user].get_type == CharacterType.PLAYER:
+                final_stats[user] = (key_dict[user], exit_dict[user])
+        final_stats = {k: v for k, v in sorted(final_stats.items(), key=lambda item: item[1])}
+        for user in final_stats.keys():
+            print(get_name(user) +  "exited " + final_stats[user][1] + "times and picked up " + final_stats[user][0] + " keys" )
+
 
     """
     int -> JSON
