@@ -194,3 +194,6 @@ class GameState:
         for level in self.dungeon:
             acc += str(level.get_exit().get_position()) + " "
         return acc
+
+    def get_max_Y_and_X(self):
+        return self.current_floor.get_row_and_cols()

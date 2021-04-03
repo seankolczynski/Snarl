@@ -151,7 +151,7 @@ class Floor:
 
     def get_room_from_pos(self, pos):
        raw_tile = self.grid[pos[0]][pos[1]] 
-       return raw_tile.getRoom()
+       return raw_tile.get_room()
 
     def reaches(self, structure):
         return structure.return_neighbors()

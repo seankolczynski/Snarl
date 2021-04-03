@@ -16,7 +16,8 @@ class RuleChecker:
             return True
         floor = self.game.get_current_floor()
         charact = self.characters[id]
-        if position[0] >= len(self.game) or position[0] >= len(self.game[0]):
+        maxY, maxX = self.game.get_max_Y_and_X()
+        if position[0] >= maxX or position[1] >= maxY:
             return False
         target = floor.get_tile_at(position)
         current = charact.get_char_position()
