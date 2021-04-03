@@ -65,6 +65,3 @@ if __name__ == "__main__":
         init_gamemanager.register_observer(Observer(-1))
     init_gamemanager.set_starting_level(start_level_index)
     init_gamemanager.start_game()
-
-
-
