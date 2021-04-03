@@ -4,6 +4,7 @@ from os import system, name
 import json
 import math
 
+sys.path.append("../../src/")
 from LocalPlayer.LocalPlayer import LocalPlayer
 import Common.JSONToLevel as JLevel
 from GameState import GameState
