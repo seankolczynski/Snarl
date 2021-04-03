@@ -24,6 +24,7 @@ class LocalPlayer(Player):
         return self.name
 
     def request_move(self):
+        print("your Position is: " + str(self.position))
         move = input("Make a move:")
         move_json = json.loads(move)
         if not (isinstance(move_json[0], int)):
