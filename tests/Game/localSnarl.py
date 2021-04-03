@@ -30,8 +30,8 @@ if __name__ == "__main__":
     ap.add_argument("--observe", help="Level to start from", action="store", type=int, default=1)
 
     args = ap.parse_args()
-    if args.players != 1:
-        raise ValueError("Illegal amount of players given")
+    # if args.players != 1:
+    #     raise ValueError("Illegal amount of players given")
     # print(args.players)
 
     list_of_players = []
