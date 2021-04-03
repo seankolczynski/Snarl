@@ -10,7 +10,7 @@ Finally, if the case is such that no move is valid, the Adversary will simply st
 
 Zombies:
 
-Zombies are pretty basic. If a player is within sight range, the zombie will move towards it. 
+Zombies are pretty basic. If a player is within sight range which 3, the zombie will move towards it.
 Otherwise, the zombie will move in a random cardinal direction, unless that direction is a door or is occupied by an adversary
 
 Ghosts:
