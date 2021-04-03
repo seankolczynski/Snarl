@@ -16,6 +16,8 @@ class RuleChecker:
             return True
         floor = self.game.get_current_floor()
         charact = self.characters[id]
+        if position[0] >= len(self.game) or position[0] >= len(self.game[0]):
+            return False
         target = floor.get_tile_at(position)
         current = charact.get_char_position()
         if not isinstance(target, WallTile):
