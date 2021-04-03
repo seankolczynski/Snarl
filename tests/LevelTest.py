@@ -1,12 +1,12 @@
 import io
 import sys
 
-sys.path.append("../src/")
+
 import unittest
 import GameState
 from Beings import Hero
 from Structures import Room, Floor, Hallway
-from Monsters import Adversary
+from Beings.Adversary import Adversary
 
 
 class MyTestCase(unittest.TestCase):

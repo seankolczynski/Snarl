@@ -120,7 +120,8 @@ class GameManager:
         while current_level <= numLevels and self.current_status != Status.LOST:
             self.run_level()
             if self.current_status == Status.WON:
-                self.move_to_new_level()
+                if current_level < numLevels:
+                    self.move_to_new_level()
                 current_level = current_level + 1
                 self.update_gamestate()
         if self.current_status == Status.WON:

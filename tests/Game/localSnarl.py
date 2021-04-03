@@ -4,13 +4,6 @@ from os import system, name
 import json
 import math
 
-sys.path.append("../../src/")
-# sys.path.append("../../src/Common")
-# sys.path.append("../../src/Enums")
-# sys.path.append("../../src/Monsters")
-# sys.path.append("../../src/Observer")
-# sys.path.append("../../src/Player")
-# sys.path.append("../../src/Structures")
 from LocalPlayer.LocalPlayer import LocalPlayer
 import Common.JSONToLevel as JLevel
 from GameState import GameState

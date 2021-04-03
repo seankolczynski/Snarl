@@ -25,13 +25,17 @@ class LocalPlayer(Player):
 
     def request_move(self):
         move = input("Make a move:")
-        move_json = json.loads(move)
-        if not (isinstance(move_json[0], int)):
-            raise ValueError("the first value is not a number")
-        if not (isinstance(move_json[1], int)):
-            raise ValueError("the second value is not a number")
-        formatted_move = (move_json[0], move_json[1])
-        return formatted_move
+        move_split = move.split(" ")
+        if len(move_split) == 2:
+            move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
+            if not (isinstance(move_json[0], int)):
+                raise ValueError("the first value is not a number")
+            if not (isinstance(move_json[1], int)):
+                raise ValueError("the second value is not a number")
+            formatted_move = (move_json[0], move_json[1])
+            return formatted_move
+        else:
+            return self.request_move()
 
 
     def update_state(self, gs, pos):
