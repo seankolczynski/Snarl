@@ -1,9 +1,9 @@
-import sys
-from Common.Player import Player
+
+from PlayerUser import PlayerUser
 import json
 
 
-class LocalPlayer(Player):
+class LocalPlayer(PlayerUser):
 
     def __init__(self, name, ctype, ID):
         self.layout = None

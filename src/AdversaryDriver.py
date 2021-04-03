@@ -3,7 +3,7 @@ from Enums.CharacterType import CharacterType
 from Beings.Hero import Hero
 from Beings.Zombie import Zombie
 from Beings.Ghost import Ghost
-from Common.Player import Player
+from PlayerUser import PlayerUser
 
 
 def manhattan_distance(pos1, pos2):
@@ -21,9 +21,10 @@ def make_of_type(name, ctype, ID):
         return Ghost(ID, name)
 
 
-class AdversaryDriver(Player):
+class AdversaryDriver(PlayerUser):
 
     def __init__(self, name, ctype, ID):
+        super().__init__(name, type, ID)
         self.adversary = make_of_type(name, ctype, ID)
         self.layout = None
         self.move_sequence = []

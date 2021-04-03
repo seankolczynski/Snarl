@@ -1,11 +1,12 @@
-from abc import ABC
+from Common.Observer import Observer
 
 
-class PlayerUser(ABC):
+class PlayerUser(Observer):
 
-    def __init__(self, name, type, ID, moves):
+    def __init__(self, name, type, ID):
+        super().__init__(id)
         self.layout = None
-        self.move_sequence = moves
+        self.move_sequence = []
         self.ID = ID
         self.type = type
         self.gameState = None
