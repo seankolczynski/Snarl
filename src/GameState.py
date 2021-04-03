@@ -39,7 +39,7 @@ class GameState:
         for i in range(9223372036854775807):
             rando_tile_pos = (randrange(row-1), randrange(cols-1))
             rando_tile = current_floor.get_tile_at(rando_tile_pos)
-            if not isinstance(rando_tile, WallTile) and not isinstance(rando_tile, ExitTile)  and rando_tile.get_character() == None and rando_tile.get_all_items() == []:
+            if not isinstance(rando_tile, WallTile) and not isinstance(rando_tile, ExitTile) and rando_tile.get_character() is None and rando_tile.get_all_items() == []:
                 return rando_tile
         raise ValueError("Level given does not support a character being placed")
 
@@ -81,10 +81,10 @@ class GameState:
                 self.unlocked = self.current_floor.check_if_unlocked()
             if message is not None and "Key" in message['message']:
                 print("Player " + character.get_name() + " picked up a key")
-                self.character_to_keys[character.get_id()] = self.character_to_keys[character] + 1
+                self.character_to_keys[character.get_id()] = self.character_to_keys[character.get_id()] + 1
             if self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
                 self.exited.append(character)
-                self.character_to_exits[character.get_id()] = self.character_to_exits[character] + 1
+                self.character_to_exits[character.get_id()] = self.character_to_exits[character.get_id()] + 1
                 self.update_status()
                 destination.remove_character()
                 print("Player " + character.get_name() + " exited")

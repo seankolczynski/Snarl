@@ -2,7 +2,7 @@ import sys
 
 from Structures.Tile import Tile, WallTile, ExitTile
 
-sys.path.append("../src/")
+
 import unittest
 
 

@@ -125,4 +125,7 @@ class ExitTile(Tile):
         super().__init__(pos)
 
     def draw(self):
-        return "e"
+        if self.character is None:
+            return "e"
+        else:
+            return self.character.get_ctype().draw()

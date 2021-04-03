@@ -4,7 +4,7 @@ from AdversaryDriver import AdversaryDriver
 from Beings.Adversary import Adversary
 from Structures.Floor import Floor
 from Structures.Room import Room
-from Structures.Tile import Tile, WallTile, ExitTile
+from Structures.Tile import WallTile, ExitTile
 from Structures.Hallway import Hallway
 import json
 

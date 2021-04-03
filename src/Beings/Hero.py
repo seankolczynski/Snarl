@@ -1,7 +1,6 @@
 from Beings.Character import Character
 from Enums.CharacterType import CharacterType
 
-
 class Hero (Character):
 
     def __init__(self, speed, id, name):
