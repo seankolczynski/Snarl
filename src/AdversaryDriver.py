@@ -78,7 +78,7 @@ class AdversaryDriver(Player):
     """Draws the """
 
     def render(self):
-        self.layout = self.gameState.render_in_range(self.position, 2)
+        self.layout = self.gameState.render()
         return self.layout
 
     def get_position(self):
