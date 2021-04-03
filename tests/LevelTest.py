@@ -1,12 +1,11 @@
 import io
 import sys
-
-
 import unittest
+
 import GameState
 from Beings import Hero
-from Structures import Room, Floor, Hallway
 from Beings.Adversary import Adversary
+from Structures import Room, Floor, Hallway
 
 
 class MyTestCase(unittest.TestCase):

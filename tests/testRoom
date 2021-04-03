@@ -2,9 +2,9 @@
 import json
 import unittest
 import sys
-sys.path.append("../src/")
-from Tile import WallTile, Tile
-from Room import Room
+
+from Structures.Tile import WallTile
+from Structures.Room import Room
 
 
 

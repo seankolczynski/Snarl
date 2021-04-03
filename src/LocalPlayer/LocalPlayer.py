@@ -25,6 +25,8 @@ class LocalPlayer(Player):
 
     def request_move(self):
         move = input("Make a move:")
+        if move == "":
+            return self.position
         move_split = move.split(" ")
         if len(move_split) == 2:
             move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")

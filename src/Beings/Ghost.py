@@ -1,6 +1,6 @@
 from Beings.Adversary import Adversary
 from Enums.CharacterType import CharacterType
-from Structures.Tile import WallTile, Tile, ExitTile
+from Structures.Tile import WallTile
 import random
 
 

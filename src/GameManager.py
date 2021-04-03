@@ -6,8 +6,6 @@ from Enums.Status import Status
 from Beings.Zombie import Zombie
 from Beings.Ghost import Ghost
 from Enums.CharacterType import CharacterType
-import Enums.CharacterType as CT
-import json
 from AdversaryDriver import AdversaryDriver
 import math
 """

@@ -2,7 +2,6 @@ import random
 from Beings.Character import Character
 from Enums.CharacterType import CharacterType
 from Structures.Tile import Tile, ExitTile
-from Structures.Hallway import Hallway
 
 
 class Adversary(Character):
