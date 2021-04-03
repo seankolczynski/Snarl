@@ -96,6 +96,7 @@ class GameManager:
     Initialize the game and maintains the loop that keeps it running
     """
     def start_game(self):
+        self.update_gamestate()
         self.init_Rule_Checker()
         numLevels = self.game.get_num_levels()
         current_level = 1
