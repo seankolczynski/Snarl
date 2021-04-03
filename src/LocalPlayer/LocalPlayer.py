@@ -65,7 +65,7 @@ class LocalPlayer(Player):
 
     # This is a stub for testing
     def set_moves(self, moves):
-        pass
+        self.move_sequence = moves
 
     def transmit_message(self, message):
         print(message)

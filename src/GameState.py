@@ -2,6 +2,7 @@ from Structures.Tile import WallTile
 from Enums.Status import Status
 from random import randrange
 from Enums.CharacterType import CharacterType
+from collections import defaultdict
 
 
 class GameState:
@@ -27,8 +28,8 @@ class GameState:
         self.exited = []
         self.ejected = []
         self.current_status = Status.INPROGRESS
-        self.character_to_exits = {}
-        self.character_to_keys = {}
+        self.character_to_exits = defaultdict(int)
+        self.character_to_keys = defaultdict(int)
 
     def get_random_empty_tile(self):
         current_floor = self.get_current_floor()

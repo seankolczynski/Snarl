@@ -11,6 +11,7 @@ from GameState import GameState
 from GameManager import GameManager
 from Beings.Adversary import Adversary
 from LocalPlayer.LocalPlayer import LocalPlayer
+from Enums.Status import Status
 
 
 
@@ -33,6 +34,7 @@ def managerMaker(jsonStuff):
         newUser.set_moves(actorMoveLL[index])
         manager.register_player_user(newUser)
         testState.move_player_via_id(index, translate_to_xy(ptList[index]))
+        newUser.set_moves(actorMoveLL[index])
         users.append(newUser)
         index = index + 1
     while index < len(ptList):
@@ -65,7 +67,7 @@ def artificial_game_run(maxi, manager, users, level):
             for user2 in users:
                 if user2.position is not None:
                     JSON_response.append([user2.get_name(), player_update_gather(user2)])
-            if manager.game.is_over():
+            if manager.current_status == Status.WON or manager.current_status == Status.LOST:
                 return json.dumps([stateToJSON(manager.game, level), JSON_response])
             turn_index = turn_index + 1
         round_number = round_number + 1
@@ -133,7 +135,9 @@ def moves_parser(listOfLists):
     for moveset in listOfLists:
         moveList = []
         for move in moveset:
-            moveList.append(translate_to_xy(move["to"]))
+            move_raw = translate_to_xy(move["to"])
+            move_string = str([move_raw[0], move_raw[1]])
+            moveList.append(move_string)
         moveBook.append(moveList)
     return moveBook
 

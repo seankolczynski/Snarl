@@ -105,7 +105,6 @@ class GameManager:
                 self.move_to_new_level()
                 current_level = current_level + 1
                 self.update_gamestate()
-
         if self.current_status == Status.WON:
             self.player_message("You won!")
         elif self.current_status == Status.LOST:
@@ -128,10 +127,6 @@ class GameManager:
             if user.get_type == CharacterType.PLAYER:
                 final_stats[user] = (0, 0)
 
-
-
-
-
     """
     int -> JSON
     Executes a single turn the user whose turn it currently is. This includes receiving moves until one is approved, 
@@ -147,9 +142,9 @@ class GameManager:
             try:
                 move_raw = current_user.request_move()
                 move_json = json.loads(move_raw)
-                if not (isinstance(int, move_json[0])):
+                if not (isinstance(move_json[0], int)):
                     raise ValueError("the first value is not a number")
-                if not (isinstance(int, move_json[1])):
+                if not (isinstance(move_json[1], int)):
                     raise ValueError("the second value is not a number")
                 move = (move_json[0], move_json[1])
             except ValueError:
