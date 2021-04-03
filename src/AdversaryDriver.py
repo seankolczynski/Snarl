@@ -59,7 +59,7 @@ class AdversaryDriver(PlayerUser):
             self.position = pos
             self.defaults = self.adversary.default_moves(self.position, self.gameState)
         if pos is not None:
-            self.render()
+            self.render(pos)
             new_options = self.pick_moves()
             new_options.extend(self.defaults)
             self.move_sequence = new_options
@@ -77,9 +77,10 @@ class AdversaryDriver(PlayerUser):
 
     """Draws the """
 
-    def render(self):
-        self.layout = self.gameState.render()
-        return self.layout
+    def render(self, pos):
+        pass
+        # self.layout = self.gameState.render()
+        # return self.layout
 
     def get_position(self):
         return self.position

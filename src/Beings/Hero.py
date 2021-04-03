@@ -28,3 +28,6 @@ class Hero (Character):
         self.alive = False
         self.current_tile.remove_character()
         self.current_tile = None
+
+    def resurrect(self):
+        self.alive = True

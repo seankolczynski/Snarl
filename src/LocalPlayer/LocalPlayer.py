@@ -49,6 +49,7 @@ class LocalPlayer(PlayerUser):
             self.render(pos)
 
     def render(self, pos):
+        print(self.name + "'s View:")
         return self.gameState.render_in_range(pos, 2)
 
     """For Tests"""
