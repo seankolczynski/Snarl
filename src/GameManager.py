@@ -126,6 +126,8 @@ class GameManager:
         for user in self.ID_to_user_character:
             if user.get_type == CharacterType.PLAYER:
                 final_stats[user] = (0, 0)
+        
+
 
     """
     int -> JSON
