@@ -27,12 +27,12 @@ if __name__ == "__main__":
     ap.add_argument("--levels", help="path to level spec", action="store", default="snarl.levels")
     ap.add_argument("--players", help="number of players", action="store", type=int, default=1)
     ap.add_argument("--start", help="Level to start from", action="store", type=int, default=1)
-    ap.add_argument("--observe", help="Level to start from", action="store", type=int, default=1)
+    ap.add_argument("--observe", help="Level to start from", action="store", type=int, default=0)
 
     args = ap.parse_args()
-    # if args.players != 1:
-    #     raise ValueError("Illegal amount of players given")
-    # print(args.players)
+    if args.players >= 4:
+        raise ValueError("Illegal amount of players given")
+    print(args.players)
 
     list_of_players = []
     for id in range(0, args.players):
