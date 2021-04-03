@@ -14,16 +14,16 @@ from LocalPlayer.LocalPlayer import LocalPlayer
 import Common.JSONToLevel as JLevel
 from GameState import GameState
 from GameManager import GameManager
+from Enums.CharacterType import CharacterType
 
-# define our clear function
-def clear():
-    # for windows
-    if name == 'nt':
-        _ = system('cls')
+# def clear():
+#     # for windows
+#     if name == 'nt':
+#         _ = system('cls')
 
-    # for mac and linux(here, os.name is 'posix')
-    else:
-        _ = system('clear')
+#     # for mac and linux(here, os.name is 'posix')
+#     else:
+#         _ = system('clear')
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -36,13 +36,13 @@ if __name__ == "__main__":
     args = ap.parse_args()
     if args.players != 1:
         raise ValueError("Illegal amount of players given")
-    print(args.players)
+    # print(args.players)
 
     uuid = 1
     list_of_players = []
     for i in range(0, args.players):
-        char_name = input("enter a name for your character")
-        new_player = LocalPlayer(char_name, "player", uuid, [])
+        char_name = input("enter a name for your character: ")
+        new_player = LocalPlayer(char_name, CharacterType.PLAYER, uuid)
         list_of_players.append(new_player)
 
     path_to_levels = args.levels
@@ -51,6 +51,7 @@ if __name__ == "__main__":
         levels_raw = levels.read()
         levels.close()
         parsed_levels = levels_raw.split("\n")
+        print(len(parsed_levels))
         floors = []
         if len(parsed_levels) == 1 or int(parsed_levels[0]) != len(parsed_levels[1:]):
             raise ValueError("invalid levels file format")
@@ -63,6 +64,8 @@ if __name__ == "__main__":
         init_gamestate = GameState(floors)
         init_gamemanager = GameManager(init_gamestate)
         init_gamemanager.set_starting_level(start_level_index)
+        init_gamemanager.start_game()
+ 
 
 
 
