@@ -171,6 +171,8 @@ class GameState:
             self.unlocked = self.lock_status()
             self.exited = []
             self.ejected = []
+            for player in self.players:
+                player.resurrect()
             self.current_status = Status.INPROGRESS
         else:
             raise ValueError("Out of levels")
