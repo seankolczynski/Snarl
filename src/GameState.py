@@ -3,6 +3,7 @@ from Enums.Status import Status
 from random import randrange
 from Enums.CharacterType import CharacterType
 from collections import defaultdict
+from Beings.Adversary import Adversary
 
 
 class GameState:
@@ -46,45 +47,20 @@ class GameState:
         z_c = 0
         g_c = 0
         for adver in self.get_adversaries():
-            if adver.get_ctype() == CharacterType.Ghost:
+            if adver.get_ctype() == CharacterType.GHOST:
                 g_c += 1
             else:
                 z_c += 1
         return(z_c, g_c)
    
-        
 
     def add_player(self, player):
-        # if len(self.players) == 4:
-        #     raise UserWarning("No more than 4 players can play at one time")
-        # start = self.current_floor.rooms[0]
-        # offX, offY = self.start_player_position
-        # self.players.append(player)
-        # tile = self.current_floor.grid[offX][offY]
-        # while type(tile) != Tile or tile.character is not None or tile.room is not start:
-        #     offX = offX + 1
-        #     if offX > start.upperLeft[0] + start.width:
-        #         offX = start.upperLeft[0]
-        #         offY = offY + 1
-        #     tile = self.current_floor.grid[offX][offY]
         self.players.append(player)
-        self.move_character(player, (3, 4))
-        # self.move_character(player, self.get_random_empty_tile().get_position())
-        self.character_to_exits[player] = 0
-        self.character_to_keys[player] = 0
+        self.move_character(player, self.get_random_empty_tile().get_position())
+        self.character_to_exits[player.get_id()] = 0
+        self.character_to_keys[player.get_id()] = 0
 
     def add_adversary(self, adversary):
-        # start = self.current_floor.rooms[len(self.current_floor.rooms) - 1]
-        # offX, offY = self.start_adversary_position
-        # self.adversaries.append(adversary)
-        # tile = self.current_floor.grid[offX][offY]
-        # while type(tile) != Tile or tile.character is not None or tile.room is not start:
-        #     offX = offX + 1
-        #     if offX > start.upperLeft[0] + start.width:
-        #         offX = start.upperLeft[0]
-        #         offY = offY + 1
-        #     tile = self.current_floor.grid[offX][offY]
-        # adversary.move(tile)
         self.adversaries.append(adversary)
         self.move_character(adversary, self.get_random_empty_tile().get_position())
 
@@ -100,29 +76,37 @@ class GameState:
         destination = self.current_floor.grid[pos[0]][pos[1]]
         if not isinstance(destination, WallTile):
             message = character.move(destination)
-            if message is not None and "Ejected" in message['message']:
-                print("Player " + character.get_name() + " was expelled")
-                self.ejected.append(character)
-                self.update_status()
             # Checks if the player just moved to the exit
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
-            if message is not None and "Key" in message:
+            if message is not None and "Key" in message['message']:
                 print("Player " + character.get_name() + " picked up a key")
-                self.character_to_keys[character] = self.character_to_keys[character] + 1
-            if self.unlocked and destination == self.current_floor.get_exit():
+                self.character_to_keys[character.get_id()] = self.character_to_keys[character] + 1
+            if self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
                 self.exited.append(character)
-                self.character_to_exits[character] = self.character_to_exits[character] + 1
+                self.character_to_exits[character.get_id()] = self.character_to_exits[character] + 1
                 self.update_status()
                 destination.remove_character()
                 print("Player " + character.get_name() + " exited")
-                return {"success": True, "message": "Exited"}
-            return message
+                message = {"success": True, "message": "Exited"}
+
         else:
             if character.get_ctype() == CharacterType.GHOST:
-                return character.move(character.special_move(self.current_floor))
+                message = character.move(character.special_move(self.current_floor))
             else:
-                return {"success": False, "message": "WallTile"}
+                message = {"success": False, "message": "WallTile"}
+        if isinstance(character, Adversary):
+            self.who_died()
+        return message
+
+    def who_died(self):
+        for player in self.players:
+            if not player.is_alive() and player not in self.ejected:
+                self.ejected.append(player)
+                print("Player " + player.get_name() + " was expelled")
+        for monster in self.adversaries:
+            if not monster.is_alive() and monster not in self.ejected:
+                print("Monster " + monster.get_name() + " was expelled")
 
     def move_player_via_id(self, id, pos):
         return self.move_character(self.players[id], pos)
@@ -176,6 +160,7 @@ class GameState:
             self.current_status = Status.INPROGRESSWON
 
     def get_status(self):
+        self.update_status()
         return self.current_status
 
     def next_level(self):
@@ -195,7 +180,6 @@ class GameState:
             if itemPosn[0] == "Key" or itemPosn[0] == "key":
                 return False
         return True
-
 
 
     def get_intermediate_state(self):

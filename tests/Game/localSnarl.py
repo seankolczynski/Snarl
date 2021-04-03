@@ -3,6 +3,7 @@ import sys
 from os import system, name
 import json
 import math
+
 sys.path.append("../../src/")
 # sys.path.append("../../src/Common")
 # sys.path.append("../../src/Enums")
@@ -44,34 +45,28 @@ if __name__ == "__main__":
         new_player = LocalPlayer(char_name, CharacterType.PLAYER, id)
         list_of_players.append(new_player)
 
-
     path_to_levels = args.levels
-    try:
-        levels = open(path_to_levels)
-        levels_raw = levels.read()
-        levels.close()
-        parsed_levels = levels_raw.split("\n")
-        print(len(parsed_levels))
-        floors = []
-        if len(parsed_levels) == 1 or int(parsed_levels[0]) != len(parsed_levels[1:]):
-            raise ValueError("invalid levels file format")
-        for i in range(1, len(parsed_levels)):
-            level = parsed_levels[i]
-            floors.append(JLevel.floorMaker(json.loads(level)))
-        if args.start > len(floors) or args.start < 1:
-            raise ValueError("invalid floor index")
-        start_level_index = args.start - 1
-        init_gamestate = GameState(floors)
-        init_gamemanager = GameManager(init_gamestate)
-        for player in list_of_players:
-            init_gamemanager.register_player_user(player)
-        init_gamemanager.set_starting_level(start_level_index)
-        init_gamemanager.start_game()
- 
 
+    levels = open(path_to_levels)
+    levels_raw = levels.read()
+    levels.close()
+    parsed_levels = levels_raw.split("\n")
+    print(len(parsed_levels))
+    floors = []
+    if len(parsed_levels) == 1 or int(parsed_levels[0]) != len(parsed_levels[1:]):
+        raise ValueError("invalid levels file format")
+    for i in range(1, len(parsed_levels)):
+        level = parsed_levels[i]
+        floors.append(JLevel.floorMaker(json.loads(level)))
+    if args.start > len(floors) or args.start < 1:
+        raise ValueError("invalid floor index")
+    start_level_index = args.start - 1
+    init_gamestate = GameState(floors)
+    init_gamemanager = GameManager(init_gamestate)
+    for player in list_of_players:
+        init_gamemanager.register_player_user(player)
+    init_gamemanager.set_starting_level(start_level_index)
+    init_gamemanager.start_game()
 
-
-    except ValueError:
-        print("Input files level given is not valid")
 
 

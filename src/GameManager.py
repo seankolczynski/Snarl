@@ -50,11 +50,12 @@ class GameManager:
             self.move_to_new_level()
             
     def move_to_new_level(self):
+        self.current_status = Status.INPROGRESS
         self.game.next_level()
-        self.generate_adversaryies()
+        self.generate_adversaries()
 
-    def generate_adversaryies(self):
-        curr_floor = self.game.get_current_floor_index()
+    def generate_adversaries(self):
+        curr_floor = self.game.get_current_floor_index() + 1
         for player in self.game.players:
             self.game.move_character(player, self.game.get_random_empty_tile().get_position())
         (already_z, already_g) = self.game.get_count_adversary()
@@ -75,7 +76,7 @@ class GameManager:
             while True:
                 target = self.game.get_random_empty_tile()
                 if adv.fit_the_bill(target):
-                    adv.move(self.game.get_random_empty_tile())
+                    adv.move(target)
                     break
 
     """
@@ -106,7 +107,7 @@ class GameManager:
     Initialize the game and maintains the loop that keeps it running
     """
     def start_game(self):
-        self.generate_adversaryies()
+        self.generate_adversaries()
         self.update_gamestate()
         self.init_Rule_Checker()
         self.current_status = Status.INPROGRESS
@@ -119,9 +120,9 @@ class GameManager:
                 current_level = current_level + 1
                 self.update_gamestate()
         if self.current_status == Status.WON:
-            self.player_message("You won!")
+            print("You won!")
         elif self.current_status == Status.LOST:
-            self.player_message("Lost on level " + current_level)
+            print("Lost on level " + str(current_level))
         self.end_game_stats()
 
 
@@ -129,20 +130,20 @@ class GameManager:
         current_character_turn = 0
         while self.current_status == Status.INPROGRESS or self.current_status == Status.INPROGRESSWON:
             if self.rule_checker.character_alive(self.ID_to_user_character[current_character_turn][1]):
-                self.take_turn(current_character_turn)
+                self.series_of_messages(self.take_turn(current_character_turn), current_character_turn)
                 self.current_status = self.rule_checker.getGameStatus()
             current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
 
     def end_game_stats(self):
         key_dict, exit_dict = self.game.get_stats()
         final_stats = {}
-        get_name = (lambda x: self.ID_to_user_character[x].get_name)
+        get_name = (lambda x: self.ID_to_user_character[x][1].get_name())
         for user in self.ID_to_user_character.keys():
-            if self.ID_to_user_character[user].get_type == CharacterType.PLAYER:
+            if self.ID_to_user_character[user][1].get_ctype() == CharacterType.PLAYER:
                 final_stats[user] = (key_dict[user], exit_dict[user])
         final_stats = {k: v for k, v in sorted(final_stats.items(), key=lambda item: item[1])}
         for user in final_stats.keys():
-            print(get_name(user) +  "exited " + final_stats[user][1] + "times and picked up " + final_stats[user][0] + " keys" )
+            print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
 
 
     """
@@ -183,18 +184,20 @@ class GameManager:
             observer.update_state(SimpleState(self.game.get_current_floor().grid))
 
     def player_message(self, message):
-        for user in self.ID_to_user_character.keys():
-            user.transmit_message(message)
+        for user in self.ID_to_user_character.values():
+            user[0].transmit_message(message)
 
-    def series_of_messages(self, ListOfMessages):
-        player_name = ""
-        for message in ListOfMessages:
-            if "key" in message or "Key" in message:
-                self.player_message("Player " + player_name + " found the key")
-            elif "Exited" in message:
-                self.player_message("Player  " + player_name + " exited")
-            elif "Ejected" in message:
-                self.player_message("Player  " + player_name + " was expelled")
+    def series_of_messages(self, ListOfMessages, current_turn):
+        player_name = self.ID_to_user_character[current_turn][0].get_name()
+        # for message in ListOfMessages:
+        #     if message is None or message[1] is None or message[1]['message'] is None:
+        #         continue
+        #     if "Key" in message[1]['message']:
+        #         self.player_message("Player " + player_name + " found the key")
+        #     elif "Exited" in message[1]['message']:
+        #         self.player_message("Player  " + player_name + " exited")
+        #     elif "Ejected" in message[1]['message']:
+        #         self.player_message("Player  " + player_name + " was expelled")
 
 
     """

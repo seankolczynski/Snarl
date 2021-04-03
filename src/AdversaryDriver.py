@@ -36,7 +36,7 @@ class AdversaryDriver(Player):
         return self.adversary.get_id()
 
     def get_type(self):
-        return self.adversary.get_type
+        return self.adversary.get_type()
 
     def get_name(self):
         return self.adversary.get_name

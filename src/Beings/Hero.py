@@ -24,3 +24,8 @@ class Hero (Character):
         else:
             message = {"success": False, "message": "Occupied by another player"}
             return message
+
+    def kill(self):
+        self.alive = False
+        self.current_tile.remove_character()
+        self.current_tile = None

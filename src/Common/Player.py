@@ -2,4 +2,6 @@ from abc import ABC, abstractmethod
 
 
 class Player(ABC):
-    pass
+
+    def transmit_message(self, message):
+        pass

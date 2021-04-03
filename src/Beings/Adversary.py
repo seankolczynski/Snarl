@@ -10,14 +10,14 @@ class Adversary(Character):
     def __init__(self, speed, id, name, ctype, FOV_radius):
         super().__init__(speed, id, name, ctype, FOV_radius)
         self.ID = id
-        self.type = ctype
+        self.ctype = ctype
         self.name = name
 
     def get_id(self):
         return self.ID
 
     def get_type(self):
-        return self.type
+        return self.ctype
 
     def get_name(self):
         return self.name
@@ -54,8 +54,8 @@ class Adversary(Character):
                and not isinstance(target_tile.get_character(), Adversary)
 
     def move(self, tile):
-        special = self.special(tile)
         occupant = tile.get_character()
+        message = None
         if occupant is None or occupant == self:
             if self.current_tile is not None:
                 self.current_tile.remove_character()
@@ -64,7 +64,10 @@ class Adversary(Character):
             return message
         elif occupant.get_ctype() == CharacterType.PLAYER:
             occupant.kill()
-            message = {"success": True, "message": "Ejected " + occupant.get_name()}
+            if self.current_tile is not None:
+                self.current_tile.remove_character()
+            self.current_tile = tile
+            tile.add_character(self)
             return message
         else:
             message = {"success": False, "message": "Occupied by another adversary"}

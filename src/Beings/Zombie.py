@@ -3,6 +3,7 @@ import random
 from Beings.Adversary import Adversary
 from Structures.Tile import Tile, ExitTile
 from Enums.CharacterType import CharacterType
+from Structures.Hallway import Hallway
 
 
 class Zombie(Adversary):
@@ -22,5 +23,6 @@ class Zombie(Adversary):
         return default
 
     def fit_the_bill(self, target_tile):
-        return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) and not target_tile.is_door() and not isinstance(target_tile.get_character(), Adversary)
+        return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) \
+               and not target_tile.is_door() and not isinstance(target_tile.get_room(), Hallway) and not isinstance(target_tile.get_character(), Adversary)
 
