@@ -28,6 +28,7 @@ class GameManager:
         self.rule_checker = RuleChecker(initial_gamestate)
         self.current_status = Status.NOGAME
         self.observers = []
+        self.current_level_id = 1
 
     """
     Player -> Void
@@ -44,6 +45,7 @@ class GameManager:
         self.game.add_adversary(adversary)
 
     def set_starting_level(self, index):
+        self.current_level_id = index
         for i in range(index):
             self.move_to_new_level()
             
@@ -114,7 +116,7 @@ class GameManager:
         self.init_Rule_Checker()
         self.current_status = Status.INPROGRESS
         numLevels = self.game.get_num_levels()
-        current_level = 1
+        current_level = self.current_level_id
         while current_level <= numLevels and self.current_status != Status.LOST:
             self.run_level()
             if self.current_status == Status.WON:
