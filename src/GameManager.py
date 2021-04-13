@@ -22,13 +22,14 @@ Outside of this loop, it also needs to start and end the game
 
 class GameManager:
 
-    def __init__(self, initial_gamestate):
+    def __init__(self, initial_gamestate, server):
         self.game = initial_gamestate
         self.ID_to_user_character = {}
         self.rule_checker = RuleChecker(initial_gamestate)
         self.current_status = Status.NOGAME
         self.observers = []
         self.current_level_id = 1
+        self.server = server
 
     """
     Player -> Void
