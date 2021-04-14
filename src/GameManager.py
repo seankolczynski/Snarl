@@ -136,7 +136,7 @@ class GameManager:
         current_character_turn = 0
         while self.current_status == Status.INPROGRESS or self.current_status == Status.INPROGRESSWON:
             if self.rule_checker.character_alive(self.ID_to_user_character[current_character_turn][1]):
-                self.series_of_messages(self.take_turn(current_character_turn), current_character_turn)
+                self.take_turn(current_character_turn), current_character_turn
                 self.current_status = self.rule_checker.getGameStatus()
             current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
 
@@ -159,7 +159,7 @@ class GameManager:
     Also provides a JSON update of what occurred on the turn
     """
     def take_turn(self, turn_index):
-        responses = []
+        response = None
         current_character = self.ID_to_user_character[turn_index][1]
         current_user = self.ID_to_user_character[turn_index][0]
         move = None
@@ -170,13 +170,23 @@ class GameManager:
                 return "Done"
             if self.rule_checker.validateMove(turn_index, move):
                 break
-            responses.append((move, {"success": False, "message": "Invalid"}))
+            response = (move, {"success": False, "message": "Invalid"})
+            self.give_result(response)
         if move is None:
-            responses.append((move, {"success": True, "message": "OK"}))
-            return responses
-        responses.append((move, self.game.move_character(current_character, move)))
+            response = ((move, {"success": True, "message": "OK"}))
+            self.give_result(response)
+            return response
+        response = (move, self.game.move_character(current_character, move))
+        self.give_result(response)
         self.update_gamestate()
-        return responses
+        return response
+
+
+    def give_result(self, result):
+        if result is None or result[1] is None or result[1]['message'] is None:
+            pass
+        else:
+            self.server.write(result[1]['message'])
 
     """
     Void
@@ -192,18 +202,6 @@ class GameManager:
     def player_message(self, message):
         for user in self.ID_to_user_character.values():
             user[0].transmit_message(message)
-
-    def series_of_messages(self, ListOfMessages, current_turn):
-        player_name = self.ID_to_user_character[current_turn][0].get_name()
-        # for message in ListOfMessages:
-        #     if message is None or message[1] is None or message[1]['message'] is None:
-        #         continue
-        #     if "Key" in message[1]['message']:
-        #         self.player_message("Player " + player_name + " found the key")
-        #     elif "Exited" in message[1]['message']:
-        #         self.player_message("Player  " + player_name + " exited")
-        #     elif "Ejected" in message[1]['message']:
-        #         self.player_message("Player  " + player_name + " was expelled")
 
 
     """
