@@ -280,3 +280,9 @@ def translate_to_xy(rowCol):
         return rowCol
     y, x = rowCol
     return (x, y)
+
+def translate_to_rowCol(xy):
+    if xy == None:
+        return xy
+    y, x = xy
+    return [y, x]
