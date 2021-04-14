@@ -57,12 +57,21 @@ class Server():
         for conn in self.id_to_conn.values():
             conn.sendall(bytes({"type": "start-level", "level": self.start_level, "players": self.list_of_players })) 
     
-    def read(self):
-    
+    def read(self, ID):
+        current_conn = self.id_to_conn[ID]
+        current_conn.sendall(bytes("move"))
+        data = None
+        while data == None:
+            data = current_conn.recv(1024)
+        return json.loads(str(data))
+        
     def write(self,str1):
          for conn in self.id_to_conn.values():
             conn.sendall(bytes(str1))  
-
+    
+    def close(self):
+        self.server.close()
+ 
     def start_new_level(self, level_num)
         for conn in self.id_to_conn.values():
             conn.sendall(bytes({"type": "start-level", "level": level_num+1, "players": self.list_of_players })) 

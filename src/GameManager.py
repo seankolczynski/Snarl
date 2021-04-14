@@ -54,6 +54,13 @@ class GameManager:
             
     def move_to_new_level(self):
         self.current_status = Status.INPROGRESS
+        output = {
+            "type": "end-level",
+            "key": self.game.key_holder(),
+            "exits": self.game.exited(),
+            "ejects": self.game.ejected()
+        }
+        self.server.write(output)
         self.game.next_level()
         self.generate_adversaries()
 
@@ -133,6 +140,7 @@ class GameManager:
         elif self.current_status == Status.LOST:
             print("Lost on level " + str(current_level))
         self.end_game_stats()
+        self.server.close()
 
 
     def run_level(self):
@@ -151,9 +159,25 @@ class GameManager:
             if self.ID_to_user_character[user][1].get_ctype() == CharacterType.PLAYER:
                 final_stats[user] = (key_dict[user], exit_dict[user])
         final_stats = {k: v for k, v in sorted(final_stats.items(), key=lambda item: item[1])}
+        score_list = []
         for user in final_stats.keys():
-            print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
+            score_list.append(
+                {
+                    "type": "player-score",
+                    "name": get_name(user),
+                    "exits": final_stats[user][1],
+                    "keys": final_stats[user][0],
+                    "ejected": final_stats[user][2]
 
+
+                }
+            )
+            # print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
+        output = {
+            "type": "end-game",
+            "scores": score_list
+        }
+        self.server.write(output)
 
     """
     int -> JSON
@@ -168,7 +192,7 @@ class GameManager:
         move = None
         while True:
             try:
-                move = current_user.request_move()
+                move = current_user.request_move(self.server)
             except ValueError:
                 return "Done"
             if self.rule_checker.validateMove(turn_index, move):

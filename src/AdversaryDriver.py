@@ -43,7 +43,7 @@ class AdversaryDriver(PlayerUser):
 
     """Called by the GameManager, requests the first of the list of options"""
 
-    def request_move(self):
+    def request_move(self, server):
         if len(self.move_sequence) > 0:
             move = self.move_sequence.pop(0)
             # if move is None:

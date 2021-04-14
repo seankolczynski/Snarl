@@ -22,7 +22,7 @@ class PlayerUser(Observer):
     def get_name(self):
         return self.name
 
-    def request_move(self):
+    def request_move(self, server):
         if len(self.move_sequence) > 0:
             move = self.move_sequence.pop(0)
             #if move is None:
