@@ -32,6 +32,7 @@ class GameState:
         self.current_status = Status.INPROGRESS
         self.character_to_exits = defaultdict(int)
         self.character_to_keys = defaultdict(int)
+        self.key_holder = None
 
     def get_random_empty_tile(self):
         current_floor = self.get_current_floor()
@@ -80,6 +81,7 @@ class GameState:
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
             if message is not None and "Key" in message['message']:
+                self.key_holder = character.get_name()
                 print("Player " + character.get_name() + " picked up a key")
                 self.character_to_keys[character.get_id()] = self.character_to_keys[character.get_id()] + 1
             if self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
@@ -183,6 +185,8 @@ class GameState:
                 return False
         return True
 
+    def who_has_key(self):
+        return self.key_holder
 
     def get_intermediate_state(self):
         acc = ""
