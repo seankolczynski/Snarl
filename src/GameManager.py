@@ -53,6 +53,7 @@ class GameManager:
             self.move_to_new_level()
             
     def move_to_new_level(self):
+
         self.current_status = Status.INPROGRESS
         output = {
             "type": "end-level",
@@ -116,6 +117,8 @@ class GameManager:
 
     def register_observer(self, observer):
         self.observers.append(observer)
+
+
 
     """
     Initialize the game and maintains the loop that keeps it running
