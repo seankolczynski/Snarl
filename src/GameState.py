@@ -32,6 +32,7 @@ class GameState:
         self.current_status = Status.INPROGRESS
         self.character_to_exits = defaultdict(int)
         self.character_to_keys = defaultdict(int)
+        self.character_to_ejects = defaultdict(int)
         self.key_holder = None
 
     def get_random_empty_tile(self):
@@ -60,6 +61,7 @@ class GameState:
         self.move_character(player, self.get_random_empty_tile().get_position())
         self.character_to_exits[player.get_id()] = 0
         self.character_to_keys[player.get_id()] = 0
+        self.character_to_ejects[player.get_id()] = 0
 
     def add_adversary(self, adversary):
         self.adversaries.append(adversary)
@@ -105,6 +107,7 @@ class GameState:
         for player in self.players:
             if not player.is_alive() and player not in self.ejected:
                 self.ejected.append(player)
+                self.character_to_ejects[player.get_id()] = self.character_to_ejects[player.get_id()] + 1
                 print("Player " + player.get_name() + " was expelled")
         for monster in self.adversaries:
             if not monster.is_alive() and monster not in self.ejected:
@@ -144,7 +147,7 @@ class GameState:
         return len(self.dungeon)
 
     def get_stats(self):
-        return self.character_to_keys, self.character_to_exits
+        return self.character_to_keys, self.character_to_exits, self.character_to_ejects
 
     def unlock(self):
         self.unlocked = True
