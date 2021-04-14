@@ -60,7 +60,12 @@ class Server():
     def read(self):
     
     def write(self,str1):
+         for conn in self.id_to_conn.values():
+            conn.sendall(bytes(str1))  
 
+    def start_new_level(self, level_num)
+        for conn in self.id_to_conn.values():
+            conn.sendall(bytes({"type": "start-level", "level": level_num+1, "players": self.list_of_players })) 
       
 
 
@@ -95,7 +100,7 @@ if __name__ == "__main__":
 
     start_level_index = args.start - 1
     init_gamestate = GameState(floors)
-    init_gamemanager = GameManager(init_gamestate, server)
+    init_gamemanager = GameManager(init_gamestate, server, parsed_levels)
     for player in server.list_of_players:
         init_gamemanager.register_player_user(player)
     if args.observe == 1:

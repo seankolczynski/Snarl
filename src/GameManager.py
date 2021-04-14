@@ -7,6 +7,7 @@ from Beings.Zombie import Zombie
 from Beings.Ghost import Ghost
 from Enums.CharacterType import CharacterType
 from AdversaryDriver import AdversaryDriver
+import Common.JSONToLevel as JLevel
 import math
 """
 The cycle of the game manager:
@@ -22,7 +23,7 @@ Outside of this loop, it also needs to start and end the game
 
 class GameManager:
 
-    def __init__(self, initial_gamestate, server):
+    def __init__(self, initial_gamestate, server, layout_list):
         self.game = initial_gamestate
         self.ID_to_user_character = {}
         self.rule_checker = RuleChecker(initial_gamestate)
@@ -30,6 +31,7 @@ class GameManager:
         self.observers = []
         self.current_level_id = 1
         self.server = server
+        self.layout_list = layout_list
 
     """
     Player -> Void
@@ -113,7 +115,7 @@ class GameManager:
     """
     def start_game(self):
         self.generate_adversaries()
-        self.update_gamestate()
+        self.update_gamestate(None)
         self.init_Rule_Checker()
         self.current_status = Status.INPROGRESS
         numLevels = self.game.get_num_levels()
@@ -123,8 +125,9 @@ class GameManager:
             if self.current_status == Status.WON:
                 if current_level < numLevels:
                     self.move_to_new_level()
+                    self.server.start_new_level(current_level+1)
                 current_level = current_level + 1
-                self.update_gamestate()
+                self.update_gamestate(None)
         if self.current_status == Status.WON:
             print("You won!")
         elif self.current_status == Status.LOST:
@@ -192,12 +195,22 @@ class GameManager:
     Void
     Updates all players on the most recent version of the game
     """
-    def update_gamestate(self):
+    def update_gamestate(self, move):
         for user in self.ID_to_user_character.keys():
             userPos = self.ID_to_user_character[user][1].get_char_position()
             self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
         for observer in self.observers:
             observer.update_state(SimpleState(self.game.get_current_floor().grid), (0,0))
+        output = {
+            "type": "player-update",
+            "layout": self.layout_list[self.current_level_id-1],
+            "position": move,
+            "objects": list(map((lambda x: { "type": x[0], "position": JLevel.translate_to_rowCol(x[1]) }) ), self.game.get_items()),
+            "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name, "position": JLevel.translate_to_rowCol(x.position) } ), (self.game.get_players() + self.game.get_adversaries())),
+            "message": ""
+
+        }
+        self.server.write(output)
 
     def player_message(self, message):
         for user in self.ID_to_user_character.values():
