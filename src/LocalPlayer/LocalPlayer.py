@@ -36,7 +36,7 @@ class LocalPlayer(PlayerUser):
         if not (isinstance(move_json[1], int)):
             raise ValueError("the second value is not a number")
         formatted_move = (move_json[0], move_json[1])
-            return formatted_move
+        return formatted_move
         else:
             return self.request_move()
 
