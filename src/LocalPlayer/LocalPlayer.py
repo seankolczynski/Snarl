@@ -28,17 +28,18 @@ class LocalPlayer(PlayerUser):
         # print("your Position is: " + str(self.position))
         move_raw = server.read(self.ID)
         move = move_raw["to"]
-        if move == None:
-            return self.position
-        move_json = move
-        if not (isinstance(move_json[0], int)):
-            raise ValueError("the first value is not a number")
-        if not (isinstance(move_json[1], int)):
-            raise ValueError("the second value is not a number")
-        formatted_move = (move_json[0], move_json[1])
-        return formatted_move
-        else:
-            return self.request_move()
+        try: 
+            if move == None:
+                return self.position
+            move_json = move
+            if not (isinstance(move_json[0], int)):
+                raise ValueError("the first value is not a number")
+            if not (isinstance(move_json[1], int)):
+                raise ValueError("the second value is not a number")
+            formatted_move = (move_json[0], move_json[1])
+            return formatted_move
+        except:
+            return self.request_move(server)
 
 
     def update_state(self, gs, pos):
