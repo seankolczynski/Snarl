@@ -26,7 +26,7 @@ if __name__ == "__main__":
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
 
     args = ap.parse_args()
-    server = Server(args.ip,args.port,args.clients,args.wait, args.levels)
+    server = Server(args.address,args.port,args.clients,args.wait, args.levels)
     path_to_levels = args.levels
 
     levels = open(path_to_levels)
