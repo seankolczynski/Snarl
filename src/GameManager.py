@@ -7,6 +7,7 @@ from Beings.Zombie import Zombie
 from Beings.Ghost import Ghost
 from Enums.CharacterType import CharacterType
 from AdversaryDriver import AdversaryDriver
+import json
 import Common.JSONToLevel as JLevel
 import math
 """
@@ -61,7 +62,7 @@ class GameManager:
             "exits": self.game.exited(),
             "ejects": self.game.ejected()
         }
-        self.server.write(output)
+        self.server.write(json.dumps(output))
         self.game.next_level()
         self.generate_adversaries()
 
@@ -180,7 +181,7 @@ class GameManager:
             "type": "end-game",
             "scores": score_list
         }
-        self.server.write(output)
+        self.server.write(json.dumps(output))
 
     """
     int -> JSON
@@ -216,7 +217,7 @@ class GameManager:
         if result is None or result[1] is None or result[1]['message'] is None:
             pass
         else:
-            self.server.write(result[1]['message'])
+            self.server.write(json.dumps(result[1]['message']))
 
     """
     Void
@@ -237,7 +238,7 @@ class GameManager:
             "message": ""
 
         }
-        self.server.write(output)
+        self.server.write(json.dumps(output))
 
     def player_message(self, message):
         for user in self.ID_to_user_character.values():

@@ -3,7 +3,7 @@ import json
 import argparse
 import sys
 
-from datetime import datetime
+from datetime import datetime, timedelta
 sys.path.append("../")
 from LocalPlayer.LocalPlayer import LocalPlayer
 import Common.JSONToLevel as JLevel
@@ -21,27 +21,27 @@ class Server():
         self.ID = 0
         host = ip# Get local machine name
         port = port               
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #
         sock.bind((host, port))
-        time_change = datetime.timedelta(seconds=wait)
-        end_time = datetime.datetime.now() + time_change
+        time_change = timedelta(seconds=wait)
+        end_time = datetime.now() + time_change
         self.id_to_conn = {}
         # self.id_to_name = {}
         self.server = sock
         self.list_of_players = []
         self.list_of_names = []
         sock.listen()
-        while datetime.datetime.now() < end_time or self.ID >= clients:
+        while datetime.now() < end_time or self.ID >= clients:
                 conn, addr = sock.accept()
                 with conn:
                     self.ID += 1 
                     self.id_to_conn[self.ID] = conn 
                     print("Got Connection")
-                    conn.sendall(bytes({"type": "welecome", "info": "0.1"}))
-                    conn.sendall(bytes("name"))
+                    conn.sendall(bytes(json.dumps({"type": "welecome", "info": "0.1"}), encoding='utf8'))
+                    conn.sendall(b"name")
                     data2 = None
                     while data2 == None:
-                        if datetime.datetime.now() < end_time:
+                        if datetime.now() < end_time:
                             print("No Players Joined ending Server")
                             sock.close()
                             raise ValueError("player registration timed out") 
@@ -55,11 +55,11 @@ class Server():
             print("No Players Joined ending Server")
             sock.close()
         for conn in self.id_to_conn.values():
-            conn.sendall(bytes({"type": "start-level", "level": self.start_level, "players": self.list_of_players })) 
+            conn.sendall(bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_players }), encoding='utf8') )
     
     def read(self, ID):
         current_conn = self.id_to_conn[ID]
-        current_conn.sendall(bytes("move"))
+        current_conn.sendall(b"move")
         data = None
         while data == None:
             data = current_conn.recv(1024)
@@ -67,14 +67,14 @@ class Server():
         
     def write(self,str1):
          for conn in self.id_to_conn.values():
-            conn.sendall(bytes(str1))  
+            conn.sendall(bytes(str1, encoding='utf8'))  
     
     def close(self):
         self.server.close()
  
-    def start_new_level(self, level_num)
+    def start_new_level(self, level_num):
         for conn in self.id_to_conn.values():
-            conn.sendall(bytes({"type": "start-level", "level": level_num+1, "players": self.list_of_players })) 
+            conn.sendall(json.dumps({"type": "start-level", "level": level_num+1, "players": self.list_of_players })) 
       
 
 
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
 
     args = ap.parse_args()
-    server = Server(args.ip,args.port,args.clients,args.wait, args.levels)
+    server = Server(args.address,args.port,args.clients,args.wait, args.levels)
     path_to_levels = args.levels
 
     levels = open(path_to_levels)
