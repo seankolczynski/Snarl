@@ -2,6 +2,60 @@ import argparse
 import socket
 import json
 
+
+def swap(position):
+    return position[1], position[0]
+
+def player_update(update):
+    layout = update['layout']
+    position = update['position']
+    objects = update['objects']
+    objectPositions = {}
+    for obj in objects:
+        objectPositions[(swap(obj['position']))] = obj['type']
+    actors = update['actors']
+    actorPositions = {}
+    for actor in actors:
+        actorPositions[(swap(actor['position']))] = actor['type']
+    message = update['message']
+    image = ""
+    image += "+"
+    for x in range(5):
+        image += "--"
+    image += "-+\n"
+    for y in range(5):
+        image += "| "
+        count = 0
+        for x in range(5):
+            if (x, y) in actorPositions.keys():
+                actType = actorPositions[(x, y)]
+                if actType == "Zombie" or actType == "zombie":
+                    image += "Z"
+                elif actType == "Ghost" or actType == "ghost":
+                    image += "G"
+                elif actType == "Player" or actType == "player":
+                    image += "P"
+                else:
+                    image += "?"
+            elif (x, y) in objectPositions.keys():
+                objType = objectPositions[(x, y)]
+                image += objType[0]
+            else:
+                if layout[x][y] == 0:
+                    image += "X"
+                else:
+                    image += " "
+            image += " "
+        image += "|\n"
+    image += "+"
+    for x in range(5):
+        image += "--"
+    image += "-+"
+    print(image)
+
+
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
 
@@ -55,8 +109,10 @@ if __name__ == "__main__":
                       print(score["name"] + " got " + score["keys"] + " keys, exited " 
                       + score["exits"] + " times, and got ejected " + score["ejected" + " times."] )
                 elif server_json["type"] == "player-update":
-                # TODO ???
+                    player_update(server_json)
+                
                 else:
                     print("unknown message recieved closing socket")
                     s.close()
                     break
+
