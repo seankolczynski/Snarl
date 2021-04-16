@@ -23,41 +23,45 @@ class Server():
         port = port               
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #
         sock.bind((host, port))
-        time_change = timedelta(seconds=wait)
-        end_time = datetime.now() + time_change
+        self.wait = wait
         self.id_to_conn = {}
         # self.id_to_name = {}
         self.server = sock
         self.list_of_players = []
         self.list_of_names = []
-        sock.listen()
-        while datetime.now() < end_time or self.ID <= clients:
-            conn, addr = sock.accept()
-            with conn:
-                self.ID += 1
-                self.id_to_conn[self.ID] = conn
-                print("Got Connection")
-                #conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}), encoding='utf8'))
-                conn.sendall(bytes("name", encoding='utf8'))
-                data2 = None
-                while data2 == None:
-                    if datetime.now() > end_time:
-                        print("No Players Joined ending Server")
-                        sock.close()
-                        raise ValueError("player registration timed out")
-                    data2 = conn.recv(1024).decode('utf8') # buffer size is 1024 bytes
-                    print(data2)
-                new_player = LocalPlayer(data2, CharacterType.PLAYER, self.ID)
-                # self.id_to_name[self.ID] = str(data2)
-                self.list_of_players.append(new_player)
-                self.list_of_names.append(str(data2))
-                end_time = datetime.now() + time_change
-            print(end_time)
+        sock.listen(clients)
+        self.wait_for_player()
+        self.server.settimeout(wait)
+        try:
+            for _ in range(1, clients):
+                self.wait_for_player()
+        except socket.timeout:
+            print("No additional players")
         if self.ID == 0:
             print("No Players Joined ending Server")
             sock.close()
+        start_message = bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_names}), encoding='utf8')
         for conn in self.id_to_conn.values():
-            conn.sendall(bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_players}), encoding='utf8'))
+            print(conn)
+            conn.sendall(start_message)
+
+    def wait_for_player(self):
+        print("waiting for player")
+        conn, addr = self.server.accept()
+        with conn:
+            self.ID += 1
+            self.id_to_conn[self.ID] = conn
+            print("Got Connection")
+            welcome = conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}), encoding='utf8'))
+            while welcome is not None:
+                continue
+            conn.sendall(bytes("name", encoding='utf8'))
+            data2 = conn.recv(1024).decode('utf8')  # buffer size is 1024 bytes
+            print(data2)
+            new_player = LocalPlayer(data2, CharacterType.PLAYER, self.ID)
+            # self.id_to_name[self.ID] = str(data2)
+            self.list_of_players.append(new_player)
+            self.list_of_names.append(data2)
     
     def read(self, ID):
         current_conn = self.id_to_conn[ID]

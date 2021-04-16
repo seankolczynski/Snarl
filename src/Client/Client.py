@@ -67,6 +67,8 @@ if __name__ == "__main__":
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((args.address, args.port))
+        welcome = s.recv(34).decode('utf8')
+        print(welcome)
         while True:
             data = s.recv(1024).decode('utf8')
             #if data is not None or data != "":
