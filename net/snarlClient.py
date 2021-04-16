@@ -12,11 +12,14 @@ def player_update(update):
     objects = update['objects']
     objectPositions = {}
     for obj in objects:
-        objectPositions[(swap(obj['position']))] = obj['type']
+        objectPositions[((obj['position'])] = obj['type']
     actors = update['actors']
     actorPositions = {}
     for actor in actors:
-        actorPositions[(swap(actor['position']))] = actor['type']
+        if actor["type"] != "player":
+             actorPositions[(actor['position'])] = actor['type']
+        else:
+            actorPositions[(swap(actor['position']))] = actor['type']
     message = update['message']
     image = ""
     image += "+"
