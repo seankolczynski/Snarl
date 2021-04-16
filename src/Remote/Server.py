@@ -41,6 +41,7 @@ class Server():
             print("No Players Joined ending Server")
             sock.close()
         start_message = bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_names}), encoding='utf8')
+        print(len(self.id_to_conn))
         for conn in self.id_to_conn.values():
             print(conn)
             conn.sendall(start_message)
@@ -50,7 +51,7 @@ class Server():
         conn, addr = self.server.accept()
         with conn:
             self.ID += 1
-            self.id_to_conn[self.ID] = conn
+
             print("Got Connection")
             welcome = conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}), encoding='utf8'))
             while welcome is not None:
@@ -62,6 +63,8 @@ class Server():
             # self.id_to_name[self.ID] = str(data2)
             self.list_of_players.append(new_player)
             self.list_of_names.append(data2)
+            print(conn)
+            self.id_to_conn[self.ID] = conn
     
     def read(self, ID):
         current_conn = self.id_to_conn[ID]
