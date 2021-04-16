@@ -126,7 +126,7 @@ class GameManager:
     """
     def start_game(self):
         self.generate_adversaries()
-        self.update_gamestate(None)
+        self.update_gamestate()
         self.init_Rule_Checker()
         self.current_status = Status.INPROGRESS
         numLevels = self.game.get_num_levels()
@@ -138,7 +138,7 @@ class GameManager:
                     self.move_to_new_level()
                     self.server.start_new_level(current_level+1)
                 current_level = current_level + 1
-                self.update_gamestate(None)
+                self.update_gamestate()
         if self.current_status == Status.WON:
             print("You won!")
         elif self.current_status == Status.LOST:
@@ -156,12 +156,12 @@ class GameManager:
             current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
 
     def end_game_stats(self):
-        key_dict, exit_dict = self.game.get_stats()
+        key_dict, exit_dict, eject_dict = self.game.get_stats()
         final_stats = {}
         get_name = (lambda x: self.ID_to_user_character[x][1].get_name())
         for user in self.ID_to_user_character.keys():
             if self.ID_to_user_character[user][1].get_ctype() == CharacterType.PLAYER:
-                final_stats[user] = (key_dict[user], exit_dict[user])
+                final_stats[user] = (key_dict[user], exit_dict[user], eject_dict[user])
         final_stats = {k: v for k, v in sorted(final_stats.items(), key=lambda item: item[1])}
         score_list = []
         for user in final_stats.keys():
@@ -172,8 +172,6 @@ class GameManager:
                     "exits": final_stats[user][1],
                     "keys": final_stats[user][0],
                     "ejected": final_stats[user][2]
-
-
                 }
             )
             # print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
@@ -196,7 +194,7 @@ class GameManager:
         move = None
         while True:
             try:
-                move = current_user.request_move(self.server)
+                move = current_user.request_move()
             except ValueError:
                 return "Done"
             if self.rule_checker.validateMove(turn_index, move):
@@ -209,7 +207,7 @@ class GameManager:
             return response
         response = (move, self.game.move_character(current_character, move))
         self.give_result(response)
-        self.update_gamestate(move)
+        self.update_gamestate()
         return response
 
 
@@ -223,23 +221,13 @@ class GameManager:
     Void
     Updates all players on the most recent version of the game
     """
-    def update_gamestate(self, move):
+    def update_gamestate(self):
         for user in self.ID_to_user_character.keys():
             userPos = self.ID_to_user_character[user][1].get_char_position()
-            self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
+            self.ID_to_user_character[user][0].update_state(self.game, userPos)
         for observer in self.observers:
             observer.update_state(SimpleState(self.game.get_current_floor().grid), (0,0))
-        print(self.layout_list)
-        output = {
-            "type": "player-update",
-            "layout": JLevel.player_layout(self.game.get_current_floor().grid, move),
-            "position": move,
-            "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_rowCol(x[1])}, self.game.get_items())),
-            "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name, "position": JLevel.translate_to_rowCol(x.get_char_position())}, (self.game.get_players() + self.game.get_adversaries()))),
-            "message": ""
 
-        }
-        self.server.write(json.dumps(output))
 
     def player_message(self, message):
         for user in self.ID_to_user_character.values():

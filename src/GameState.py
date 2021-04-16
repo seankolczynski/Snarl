@@ -152,6 +152,13 @@ class GameState:
     def unlock(self):
         self.unlocked = True
 
+    def get_tile_at(self, pos):
+        x, y = pos
+        if 0 <= x < len(self.current_floor.grid) and 0 <= y < len(self.current_floor.grid[0]):
+            return self.current_floor.grid[x][y]
+        else:
+            return None
+
 
     def update_status(self):
         dead = len(self.ejected)

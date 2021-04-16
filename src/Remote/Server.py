@@ -5,7 +5,7 @@ import sys
 
 from datetime import datetime, timedelta
 sys.path.append("../")
-from LocalPlayer.LocalPlayer import LocalPlayer
+from RemotePlayer import RemotePlayer
 import Common.JSONToLevel as JLevel
 from Common.Observer import Observer
 from GameState import GameState
@@ -56,7 +56,7 @@ class Server():
             continue
         conn.sendall(bytes("name", encoding='utf8'))
         data2 = conn.recv(1024).decode('utf8')  # buffer size is 1024 bytes
-        new_player = LocalPlayer(data2, CharacterType.PLAYER, self.ID)
+        new_player = RemotePlayer(data2, CharacterType.PLAYER, self.ID, self)
         # self.id_to_name[self.ID] = str(data2)
         self.list_of_players.append(new_player)
         self.list_of_names.append(data2)
@@ -73,7 +73,10 @@ class Server():
         
     def write(self,str1):
          for conn in self.id_to_conn.values():
-            conn.sendall(bytes(str1, encoding='utf8'))  
+            conn.sendall(bytes(str1, encoding='utf8'))
+
+    def write_to_id(self, message, id):
+        self.id_to_conn[id].sendall(bytes(message, encoding="utf8"))
     
     def close(self):
         self.server.close()

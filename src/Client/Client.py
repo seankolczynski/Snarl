@@ -4,21 +4,28 @@ import json
 
 
 def swap(position):
-    return position[1], position[0]
+    return position[0], position[1]
 
 def player_update(update):
     layout = update['layout']
     print(layout)
+
     position = update['position']
     objects = update['objects']
     objectPositions = {}
     for obj in objects:
         objectPositions[(swap(obj['position']))] = obj['type']
     actors = update['actors']
+    print("Actors ", actors)
     actorPositions = {}
     for actor in actors:
         actorPositions[(swap(actor['position']))] = actor['type']
+    print("Actor Positions  ", actorPositions.keys())
     message = update['message']
+
+    upLeft = ((position[0] - 2), (position[1] - 2))
+    downRight = ((position[0] + 2), (position[1] + 2))
+
     image = ""
     image += "+"
     for x in range(5):
@@ -28,8 +35,9 @@ def player_update(update):
         image += "| "
         count = 0
         for x in range(5):
-            if (x, y) in actorPositions.keys():
-                actType = actorPositions[(x, y)]
+            print("X: ", x+ upLeft[1], " Y: ", y+upLeft[0])
+            if (x + upLeft[1], y + upLeft[0]) in actorPositions.keys():
+                actType = actorPositions[(x + upLeft[1], y + upLeft[0])]
                 if actType == "Zombie" or actType == "zombie":
                     image += "Z"
                 elif actType == "Ghost" or actType == "ghost":
@@ -38,11 +46,11 @@ def player_update(update):
                     image += "P"
                 else:
                     image += "?"
-            elif (x, y) in objectPositions.keys():
-                objType = objectPositions[(x, y)]
+            elif (x + upLeft[1], y + upLeft[0]) in objectPositions.keys():
+                objType = objectPositions[(x + upLeft[1], y + upLeft[0])]
                 image += objType[0]
             else:
-                print("X: ", x, " Y: ", y)
+
                 if layout[x][y] == 0:
                     image += "X"
                 else:
@@ -54,6 +62,7 @@ def player_update(update):
         image += "--"
     image += "-+"
     print(image)
+    print("Current position (format row/col): ", position)
 
 
 
@@ -72,7 +81,9 @@ if __name__ == "__main__":
         welcome = s.recv(34).decode('utf8')
         print(welcome)
         while True:
+
             data = s.recv(1024).decode('utf8')
+            print(data)
             #if data is not None or data != "":
                 #print(data)
             if data is None or data == "":
@@ -97,7 +108,6 @@ if __name__ == "__main__":
                 print(data)
             else:
                 server_json = json.loads(data)
-
                 if server_json["type"] == "start-level":
                     print("Starting level #" + server_json["level"] + " with players:")
                     for name in server_json["players"]:

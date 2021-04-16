@@ -24,9 +24,9 @@ class LocalPlayer(PlayerUser):
     def get_name(self):
         return self.name
 
-    def request_move(self, server):
+    def request_move(self):
         # print("your Position is: " + str(self.position))
-        move_raw = server.read(self.ID)
+        move_raw = input("give move")
         move = move_raw["to"]
         try: 
             if move == None:
@@ -39,7 +39,7 @@ class LocalPlayer(PlayerUser):
             formatted_move = (move_json[0], move_json[1])
             return formatted_move
         except:
-            return self.request_move(server)
+            return self.request_move()
 
 
     def update_state(self, gs, pos):
