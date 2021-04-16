@@ -15,7 +15,7 @@ from Enums.CharacterType import CharacterType
 
 class Server():
    
-    def __init__(self,ip, port, clients, wait, start_level):
+    def __init__(self, ip, port, clients, wait, start_level):
 
         self.start_level = start_level
         self.ID = 0
@@ -32,34 +32,36 @@ class Server():
         self.list_of_names = []
         sock.listen()
         while datetime.now() < end_time or self.ID >= clients:
-                conn, addr = sock.accept()
-                with conn:
-                    self.ID += 1 
-                    self.id_to_conn[self.ID] = conn 
-                    print("Got Connection")
-                    conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}), encoding='utf8'))
-                    #conn.sendall(b"name")
-                    data2 = None
-                    while data2 == None:
-                        if datetime.now() < end_time:
-                            print("No Players Joined ending Server")
-                            sock.close()
-                            raise ValueError("player registration timed out") 
-                        data2 = conn.recv(1024) # buffer size is 1024 bytes
-                    new_player = LocalPlayer(str(data2), CharacterType.PLAYER, self.ID)
-                    # self.id_to_name[self.ID] = str(data2)
-                    self.list_of_players.append(new_player)
-                    self.list_of_names.append(str(data2))
-                    end_time = datetime.datetime.now() + time_change 
+            conn, addr = sock.accept()
+            with conn:
+                self.ID += 1
+                self.id_to_conn[self.ID] = conn
+                print("Got Connection")
+                #conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}), encoding='utf8'))
+                conn.sendall(bytes("name", encoding='utf8'))
+                data2 = None
+                while data2 == None:
+                    if datetime.now() > end_time:
+                        print("No Players Joined ending Server")
+                        sock.close()
+                        raise ValueError("player registration timed out")
+                    data2 = conn.recv(1024).decode('utf8') # buffer size is 1024 bytes
+                    print(data2)
+                new_player = LocalPlayer(data2, CharacterType.PLAYER, self.ID)
+                # self.id_to_name[self.ID] = str(data2)
+                self.list_of_players.append(new_player)
+                self.list_of_names.append(str(data2))
+                end_time = datetime.now() + time_change
+                print(end_time)
         if self.ID == 0:
             print("No Players Joined ending Server")
             sock.close()
         for conn in self.id_to_conn.values():
-            conn.sendall(bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_players }), encoding='utf8') )
+            conn.sendall(bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_players}), encoding='utf8'))
     
     def read(self, ID):
         current_conn = self.id_to_conn[ID]
-        current_conn.sendall(b"move")
+        current_conn.sendall(bytes("move", encoding='utf8'))
         data = None
         while data == None:
             data = current_conn.recv(1024)
@@ -74,7 +76,7 @@ class Server():
  
     def start_new_level(self, level_num):
         for conn in self.id_to_conn.values():
-            conn.sendall(json.dumps({"type": "start-level", "level": level_num+1, "players": self.list_of_players })) 
+            conn.sendall(bytes(json.dumps({"type": "start-level", "level": level_num+1, "players": self.list_of_players }), encoding='utf8'))
       
 
 

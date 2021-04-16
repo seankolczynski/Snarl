@@ -68,13 +68,15 @@ if __name__ == "__main__":
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((args.address, args.port))
         while True:
-            data = s.recv(1024)
-            if data == None:
-                break
-            if str(data) == "name":
+            data = s.recv(1024).decode('utf8')
+            #if data is not None or data != "":
+                #print(data)
+            if data is None or data == "":
+                pass
+            elif data == "name":
                 name = input("enter name: ")
-                s.sendall(bytes(name))
-            elif str(data) == "move":
+                s.sendall(bytes(name, encoding='utf8'))
+            elif data == "move":
                 move = input("enter a move: ")
                 move_json = None
                 while move_json == None:
@@ -84,12 +86,13 @@ if __name__ == "__main__":
                         else:
                             move_split = move.split(" ")
                             move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
-                        s.sendall(bytes({"type": "move", "to": move_json}))
+                        s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
                     except:
                         continue
-            elif str(data) == "OK" or str(data) == "Key" or str(data) == "Exit" or str(data) == "Eject" or str(data) == "Invalid":
-                print(str(data))
+            elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":
+                print(data)
             else:
+                print(data)
                 server_json = json.loads(data)
                 print(server_json)
 
