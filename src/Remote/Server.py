@@ -37,8 +37,8 @@ class Server():
                     self.ID += 1 
                     self.id_to_conn[self.ID] = conn 
                     print("Got Connection")
-                    conn.sendall(bytes(json.dumps({"type": "welecome", "info": "0.1"}), encoding='utf8'))
-                    conn.sendall(b"name")
+                    conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}), encoding='utf8'))
+                    #conn.sendall(b"name")
                     data2 = None
                     while data2 == None:
                         if datetime.now() < end_time:

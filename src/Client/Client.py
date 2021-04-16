@@ -56,6 +56,7 @@ def player_update(update):
 
 
 
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
 
@@ -83,13 +84,15 @@ if __name__ == "__main__":
                         else:
                             move_split = move.split(" ")
                             move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
-                        s.sendall(bytes( {"type": "move", "to": move_json}))
+                        s.sendall(bytes({"type": "move", "to": move_json}))
                     except:
                         continue
             elif str(data) == "OK" or str(data) == "Key" or str(data) == "Exit" or str(data) == "Eject" or str(data) == "Invalid":
                 print(str(data))
             else:
                 server_json = json.loads(data)
+                print(server_json)
+
                 if server_json["type"] == "start-level":
                     print("Starting level #" + server_json["level"] + " with players:")
                     for name in server_json["players"]:
@@ -110,9 +113,10 @@ if __name__ == "__main__":
                       + score["exits"] + " times, and got ejected " + score["ejected" + " times."] )
                 elif server_json["type"] == "player-update":
                     player_update(server_json)
-                
+                elif server_json["type"] == "welcome":
+                    break
                 else:
-                    print("unknown message recieved closing socket")
+                    print("unknown message received closing socket")
                     s.close()
                     break
 
