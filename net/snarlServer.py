@@ -40,15 +40,15 @@ if __name__ == "__main__":
     for i in range(1, len(parsed_levels)):
         level = parsed_levels[i]
         floors.append(JLevel.floorMaker(json.loads(level)))
-    if args.start > len(floors) or args.start < 1:
-        raise ValueError("invalid floor index")
+    # if args.start > len(floors) or args.start < 1:
+    #     raise ValueError("invalid floor index")
 
-    start_level_index = args.start - 1
+    #start_level_index = 0
     init_gamestate = GameState(floors)
     init_gamemanager = GameManager(init_gamestate, server, parsed_levels)
     for player in server.list_of_players:
         init_gamemanager.register_player_user(player)
     if args.observe == 1:
         init_gamemanager.register_observer(Observer(-1))
-    init_gamemanager.set_starting_level(1)
+    #init_gamemanager.set_starting_level(1)
     init_gamemanager.start_game()

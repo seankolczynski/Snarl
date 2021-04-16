@@ -209,7 +209,7 @@ class GameManager:
             return response
         response = (move, self.game.move_character(current_character, move))
         self.give_result(response)
-        self.update_gamestate()
+        self.update_gamestate(move)
         return response
 
 
@@ -229,12 +229,13 @@ class GameManager:
             self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos)
         for observer in self.observers:
             observer.update_state(SimpleState(self.game.get_current_floor().grid), (0,0))
+        print(self.layout_list)
         output = {
             "type": "player-update",
-            "layout": self.layout_list[self.current_level_id-1],
+            "layout": JLevel.player_layout(self.game.get_current_floor().grid, move),
             "position": move,
-            "objects": list(map((lambda x: { "type": x[0], "position": JLevel.translate_to_rowCol(x[1]) }) ), self.game.get_items()),
-            "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name, "position": JLevel.translate_to_rowCol(x.position) } ), (self.game.get_players() + self.game.get_adversaries())),
+            "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_rowCol(x[1])}, self.game.get_items())),
+            "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name, "position": JLevel.translate_to_rowCol(x.get_char_position())}, (self.game.get_players() + self.game.get_adversaries()))),
             "message": ""
 
         }

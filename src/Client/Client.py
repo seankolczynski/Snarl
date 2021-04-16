@@ -8,6 +8,7 @@ def swap(position):
 
 def player_update(update):
     layout = update['layout']
+    print(layout)
     position = update['position']
     objects = update['objects']
     objectPositions = {}
@@ -41,6 +42,7 @@ def player_update(update):
                 objType = objectPositions[(x, y)]
                 image += objType[0]
             else:
+                print("X: ", x, " Y: ", y)
                 if layout[x][y] == 0:
                     image += "X"
                 else:
@@ -94,9 +96,7 @@ if __name__ == "__main__":
             elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":
                 print(data)
             else:
-                print(data)
                 server_json = json.loads(data)
-                print(server_json)
 
                 if server_json["type"] == "start-level":
                     print("Starting level #" + server_json["level"] + " with players:")
