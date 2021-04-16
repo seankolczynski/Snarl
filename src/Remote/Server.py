@@ -31,7 +31,7 @@ class Server():
         self.list_of_players = []
         self.list_of_names = []
         sock.listen()
-        while datetime.now() < end_time or self.ID >= clients:
+        while datetime.now() < end_time or self.ID <= clients:
             conn, addr = sock.accept()
             with conn:
                 self.ID += 1
@@ -52,7 +52,7 @@ class Server():
                 self.list_of_players.append(new_player)
                 self.list_of_names.append(str(data2))
                 end_time = datetime.now() + time_change
-                print(end_time)
+            print(end_time)
         if self.ID == 0:
             print("No Players Joined ending Server")
             sock.close()
