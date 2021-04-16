@@ -12,7 +12,7 @@ def player_update(update):
     objects = update['objects']
     objectPositions = {}
     for obj in objects:
-        objectPositions[((obj['position'])] = obj['type']
+        objectPositions[(obj['position'])] = obj['type']
     actors = update['actors']
     actorPositions = {}
     for actor in actors:

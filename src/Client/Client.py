@@ -20,11 +20,10 @@ def player_update(update):
     actorPositions = {}
     for actor in actors:
         actorPositions[(swap(actor['position']))] = actor['type']
-    print("Actor Positions  ", actorPositions.keys())
+    print("Object Positions  ", objectPositions.keys())
     message = update['message']
 
     upLeft = ((position[0] - 2), (position[1] - 2))
-    downRight = ((position[0] + 2), (position[1] + 2))
 
     image = ""
     image += "+"
@@ -34,9 +33,11 @@ def player_update(update):
     for y in range(5):
         image += "| "
         count = 0
+
         for x in range(5):
-            print("X: ", x+ upLeft[1], " Y: ", y+upLeft[0])
+
             if (x + upLeft[1], y + upLeft[0]) in actorPositions.keys():
+                print("X: ", x + upLeft[1], " Y: ", y + upLeft[0])
                 actType = actorPositions[(x + upLeft[1], y + upLeft[0])]
                 if actType == "Zombie" or actType == "zombie":
                     image += "Z"
@@ -47,10 +48,10 @@ def player_update(update):
                 else:
                     image += "?"
             elif (x + upLeft[1], y + upLeft[0]) in objectPositions.keys():
+                print("X: ", x + upLeft[1], " Y: ", y + upLeft[0])
                 objType = objectPositions[(x + upLeft[1], y + upLeft[0])]
                 image += objType[0]
             else:
-
                 if layout[x][y] == 0:
                     image += "X"
                 else:
