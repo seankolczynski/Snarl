@@ -58,11 +58,13 @@ class GameManager:
         key_info = None
         if self.game.key_holder is not None:
             key_info = self.game.key_holder
+        print(list(map(lambda x: x.name, self.game.exited)))
+        print(list(map(lambda x: x.name, self.game.ejected)))
         output = {
             "type": "end-level",
             "key": key_info,
-            "exits": [], #self.game.exited,
-            "ejects": []#self.game.ejected
+            "exits": list(map(lambda x: x.name, self.game.exited)),
+            "ejects": list(map(lambda x: x.name, self.game.ejected))
         }
         self.server.write(json.dumps(output))
         self.game.next_level()

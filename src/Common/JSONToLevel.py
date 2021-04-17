@@ -288,7 +288,7 @@ def player_layout(grid, position):
     upLeft = ((position[0] - 2), (position[1] - 2))
     downRight = ((position[0] + 2), (position[1] + 2))
     for ind in range(5):
-        layout.append([8, 8, 8, 8, 8])
+        layout.append([0, 0, 0, 0, 0])
     countY = 0
     for y in range(len(grid[0])):
         countX = 0
