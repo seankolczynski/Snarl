@@ -77,58 +77,66 @@ if __name__ == "__main__":
         s.connect((args.address, args.port))
         welcome = s.recv(34).decode('utf8')
         print(welcome)
-        while True:
-
-            data = s.recv(1024).decode('utf8')
-            print(data)
+        done = False
+        while True or not done:
+            data_raw = s.recv(1024).decode('utf8')
+            data_list = data_raw.split("\n")
             #if data is not None or data != "":
                 #print(data)
-            if data is None or data == "":
-                pass
-            elif data == "name":
-                name = input("enter name: ")
-                s.sendall(bytes(name, encoding='utf8'))
-            elif data == "move":
-                move = input("enter a move: ")
-                move_json = None
-                try:
-                    if move == "":
-                        move_json = None
-                    else:
-                        move_split = move.split(" ")
-                        move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
-                    s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
-                    print("sent")
-                except:
+            for data in data_list:
+                if done == True:
                     continue
-            elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":
                 print(data)
-            else:
-                server_json = json.loads(data)
-                if server_json["type"] == "start-level":
-                    print("Starting level #" + server_json["level"] + " with players:")
-                    for name in server_json["players"]:
-                        print(name)
-                elif server_json["type"] == "end-level": 
-                    print("Level ended")
-                    print("Key was picked up by " + server_json["key"])
-                    print("Players who exited:")
-                    for name in server_json["exits"]:
-                       print(name)
-                    print("Players who ejected:")
-                    for name in server_json["exits"]:
-                       print(name)
-                elif server_json["type"] == "end-game":
-                    print("End Game Stats:")
-                    for score in server_json["scores"]:
-                      print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
-                      + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times.")
-                elif server_json["type"] == "player-update":
-                    player_update(server_json)
-                elif server_json["type"] == "welcome":
-                    break
-                else:
-                    print("unknown message received closing socket")
-                    s.close()
-                    break
+                if data is None or data == "":
+                    pass
+                elif data == "name":
+                    name = input("enter name: ")
+                    s.sendall(bytes(name, encoding='utf8'))
+                elif data == "move":
+                    move = input("enter a move: ")
+                    move_json = None
 
+                    try:
+                        if move == "":
+                            move_json = None
+                        else:
+                            move_split = move.split(" ")
+                            move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
+                        s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
+                        print("sent")
+                    except:
+                        continue
+                elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":
+                    print(data)
+                else:
+                    server_json = json.loads(data)
+                    if server_json["type"] == "start-level":
+                        print("Starting level #" + server_json["level"] + " with players:")
+                        for name in server_json["players"]:
+                            print(name)
+                    elif server_json["type"] == "end-level":
+                        print("Level ended")
+                        print("Key was picked up by " + server_json["key"])
+                        print("Players who exited:")
+                        for name in server_json["exits"]:
+                           print(name)
+                        print("Players who ejected:")
+                        for name in server_json["exits"]:
+                           print(name)
+                    elif server_json["type"] == "end-game":
+                        print("End Game Stats:")
+                        for score in server_json["scores"]:
+                          print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
+                          + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times." )
+                          s.close()
+                          done = True
+                          break
+                    elif server_json["type"] == "player-update":
+                        player_update(server_json)
+                    elif server_json["type"] == "welcome":
+                        break
+                    else:
+                        print("unknown message received closing socket")
+                        done = True
+                        s.close()
+                        break
