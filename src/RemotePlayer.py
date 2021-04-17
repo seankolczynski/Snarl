@@ -16,6 +16,7 @@ class RemotePlayer(PlayerUser):
         self.name = name
         self.server = server
         self.position = None
+        self.message = ""
 
     def get_id(self):
         return self.ID
@@ -57,8 +58,9 @@ class RemotePlayer(PlayerUser):
             "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name,
                                           "position": JLevel.translate_to_xy(x.get_char_position())},
                                list(filter(lambda y: y.is_alive() and not y.exited, self.gameState.get_players() + self.gameState.get_adversaries())))),
-            "message": ""
+            "message": self.message
             }
+            self.message = ""
             self.server.write_to_id(json.dumps(output), self.ID)
 
     def render(self, pos):
@@ -86,6 +88,6 @@ class RemotePlayer(PlayerUser):
         pass
 
     def transmit_message(self, message):
-        print(message)
+        self.message = message
 
 # TODO Add Main Loop Logic

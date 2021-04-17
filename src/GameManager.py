@@ -205,10 +205,10 @@ class GameManager:
                 return
             if self.rule_checker.validateMove(turn_index, move):
                 break
-            response = (move, {"success": False, "message": "Invalid"})
+            response = (move, {"success": False, "message": "Invalid", "detail": ""})
             self.give_result(response)
         if move is None:
-            response = ((move, {"success": True, "message": "OK"}))
+            response = ((move, {"success": True, "message": "OK", "detail": ""}))
             self.give_result(response)
             return response
         response = (move, self.game.move_character(current_character, move))
@@ -221,7 +221,8 @@ class GameManager:
         if result is None or result[1] is None or result[1]['message'] is None:
             pass
         else:
-            self.server.write((result[1]['message']))
+            for user in self.ID_to_user_character.keys():
+                self.ID_to_user_character[user][0].transmit_message(result[1]['detail'])
 
     """
     Void

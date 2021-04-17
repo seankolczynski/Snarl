@@ -86,19 +86,20 @@ class GameState:
                 self.key_holder = character.get_name()
                 print("Player " + character.get_name() + " picked up a key")
                 self.character_to_keys[character.get_id()] = self.character_to_keys[character.get_id()] + 1
-            if self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
+                message = {"success": message["success"], "message": message["message"], "detail": "Player " + character.get_name() + " picked up a key"}
+            elif self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
                 self.exited.append(character)
                 self.character_to_exits[character.get_id()] = self.character_to_exits[character.get_id()] + 1
                 character.exited = True
                 self.update_status()
                 destination.remove_character()
                 print("Player " + character.get_name() + " exited")
-                message = {"success": True, "message": "Exit"}
+                message = {"success": True, "message": "Exit", "detail": "Player " + character.get_name() + " exited"}
         else:
             if character.get_ctype() == CharacterType.GHOST:
                 message = character.move(character.special_move(self.current_floor))
             else:
-                message = {"success": False, "message": "WallTile"}
+                message = {"success": False, "message": "WallTile", "detail": ""}
         if isinstance(character, Adversary):
             self.who_died()
         return message

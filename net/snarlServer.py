@@ -20,8 +20,8 @@ if __name__ == "__main__":
 
     ap.add_argument("--levels", help="path to level spec", action="store", default="snarl.levels")
     ap.add_argument("--clients", help="number of players", action="store", type=int, default=4)
-    ap.add_argument("--wait", help="seconds to time out", action="store", type=int, default=3)
-    ap.add_argument("--observe", help="Level to start from", action="store", type=int, default=1)
+    ap.add_argument("--wait", help="seconds to time out", action="store", type=int, default=60)
+    ap.add_argument("--observe", help="Level to start from", action="store", type=int, default=0)
     ap.add_argument("--address", help="address to host", action="store", type=str, default="127.0.0.1")
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
 

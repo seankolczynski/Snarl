@@ -31,7 +31,6 @@ def player_update(update):
         count = 0
         for x in range(5):
             if (x + upLeft[0], y + upLeft[1]) in actorPositions.keys():
-                print("X: ", x + upLeft[0], " Y: ", y + upLeft[1])
                 actType = actorPositions[(x + upLeft[0], y + upLeft[1])]
                 if actType == "Zombie" or actType == "zombie":
                     image += "Z"
@@ -42,7 +41,6 @@ def player_update(update):
                 else:
                     image += "?"
             elif (x + upLeft[0], y + upLeft[1]) in objectPositions.keys():
-                print("X: ", x + upLeft[0], " Y: ", y + upLeft[1])
                 objType = objectPositions[(x + upLeft[0], y + upLeft[1])]
                 image += objType[0]
             else:
@@ -56,6 +54,8 @@ def player_update(update):
     for x in range(5):
         image += "--"
     image += "-+"
+    if message != "":
+        print(message)
     print(image)
     print("Current position (format x/y): ", position)
 
@@ -86,14 +86,11 @@ if __name__ == "__main__":
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((args.address, args.port))
         welcome = s.recv(34).decode('utf8')
-        print(welcome)
         done = False
         while not done:
             data_raw = s.recv(1024).decode('utf8')
             data_list = data_raw.split("\n")
             for data in data_list:
-                if data is not None and data != "":
-                    print("RAW DATA: " + str(data))
                 data = data.strip()
                 if done == True:
                     continue
@@ -116,7 +113,6 @@ if __name__ == "__main__":
                             move_split = move.split(" ")
                             move_format = [move_split[0], move_split[1]]
                         s.sendall(bytes(json.dumps({"type": "move", "to": move_format}), encoding='utf8'))
-                        print("sent")
                     except:
                         continue
                 elif data == "OK" or data == "Key" or data == "Exit" or "Ejected by" in data or "Occupied" in data or data == "Invalid":
