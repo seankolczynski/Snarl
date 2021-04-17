@@ -92,7 +92,7 @@ class GameState:
                 self.update_status()
                 destination.remove_character()
                 print("Player " + character.get_name() + " exited")
-                message = {"success": True, "message": "Exited"}
+                message = {"success": True, "message": "Exit"}
 
         else:
             if character.get_ctype() == CharacterType.GHOST:

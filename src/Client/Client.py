@@ -115,16 +115,14 @@ if __name__ == "__main__":
                             move_json = None
                         else:
                             move_split = move.split(" ")
-                            move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
-                        s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
+                            move_format = [move_split[0], move_split[1]]
+                        s.sendall(bytes(json.dumps({"type": "move", "to": move_format}), encoding='utf8'))
                         print("sent")
-
                     except:
                         continue
-                elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":
+                elif data == "OK" or data == "Key" or data == "Exit" or "Eject" in data or data == "Invalid":
                     print("Returns: ", data)
                 else:
-                    print(data)
                     server_json = json.loads(data)
                     if server_json["type"] == "start-level":
                         print("Starting level #" + server_json["level"] + " with players:")

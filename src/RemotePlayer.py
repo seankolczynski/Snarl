@@ -36,11 +36,7 @@ class RemotePlayer(PlayerUser):
             if move == None:
                 return self.position
             move_json = move
-            if not (isinstance(move_json[0], int)):
-                raise ValueError("the first value is not a number")
-            if not (isinstance(move_json[1], int)):
-                raise ValueError("the second value is not a number")
-            formatted_move = (move_json[0], move_json[1])
+            formatted_move = (int(move_json[0]), int(move_json[1]))
             return formatted_move
         except:
             print("move failed")

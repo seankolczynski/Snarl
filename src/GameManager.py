@@ -54,13 +54,15 @@ class GameManager:
             self.move_to_new_level()
             
     def move_to_new_level(self):
-
         self.current_status = Status.INPROGRESS
+        key_info = None
+        if self.game.key_holder is not None:
+            key_info = self.game.key_holder
         output = {
             "type": "end-level",
-            "key": self.game.key_holder(),
-            "exits": self.game.exited(),
-            "ejects": self.game.ejected()
+            "key": key_info,
+            "exits": self.game.exited,
+            "ejects": self.game.ejected
         }
         self.server.write(json.dumps(output))
         self.game.next_level()
@@ -197,6 +199,8 @@ class GameManager:
                 move = current_user.request_move()
             except ValueError:
                 return "Done"
+            except Exception:
+                return
             if self.rule_checker.validateMove(turn_index, move):
                 break
             response = (move, {"success": False, "message": "Invalid"})
@@ -215,7 +219,7 @@ class GameManager:
         if result is None or result[1] is None or result[1]['message'] is None:
             pass
         else:
-            self.server.write(json.dumps(result[1]['message']))
+            self.server.write((result[1]['message']))
 
     """
     Void

@@ -84,7 +84,7 @@ def reinterpret(message):
             return "Eject"
         if "Key" in info or "OK" in info:
             return info
-        if "Exited" in info:
+        if "Exit" in info:
             return "Exit"
 
 

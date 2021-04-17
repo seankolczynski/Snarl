@@ -69,7 +69,9 @@ class Server():
         data = None
         while data == None:
             data = current_conn.recv(1024).decode('utf8')
-        return json.loads(str(data))
+            print(data)
+        translated = json.loads(str(data))
+        return translated
         
     def write(self,str1):
          for conn in self.id_to_conn.values():
