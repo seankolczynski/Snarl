@@ -56,7 +56,7 @@ class RemotePlayer(PlayerUser):
             "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_xy(x[1])}, (self.gameState.get_items() + [exitPosn]))),
             "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name,
                                           "position": JLevel.translate_to_xy(x.get_char_position())},
-                               (self.gameState.get_players() + self.gameState.get_adversaries()))),
+                               list(filter(lambda y: y.is_alive and not y.exited, self.gameState.get_players() + self.gameState.get_adversaries())))),
             "message": ""
             }
             self.server.write_to_id(json.dumps(output), self.ID)
