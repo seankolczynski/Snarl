@@ -29,7 +29,9 @@ class RemotePlayer(PlayerUser):
     def request_move(self):
         # print("your Position is: " + str(self.position))
         move_raw = self.server.read(self.ID)
-        move = move_raw["to"]
+        print("Stop")
+        move = move_raw['to']
+        print(move)
         try:
             if move == None:
                 return self.position
@@ -41,6 +43,7 @@ class RemotePlayer(PlayerUser):
             formatted_move = (move_json[0], move_json[1])
             return formatted_move
         except:
+            print("move failed")
             return self.request_move()
 
 

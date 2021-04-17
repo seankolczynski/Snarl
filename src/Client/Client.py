@@ -59,8 +59,23 @@ def player_update(update):
         image += "--"
     image += "-+"
     print(image)
-    print("Current position (format x/yl): ", position)
+    print("Current position (format x/y): ", position)
 
+
+
+# def make_move(s):
+#     move = input("enter a move: ")
+#     move_json = None
+#     try:
+#         if move == "":
+#             move_json = None
+#         else:
+#             move_split = move.split(" ")
+#             move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
+#         s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
+#         print("sent")
+#         response = s.recv(1024).decode('utf8')
+#
 
 
 
@@ -78,15 +93,15 @@ if __name__ == "__main__":
         welcome = s.recv(34).decode('utf8')
         print(welcome)
         done = False
-        while True or not done:
+        while not done:
             data_raw = s.recv(1024).decode('utf8')
             data_list = data_raw.split("\n")
             #if data is not None or data != "":
                 #print(data)
             for data in data_list:
+                data = data.strip()
                 if done == True:
                     continue
-                print(data)
                 if data is None or data == "":
                     pass
                 elif data == "name":
@@ -95,7 +110,6 @@ if __name__ == "__main__":
                 elif data == "move":
                     move = input("enter a move: ")
                     move_json = None
-
                     try:
                         if move == "":
                             move_json = None
@@ -104,11 +118,13 @@ if __name__ == "__main__":
                             move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
                         s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
                         print("sent")
+
                     except:
                         continue
                 elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":
-                    print(data)
+                    print("Returns: ", data)
                 else:
+                    print(data)
                     server_json = json.loads(data)
                     if server_json["type"] == "start-level":
                         print("Starting level #" + server_json["level"] + " with players:")
