@@ -4,7 +4,7 @@ import json
 
 
 def swap(position):
-    return position[0], position[1]
+    return position[1], position[0]
 
 def player_update(update):
     layout = update['layout']
@@ -16,12 +16,11 @@ def player_update(update):
     for obj in objects:
         objectPositions[(swap(obj['position']))] = obj['type']
     actors = update['actors']
-    print("Actors ", actors)
     actorPositions = {}
     for actor in actors:
         actorPositions[(swap(actor['position']))] = actor['type']
-    print("Object Positions  ", objectPositions.keys())
     message = update['message']
+    print(position)
 
     upLeft = ((position[0] - 2), (position[1] - 2))
 
@@ -33,12 +32,10 @@ def player_update(update):
     for y in range(5):
         image += "| "
         count = 0
-
         for x in range(5):
-
-            if (x + upLeft[1], y + upLeft[0]) in actorPositions.keys():
-                print("X: ", x + upLeft[1], " Y: ", y + upLeft[0])
-                actType = actorPositions[(x + upLeft[1], y + upLeft[0])]
+            if (x + upLeft[0], y + upLeft[1]) in actorPositions.keys():
+                print("X: ", x + upLeft[0], " Y: ", y + upLeft[1])
+                actType = actorPositions[(x + upLeft[0], y + upLeft[1])]
                 if actType == "Zombie" or actType == "zombie":
                     image += "Z"
                 elif actType == "Ghost" or actType == "ghost":
@@ -47,9 +44,9 @@ def player_update(update):
                     image += "P"
                 else:
                     image += "?"
-            elif (x + upLeft[1], y + upLeft[0]) in objectPositions.keys():
-                print("X: ", x + upLeft[1], " Y: ", y + upLeft[0])
-                objType = objectPositions[(x + upLeft[1], y + upLeft[0])]
+            elif (x + upLeft[0], y + upLeft[1]) in objectPositions.keys():
+                print("X: ", x + upLeft[0], " Y: ", y + upLeft[1])
+                objType = objectPositions[(x + upLeft[0], y + upLeft[1])]
                 image += objType[0]
             else:
                 if layout[x][y] == 0:

@@ -281,11 +281,7 @@ def translate_to_xy(rowCol):
     y, x = rowCol
     return (x, y)
 
-def translate_to_rowCol(xy):
-    if xy == None:
-        return xy
-    y, x = xy
-    return [y, x]
+
 
 def player_layout(grid, position):
     layout = []

@@ -51,10 +51,10 @@ class RemotePlayer(PlayerUser):
             output = {
             "type": "player-update",
             "layout": JLevel.player_layout(self.gameState.get_current_floor().grid, pos),
-            "position": JLevel.translate_to_rowCol(pos),
-            "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_rowCol(x[1])}, self.gameState.get_items())),
+            "position": JLevel.translate_to_xy(pos),
+            "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_xy(x[1])}, self.gameState.get_items())),
             "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name,
-                                          "position": JLevel.translate_to_rowCol(x.get_char_position())},
+                                          "position": JLevel.translate_to_xy(x.get_char_position())},
                                (self.gameState.get_players() + self.gameState.get_adversaries()))),
             "message": ""
             }
