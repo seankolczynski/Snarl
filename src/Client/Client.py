@@ -103,6 +103,7 @@ if __name__ == "__main__":
                             move_split = move.split(" ")
                             move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
                         s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
+                        print("sent")
                     except:
                         continue
             elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":

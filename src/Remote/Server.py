@@ -68,7 +68,9 @@ class Server():
         current_conn.sendall(bytes("move", encoding='utf8'))
         data = None
         while data == None:
+            print("QZXFQEQW")
             data = current_conn.recv(1024)
+        print(json.loads(str(data)))
         return json.loads(str(data))
         
     def write(self,str1):
