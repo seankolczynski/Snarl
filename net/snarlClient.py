@@ -78,7 +78,9 @@ if __name__ == "__main__":
                 name = input("enter name: ")
                 s.sendall(bytes(name))
             elif str(data) == "move":
-                move = input("enter a move: ")
+                move = ""
+                while move == "":
+                    move = input("enter a move: ")
                 move_json = None
                 while move_json == None:
                     try:
