@@ -196,7 +196,7 @@ class GameManager:
         current_character = self.ID_to_user_character[turn_index][1]
         current_user = self.ID_to_user_character[turn_index][0]
         move = None
-        while True:
+        while True and current_character.is_alive() and not current_character.exited:
             try:
                 move = current_user.request_move()
             except ValueError:

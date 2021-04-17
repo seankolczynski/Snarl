@@ -31,3 +31,4 @@ class Hero (Character):
 
     def resurrect(self):
         self.alive = True
+        self.exited = False

@@ -8,7 +8,6 @@ def swap(position):
 
 def player_update(update):
     layout = update['layout']
-    print(layout)
     position = swap(update['position'])
     objects = update['objects']
     objectPositions = {}
@@ -81,12 +80,9 @@ def player_update(update):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-
-
     ap.add_argument("--address", help="address to connect to", action="store", type=str, default="127.0.0.1")
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
     args = ap.parse_args()
-
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((args.address, args.port))
         welcome = s.recv(34).decode('utf8')
@@ -95,10 +91,9 @@ if __name__ == "__main__":
         while not done:
             data_raw = s.recv(1024).decode('utf8')
             data_list = data_raw.split("\n")
-            #if data is not None or data != "":
-                #print(data)
             for data in data_list:
-                print("RAW DATA: " + str(data))
+                if data is not None and data != "":
+                    print("RAW DATA: " + str(data))
                 data = data.strip()
                 if done == True:
                     continue
@@ -122,8 +117,8 @@ if __name__ == "__main__":
                         print("sent")
                     except:
                         continue
-                elif data == "OK" or data == "Key" or data == "Exit" or "Ejected by" in data or data == "Invalid":
-                    print("Returns: ", data)
+                elif data == "OK" or data == "Key" or data == "Exit" or "Ejected by" in data or "Occupied" in data or data == "Invalid":
+                    print(data)
                 else:
                     server_json = json.loads(data)
                     if server_json["type"] == "start-level":
@@ -143,11 +138,11 @@ if __name__ == "__main__":
                     elif server_json["type"] == "end-game":
                         print("End Game Stats:")
                         for score in server_json["scores"]:
-                          print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
-                          + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times." )
-                          s.close()
-                          done = True
-                          break
+                            print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
+                            + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times.")
+                        s.close()
+                        done = True
+                        break
                     elif server_json["type"] == "player-update":
                         player_update(server_json)
                     elif server_json["type"] == "welcome":

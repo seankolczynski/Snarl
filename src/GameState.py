@@ -89,11 +89,11 @@ class GameState:
             if self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
                 self.exited.append(character)
                 self.character_to_exits[character.get_id()] = self.character_to_exits[character.get_id()] + 1
+                character.exited = True
                 self.update_status()
                 destination.remove_character()
                 print("Player " + character.get_name() + " exited")
                 message = {"success": True, "message": "Exit"}
-
         else:
             if character.get_ctype() == CharacterType.GHOST:
                 message = character.move(character.special_move(self.current_floor))
