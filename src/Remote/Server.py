@@ -85,7 +85,7 @@ class Server():
  
     def start_new_level(self, level_num):
         for conn in self.id_to_conn.values():
-            conn.sendall(bytes(json.dumps({"type": "start-level", "level": level_num+1, "players": self.list_of_players })+"\n", encoding='utf8'))
+            conn.sendall(bytes(json.dumps({"type": "start-level", "level": str(level_num+1), "players": self.list_of_names})+"\n", encoding='utf8'))
       
 
 

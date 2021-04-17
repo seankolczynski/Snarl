@@ -19,7 +19,6 @@ def player_update(update):
     for actor in actors:
         actorPositions[(swap(actor['position']))] = actor['type']
     message = update['message']
-    print(position)
 
     upLeft = ((position[0] - 2), (position[1] - 2))
 
@@ -107,6 +106,8 @@ if __name__ == "__main__":
                     pass
                 elif data == "name":
                     name = input("enter name: ")
+                    while name == "OK" or name == "Key" or name == "Exit" or "Ejected by" in name or name == "Invalid":
+                        name = input("Please choose a different name: ")
                     s.sendall(bytes(name, encoding='utf8'))
                 elif data == "move":
                     move = input("enter a move: ")
@@ -121,7 +122,7 @@ if __name__ == "__main__":
                         print("sent")
                     except:
                         continue
-                elif data == "OK" or data == "Key" or data == "Exit" or "Eject" in data or data == "Invalid":
+                elif data == "OK" or data == "Key" or data == "Exit" or "Ejected by" in data or data == "Invalid":
                     print("Returns: ", data)
                 else:
                     server_json = json.loads(data)
@@ -131,7 +132,8 @@ if __name__ == "__main__":
                             print(name)
                     elif server_json["type"] == "end-level":
                         print("Level ended")
-                        print("Key was picked up by " + server_json["key"])
+                        if server_json["key"] is not None:
+                            print("Key was picked up by " + server_json["key"])
                         print("Players who exited:")
                         for name in server_json["exits"]:
                            print(name)
