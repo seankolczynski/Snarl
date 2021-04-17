@@ -61,8 +61,8 @@ class GameManager:
         output = {
             "type": "end-level",
             "key": key_info,
-            "exits": self.game.exited,
-            "ejects": self.game.ejected
+            "exits": [], #self.game.exited,
+            "ejects": []#self.game.ejected
         }
         self.server.write(json.dumps(output))
         self.game.next_level()

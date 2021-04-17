@@ -287,14 +287,16 @@ def player_layout(grid, position):
     layout = []
     upLeft = ((position[0] - 2), (position[1] - 2))
     downRight = ((position[0] + 2), (position[1] + 2))
-    for ind in range((2 * 2) + 1):
-        layout.append([])
+    for ind in range(5):
+        layout.append([0, 0, 0, 0, 0])
+    countY = 0
     for y in range(len(grid[0])):
-        count = 0
+        countX = 0
         for x in range(len(grid)):
             if is_in_window(x, y, downRight, upLeft):
-                layout[count].append(grid[x][y].num_val())
-                count = count + 1
+                layout[countY][countX] = (grid[x][y].num_val())
+                countX = countX + 1
+            countY = countY + 1
     return layout
 
 def is_in_window(x, y, downRight, upLeft):
