@@ -99,6 +99,7 @@ if __name__ == "__main__":
             #if data is not None or data != "":
                 #print(data)
             for data in data_list:
+                print("RAW DATA: " + str(data))
                 data = data.strip()
                 if done == True:
                     continue

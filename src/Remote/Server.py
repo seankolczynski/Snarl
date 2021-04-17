@@ -40,7 +40,7 @@ class Server():
         if self.ID == 0:
             print("No Players Joined ending Server")
             sock.close()
-        start_message = bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_names}), encoding='utf8')
+        start_message = bytes(json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_names})+"\n", encoding='utf8')
         print(len(self.id_to_conn))
         for conn in self.id_to_conn.values():
             conn.sendall(start_message)
@@ -51,10 +51,10 @@ class Server():
 
 
         print("Got Connection")
-        welcome = conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}), encoding='utf8'))
+        welcome = conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"})+"\n", encoding='utf8'))
         while welcome is not None:
             continue
-        conn.sendall(bytes("name", encoding='utf8'))
+        conn.sendall(bytes("name"+"\n", encoding='utf8'))
         data2 = conn.recv(1024).decode('utf8')  # buffer size is 1024 bytes
         new_player = RemotePlayer(data2, CharacterType.PLAYER, self.ID, self)
         # self.id_to_name[self.ID] = str(data2)
@@ -65,7 +65,7 @@ class Server():
     
     def read(self, ID):
         current_conn = self.id_to_conn[ID]
-        current_conn.sendall(bytes("move", encoding='utf8'))
+        current_conn.sendall(bytes("move"+"\n", encoding='utf8'))
         data = None
         while data == None:
             data = current_conn.recv(1024).decode('utf8')
@@ -75,17 +75,17 @@ class Server():
         
     def write(self,str1):
          for conn in self.id_to_conn.values():
-            conn.sendall(bytes(str1, encoding='utf8'))
+            conn.sendall(bytes(str1+"\n", encoding='utf8'))
 
     def write_to_id(self, message, id):
-        self.id_to_conn[id].sendall(bytes(message, encoding="utf8"))
+        self.id_to_conn[id].sendall(bytes(message+"\n", encoding="utf8"))
     
     def close(self):
         self.server.close()
  
     def start_new_level(self, level_num):
         for conn in self.id_to_conn.values():
-            conn.sendall(bytes(json.dumps({"type": "start-level", "level": level_num+1, "players": self.list_of_players }), encoding='utf8'))
+            conn.sendall(bytes(json.dumps({"type": "start-level", "level": level_num+1, "players": self.list_of_players })+"\n", encoding='utf8'))
       
 
 
