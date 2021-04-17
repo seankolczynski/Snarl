@@ -48,11 +48,13 @@ class RemotePlayer(PlayerUser):
         self.gameState = gs
         self.position = pos
         if pos is not None:
+            exit = self.gameState.get_exit()
+            exitPosn = ("exit", exit.get_position())
             output = {
             "type": "player-update",
             "layout": JLevel.player_layout(self.gameState.get_current_floor().grid, pos),
             "position": JLevel.translate_to_xy(pos),
-            "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_xy(x[1])}, self.gameState.get_items())),
+            "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_xy(x[1])}, (self.gameState.get_items() + [exitPosn]))),
             "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name,
                                           "position": JLevel.translate_to_xy(x.get_char_position())},
                                (self.gameState.get_players() + self.gameState.get_adversaries()))),

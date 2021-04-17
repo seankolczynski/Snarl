@@ -9,8 +9,7 @@ def swap(position):
 def player_update(update):
     layout = update['layout']
     print(layout)
-
-    position = update['position']
+    position = swap(update['position'])
     objects = update['objects']
     objectPositions = {}
     for obj in objects:
@@ -60,7 +59,7 @@ def player_update(update):
         image += "--"
     image += "-+"
     print(image)
-    print("Current position (format row/col): ", position)
+    print("Current position (format x/yl): ", position)
 
 
 
@@ -92,17 +91,16 @@ if __name__ == "__main__":
             elif data == "move":
                 move = input("enter a move: ")
                 move_json = None
-                while move_json == None:
-                    try:
-                        if move == "":
-                            move_json = None
-                        else:
-                            move_split = move.split(" ")
-                            move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
-                        s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
-                        print("sent")
-                    except:
-                        continue
+                try:
+                    if move == "":
+                        move_json = None
+                    else:
+                        move_split = move.split(" ")
+                        move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
+                    s.sendall(bytes(str({"type": "move", "to": move_json}), encoding='utf8'))
+                    print("sent")
+                except:
+                    continue
             elif data == "OK" or data == "Key" or data == "Exit" or data == "Eject" or data == "Invalid":
                 print(data)
             else:
@@ -123,8 +121,8 @@ if __name__ == "__main__":
                 elif server_json["type"] == "end-game":
                     print("End Game Stats:")
                     for score in server_json["scores"]:
-                      print(score["name"] + " got " + score["keys"] + " keys, exited " 
-                      + score["exits"] + " times, and got ejected " + score["ejected" + " times."] )
+                      print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
+                      + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times.")
                 elif server_json["type"] == "player-update":
                     player_update(server_json)
                 elif server_json["type"] == "welcome":
