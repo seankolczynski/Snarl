@@ -110,7 +110,9 @@ if __name__ == "__main__":
                         name = input("Please choose a different name: ")
                     s.sendall(bytes(name, encoding='utf8'))
                 elif data == "move":
-                    move = input("enter a move: ")
+                    move = ""
+                    while move == "":
+                        move = input("enter a move: ")
                     move_json = None
                     try:
                         if move == "":
