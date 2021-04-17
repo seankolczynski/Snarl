@@ -26,10 +26,10 @@ class Character:
             if self.current_tile is not None:
                 self.current_tile.remove_character()
             self.alive = False
-            message = {"success": True, "message": "Ejected by " + occupant.get_name()}
+            message = {"success": True, "message": "Ejected by " + occupant.get_name(), "detail": ""}
             return message
         else:
-            message = {"success": False, "message": "Occupied by another player"}
+            message = {"success": False, "message": "Occupied by another player", "detail": ""}
             return message
 
 

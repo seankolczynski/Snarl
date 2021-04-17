@@ -56,6 +56,8 @@ class PlayerUser(Observer):
     def get_position(self):
         return self.position
 
+    def transmit_message(self, message):
+        pass
 
 
     # This is a stub for testing

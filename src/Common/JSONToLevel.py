@@ -79,7 +79,7 @@ def reinterpret(message):
             return "Eject"
         if "Key" in info or "OK" in info:
             return info
-        if "Exited" in info:
+        if "Exit" in info:
             return "Exit"
 
 
@@ -280,3 +280,27 @@ def translate_to_xy(rowCol):
         return rowCol
     y, x = rowCol
     return (x, y)
+
+
+
+def player_layout(grid, position):
+    layout = []
+    upLeft = ((position[0] - 2), (position[1] - 2))
+    downRight = ((position[0] + 2), (position[1] + 2))
+    for ind in range(5):
+        layout.append([0, 0, 0, 0, 0])
+    countY = 0
+    for y in range(len(grid[0])):
+        countX = 0
+        init_x = countX
+        for x in range(len(grid)):
+            if is_in_window(x, y, downRight, upLeft):
+                layout[countX][countY] = (grid[x][y].num_val())
+                countX = countX + 1
+        if init_x < countX:
+            countY = countY + 1
+            init_x = countX
+    return layout
+
+def is_in_window(x, y, downRight, upLeft):
+    return (downRight[0] >= x >= upLeft[0]) and (downRight[1] >= y >= upLeft[1])
