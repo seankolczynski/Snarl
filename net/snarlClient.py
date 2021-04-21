@@ -138,9 +138,12 @@ if __name__ == "__main__":
                         for score in server_json["scores"]:
                             print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
                             + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times.")
-                        s.close()
-                        done = True
-                        break
+                    elif server_json["type"] == "leaderboard":
+                        print("Leaderboard:")
+                        for score in server_json["scores"]:
+                            print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
+                                  + str(score["exits"]) + " times, and got ejected " + str(
+                                score["ejected"]) + " times.")
                     elif server_json["type"] == "player-update":
                         player_update(server_json)
                     elif server_json["type"] == "welcome":

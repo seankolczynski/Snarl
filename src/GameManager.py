@@ -148,7 +148,7 @@ class GameManager:
         elif self.current_status == Status.LOST:
             print("Lost on level " + str(current_level))
         self.end_game_stats()
-        self.server.close()
+        # self.server.close()
 
 
     def run_level(self):
@@ -184,7 +184,6 @@ class GameManager:
             "scores": score_list
         }
         self.server.write(json.dumps(output))
-
     """
     int -> JSON
     Executes a single turn the user whose turn it currently is. This includes receiving moves until one is approved, 
