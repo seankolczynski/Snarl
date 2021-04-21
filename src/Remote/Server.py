@@ -3,9 +3,9 @@ import json
 import argparse
 import sys
 
-from datetime import datetime, timedelta
 sys.path.append("../")
 from RemotePlayer import RemotePlayer
+from RemoteAdversary import RemoteAdversary
 import Common.JSONToLevel as JLevel
 from Common.Observer import Observer
 from GameState import GameState
@@ -19,7 +19,7 @@ class Server():
 
         self.start_level = start_level
         self.ID = 0
-        host = ip# Get local machine name
+        host = ip # Get local machine name
         port = port               
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #
         sock.bind((host, port))
@@ -49,19 +49,43 @@ class Server():
         print("waiting for player")
         conn, addr = self.server.accept()
 
-
         print("Got Connection")
         welcome = conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"})+"\n", encoding='utf8'))
         while welcome is not None:
             continue
         conn.sendall(bytes("name"+"\n", encoding='utf8'))
         data2 = conn.recv(1024).decode('utf8')  # buffer size is 1024 bytes
-        new_player = RemotePlayer(data2, CharacterType.PLAYER, self.ID, self)
+
+        new_player = self.request_type(conn, data2)
         # self.id_to_name[self.ID] = str(data2)
+
         self.list_of_players.append(new_player)
         self.list_of_names.append(data2)
         self.id_to_conn[self.ID] = conn
         self.ID += 1
+
+    def request_type(self, conn, name):
+        conn.sendall(bytes("Hero[1] or Adversary[2]?\n", encoding='utf8'))
+        genre = conn.recv(1024).decode('utf8')
+        try:
+            if '1' in genre:
+                conn.sendall(bytes("You have chosen to play as a Hero! A valiant decision.\n", encoding='utf8'))
+                return RemotePlayer(name, CharacterType.PLAYER, self.ID, self)
+            elif '2' in genre:
+                conn.sendall(bytes("Will you be a Zombie[1] or a Ghost[2]?\n", encoding='utf8'))
+                title = conn.recv(1024).decode('utf8')
+                if '2' in title:
+                    conn.sendall(bytes("You have chosen to play as a Ghost Adversary!\n", encoding='utf8'))
+                    return RemoteAdversary(name, CharacterType.GHOST, self.ID, self)
+                else:
+                    conn.sendall(bytes("You have chosen to play as a Zombie Adversary!\n", encoding='utf8'))
+                    return RemoteAdversary(name, CharacterType.ZOMBIE, self.ID, self)
+            else:
+                return self.request_type(conn, name)
+        except:
+            return self.request_type(conn, name)
+
+
     
     def read(self, ID):
         current_conn = self.id_to_conn[ID]

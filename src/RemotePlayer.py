@@ -34,7 +34,7 @@ class RemotePlayer(PlayerUser):
         move = move_raw['to']
         print(move)
         try:
-            if move == None:
+            if move is None:
                 return self.position
             move_json = move
             formatted_move = (int(move_json[0]), int(move_json[1]))

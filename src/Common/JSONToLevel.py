@@ -302,5 +302,25 @@ def player_layout(grid, position):
             init_x = countX
     return layout
 
+
+def adversary_view(grid):
+    layout = []
+    for ind in range(5):
+        layout.append([0, 0, 0, 0, 0])
+    countY = 0
+    for y in range(len(grid[0])):
+        countX = 0
+        init_x = countX
+        for x in range(len(grid)):
+            layout[countX][countY] = (grid[x][y].num_val())
+            countX = countX + 1
+        if init_x < countX:
+            countY = countY + 1
+            init_x = countX
+    return layout
+
+
+
+
 def is_in_window(x, y, downRight, upLeft):
     return (downRight[0] >= x >= upLeft[0]) and (downRight[1] >= y >= upLeft[1])
