@@ -29,11 +29,13 @@ class RemoteAdversary(PlayerUser):
         self.adversary = make_of_type(name, ctype, ID)
         self.layout = None
         self.move_sequence = []
+        self.ID = ID
+        self.type = ctype
         self.gameState = None
-        self.position = None
+        self.name = name
         self.server = server
-        self.vision = self.adversary.FOV_radius
-        self.defaults = []
+        self.position = None
+        self.message = ""
 
     def get_id(self):
         return self.adversary.get_id()
@@ -42,7 +44,7 @@ class RemoteAdversary(PlayerUser):
         return self.adversary.get_type()
 
     def get_name(self):
-        return self.adversary.get_name
+        return self.adversary.get_name()
 
     """Called by the GameManager, requests the first of the list of options"""
 

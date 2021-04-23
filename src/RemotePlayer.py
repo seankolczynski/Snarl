@@ -55,7 +55,7 @@ class RemotePlayer(PlayerUser):
             "layout": JLevel.player_layout(self.gameState.get_current_floor().grid, pos),
             "position": JLevel.translate_to_xy(pos),
             "objects": list(map(lambda x: {"type": x[0], "position": JLevel.translate_to_xy(x[1])}, (self.gameState.get_items() + [exitPosn]))),
-            "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.name,
+            "actors": list(map(lambda x: {"type": x.ctype.value, "name": x.get_name(),
                                           "position": JLevel.translate_to_xy(x.get_char_position())},
                                list(filter(lambda y: y.is_alive() and not y.exited, self.gameState.get_players() + self.gameState.get_adversaries())))),
             "message": self.message

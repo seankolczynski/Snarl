@@ -1,5 +1,6 @@
 from Beings.Character import Character
 from Enums.CharacterType import CharacterType
+from Structures.Tile import Tile, ExitTile
 
 class Hero (Character):
 
@@ -32,3 +33,6 @@ class Hero (Character):
     def resurrect(self):
         self.alive = True
         self.exited = False
+
+    def fit_the_bill(self, target_tile):
+        return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile))
