@@ -1,7 +1,6 @@
 class SimpleState:
-    def __init__(self, grid, server):
+    def __init__(self, grid):
         self.grid = grid
-        self.server = server
 
     def render(self):
         return self.render_in_range((0, 0), -1)

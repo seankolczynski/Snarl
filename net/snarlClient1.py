@@ -23,12 +23,13 @@ def player_update(update):
 
     image = ""
     image += "+"
-    for x in range(len(layout)):
+    for x in range(5):
         image += "--"
     image += "-+\n"
-    for y in range(len(layout[0])):
+    for y in range(5):
         image += "| "
-        for x in range(len(layout)):
+        count = 0
+        for x in range(5):
             if (x + upLeft[0], y + upLeft[1]) in actorPositions.keys():
                 actType = actorPositions[(x + upLeft[0], y + upLeft[1])]
                 if actType == "Zombie" or actType == "zombie":
@@ -50,58 +51,7 @@ def player_update(update):
             image += " "
         image += "|\n"
     image += "+"
-    for x in range(len(layout)):
-        image += "--"
-    image += "-+"
-    if message != "":
-        print(message)
-    print(image)
-    print("Current position (format x/y): ", position)
-
-
-def monster_update(update):
-    layout = update['layout']
-    position = swap(update['position'])
-    objects = update['objects']
-    objectPositions = {}
-    for obj in objects:
-        objectPositions[(swap(obj['position']))] = obj['type']
-    actors = update['actors']
-    actorPositions = {}
-    for actor in actors:
-        actorPositions[(swap(actor['position']))] = actor['type']
-    message = update['message']
-
-    image = ""
-    image += "+"
-    for x in range(len(layout)):
-        image += "--"
-    image += "-+\n"
-    for y in range(len(layout[0])):
-        image += "| "
-        for x in range(len(layout)):
-            if (x, y) in actorPositions.keys():
-                actType = actorPositions[(x, y)]
-                if actType == "Zombie" or actType == "zombie":
-                    image += "Z"
-                elif actType == "Ghost" or actType == "ghost":
-                    image += "G"
-                elif actType == "Player" or actType == "player":
-                    image += "P"
-                else:
-                    image += "?"
-            elif (x, y) in objectPositions.keys():
-                objType = objectPositions[(x, y)]
-                image += objType[0]
-            else:
-                if layout[x][y] == 0:
-                    image += "X"
-                else:
-                    image += " "
-            image += " "
-        image += "|\n"
-    image += "+"
-    for x in range(len(layout)):
+    for x in range(5):
         image += "--"
     image += "-+"
     if message != "":
@@ -133,7 +83,6 @@ if __name__ == "__main__":
     ap.add_argument("--address", help="address to connect to", action="store", type=str, default="127.0.0.1")
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
     args = ap.parse_args()
-    is_baddie = False
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((args.address, args.port))
         welcome = s.recv(34).decode('utf8')
@@ -142,9 +91,9 @@ if __name__ == "__main__":
             data_raw = s.recv(1024).decode('utf8')
             data_list = data_raw.split("\n")
             for data in data_list:
-                print(data)
                 data = data.strip()
-                if done is True:
+                # print("RAW DATA: " + data)
+                if done == True:
                     continue
                 if data is None or data == "":
                     pass
@@ -172,11 +121,9 @@ if __name__ == "__main__":
                 else:
                     server_json = json.loads(data)
                     if server_json["type"] == "start-level":
-                        print("Starting level #" + server_json["level"] + " with players:")
+                        print("Starting level #" + str(server_json["level"]) + " with players:")
                         for name in server_json["players"]:
                             print(name)
-                    elif server_json["type"] == "simple":
-                        print(server_json["message"])
                     elif server_json["type"] == "end-level":
                         print("Level ended")
                         if server_json["key"] is not None:
@@ -192,27 +139,23 @@ if __name__ == "__main__":
                         for score in server_json["scores"]:
                             print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
                             + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times.")
-                        s.close()
-                        done = True
-                        break
+                    elif server_json["type"] == "leaderboard":
+                        print("Leaderboard:")
+                        for score in server_json["scores"]:
+                            print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
+                                  + str(score["exits"]) + " times, and got ejected " + str(
+                                score["ejected"]) + " times.")
                     elif server_json["type"] == "player-update":
-                        if is_baddie:
-                            monster_update(server_json)
-                        else:
-                            player_update(server_json)
+                        player_update(server_json)
                     elif server_json["type"] == "welcome":
                         break
-                    elif server_json["type"] == "hero_or_ad":
-                        choice = input(server_json["message"])
-                        while "1" not in choice and "2" not in choice:
-                            choice = input("Please input a valid choice.")
-                        s.sendall(bytes(choice, encoding='utf8'))
-                    elif server_json["type"] == "ad_type":
-                        is_baddie = True
-                        choice = input(server_json["message"])
-                        while "1" not in choice and "2" not in choice:
-                            choice = input("Please input a valid choice.")
-                        s.sendall(bytes(choice, encoding='utf8'))
+                    elif server_json["type"] == "replay":
+                        x = False
+                        while not bool(x):
+                            x = input("do you want to replay on this server?: ").strip()
+                        s.sendall(bytes(x, encoding='utf8'))
+                        print("closing client so user can reconnect")
+                        quit()
                     else:
                         print("unknown message received closing socket")
                         done = True

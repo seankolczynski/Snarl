@@ -3,10 +3,9 @@ import json
 import argparse
 import sys
 
-from datetime import datetime, timedelta
-
 sys.path.append("../")
 from RemotePlayer import RemotePlayer
+from RemoteAdversary import RemoteAdversary
 import Common.JSONToLevel as JLevel
 from Common.Observer import Observer
 from GameState import GameState
@@ -14,7 +13,7 @@ from GameManager import GameManager
 from Enums.CharacterType import CharacterType
 
 
-class Server():
+class ServerRemoteAd():
 
     def __init__(self, ip, port, clients, wait, start_level):
 
@@ -30,19 +29,25 @@ class Server():
         self.server = sock
         self.list_of_players = []
         self.list_of_names = []
+        self.joined_heros = []
+        self.joined_advers = []
         sock.listen(clients)
         self.wait_for_player()
         self.server.settimeout(wait)
+
+
         try:
             for _ in range(1, clients):
                 self.wait_for_player()
         except socket.timeout:
             print("No additional players")
-        if self.ID == 0:
-            print("No Players Joined ending Server")
+        if len(self.joined_heros) == 0:
+            print("Not Enough heros joined, ending Server")
             sock.close()
-        start_message = bytes(json.dumps({"type": "start-level", "level": 1, "players": self.list_of_names}) + "\n",
-                              encoding='utf8')
+
+        start_message = bytes(
+            json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_names}) + "\n",
+            encoding='utf8')
         print(len(self.id_to_conn))
         for conn in self.id_to_conn.values():
             conn.sendall(start_message)
@@ -57,12 +62,33 @@ class Server():
             continue
         conn.sendall(bytes("name" + "\n", encoding='utf8'))
         data2 = conn.recv(1024).decode('utf8')  # buffer size is 1024 bytes
-        new_player = RemotePlayer(data2, CharacterType.PLAYER, self.ID, self)
-        # self.id_to_name[self.ID] = str(data2)
-        self.list_of_players.append(new_player)
+        success = self.request_type(conn, data2)
+
         self.list_of_names.append(data2)
-        self.id_to_conn[self.ID] = conn
-        self.ID += 1
+
+    def request_type(self, conn, name):
+        conn.sendall(bytes(json.dumps({"type": "hero_or_ad", "message": "Hero[1] or Adversary[2]? "}) + "\n", encoding='utf8'))
+        genre = conn.recv(1024).decode('utf8')
+        # try:
+        if '1' in genre:
+            conn.sendall(bytes(json.dumps({"type": "simple", "message": "You have chosen to play as a Hero! A valiant decision."}) + "\n", encoding='utf8'))
+            self.joined_heros.append((name, CharacterType.PLAYER, conn))
+            return
+        elif '2' in genre:
+            conn.sendall(bytes(json.dumps({"type": "ad_type", "message": "Will you be a Zombie[1] or a Ghost[2]? "}) + "\n", encoding='utf8'))
+            title = conn.recv(1024).decode('utf8')
+            if '2' in title:
+                conn.sendall(bytes(json.dumps({"type": "simple", "message": "You have chosen to play as a Ghost Adversary!"}) + "\n", encoding='utf8'))
+                self.joined_advers.append((name, CharacterType.GHOST, conn))
+                return
+            else:
+                conn.sendall(bytes(json.dumps({"type": "simple", "message": "You have chosen to play as a Zombie Adversary!"}) + "\n", encoding='utf8'))
+                self.joined_advers.append((name, CharacterType.ZOMBIE, conn))
+                return
+        else:
+            return self.request_type(conn, name)
+        # except:
+        #     return self.request_type(conn, name)
 
     def read(self, ID):
         current_conn = self.id_to_conn[ID]
@@ -102,7 +128,7 @@ if __name__ == "__main__":
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
 
     args = ap.parse_args()
-    server = Server(args.address, args.port, args.clients, args.wait, args.levels)
+    server = ServerRemoteAd(args.address, args.port, args.clients, args.wait, args.levels)
     path_to_levels = args.levels
 
     levels = open(path_to_levels)
@@ -122,8 +148,15 @@ if __name__ == "__main__":
     start_level_index = args.start - 1
     init_gamestate = GameState(floors)
     init_gamemanager = GameManager(init_gamestate, server, parsed_levels)
-    for player in server.list_of_players:
-        init_gamemanager.register_player_user(player)
+    identifier = 0
+    for name, ctype, conn in server.joined_heros:
+        init_gamemanager.register_player_user(RemotePlayer(name, ctype, identifier, server))
+        server.id_to_conn[identifier] = conn
+        identifier += 1
+    for name, ctype, conn in server.joined_advers:
+        init_gamemanager.register_player_user(RemoteAdversary(name, ctype, identifier, server))
+        server.id_to_conn[identifier] = conn
+        identifier += 1
     if args.observe == 1:
         init_gamemanager.register_observer(Observer(-1))
     init_gamemanager.set_starting_level(1)

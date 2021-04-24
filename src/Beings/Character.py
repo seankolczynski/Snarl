@@ -1,4 +1,5 @@
-from Enums.CharacterType import  CharacterType
+from Enums.CharacterType import CharacterType
+
 
 class Character:
 
@@ -58,3 +59,4 @@ class Character:
 
     def is_alive(self):
         return self.alive
+

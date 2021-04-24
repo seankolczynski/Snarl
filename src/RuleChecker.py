@@ -21,10 +21,7 @@ class RuleChecker:
             return False
         target = floor.get_tile_at(position)
         current = charact.get_char_position()
-        if not isinstance(target, WallTile):
-            if self.manhattan_distance(current, target.get_position()) <= charact.get_speed():
-                return True
-        elif isinstance(charact, Ghost):
+        if charact.fit_the_bill(target):
             if self.manhattan_distance(current, target.get_position()) <= charact.get_speed():
                 return True
         else:

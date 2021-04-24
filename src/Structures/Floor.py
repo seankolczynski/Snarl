@@ -65,7 +65,6 @@ class Floor:
             image += "--"
         image += "-+"
         print(image)
-        return image
 
     """Places the rooms in the floor and ensures they are valid"""
 

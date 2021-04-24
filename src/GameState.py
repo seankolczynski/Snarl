@@ -118,7 +118,7 @@ class GameState:
         return self.move_character(self.players[id], pos)
 
     def draw(self):
-        return self.current_floor.draw()
+        self.current_floor.draw()
 
     def get_current_floor(self):
         return self.current_floor
