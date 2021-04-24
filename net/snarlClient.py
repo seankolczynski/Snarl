@@ -92,6 +92,7 @@ if __name__ == "__main__":
             data_list = data_raw.split("\n")
             for data in data_list:
                 data = data.strip()
+                print("RAW DATA: " + data)
                 if done == True:
                     continue
                 if data is None or data == "":
@@ -138,13 +139,21 @@ if __name__ == "__main__":
                         for score in server_json["scores"]:
                             print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
                             + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times.")
-                        s.close()
-                        done = True
-                        break
+                    elif server_json["type"] == "leaderboard":
+                        print("Leaderboard:")
+                        for score in server_json["scores"]:
+                            print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
+                                  + str(score["exits"]) + " times, and got ejected " + str(
+                                score["ejected"]) + " times.")
                     elif server_json["type"] == "player-update":
                         player_update(server_json)
                     elif server_json["type"] == "welcome":
                         break
+                    elif server_json["type"] == "replay":
+                        x = None
+                        while x != "true" or x != "false":
+                            x = input("do you want to replay on this server?")
+                        s.sendall(bytes(x, encoding='utf8'))
                     else:
                         print("unknown message received closing socket")
                         done = True
