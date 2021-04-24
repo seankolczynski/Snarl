@@ -92,7 +92,7 @@ if __name__ == "__main__":
             data_list = data_raw.split("\n")
             for data in data_list:
                 data = data.strip()
-                print("RAW DATA: " + data)
+                # print("RAW DATA: " + data)
                 if done == True:
                     continue
                 if data is None or data == "":
@@ -121,7 +121,7 @@ if __name__ == "__main__":
                 else:
                     server_json = json.loads(data)
                     if server_json["type"] == "start-level":
-                        print("Starting level #" + server_json["level"] + " with players:")
+                        print("Starting level #" + str(server_json["level"]) + " with players:")
                         for name in server_json["players"]:
                             print(name)
                     elif server_json["type"] == "end-level":
@@ -150,10 +150,12 @@ if __name__ == "__main__":
                     elif server_json["type"] == "welcome":
                         break
                     elif server_json["type"] == "replay":
-                        x = None
-                        while x != "true" or x != "false":
-                            x = input("do you want to replay on this server?")
+                        x = False
+                        while not bool(x):
+                            x = input("do you want to replay on this server?: ").strip()
                         s.sendall(bytes(x, encoding='utf8'))
+                        print("closing client so user can reconnect")
+                        quit()
                     else:
                         print("unknown message received closing socket")
                         done = True

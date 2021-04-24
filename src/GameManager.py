@@ -185,7 +185,33 @@ class GameManager:
         }
         self.server.write(json.dumps(output))
 
-    def leaderboard_stats(self,  key_dict, exit_dict, eject_dict):
+    def get_end_game_stats(self):
+        key_dict, exit_dict, eject_dict = self.game.get_stats()
+        final_stats = {}
+        get_name = (lambda x: self.ID_to_user_character[x][1].get_name())
+        for user in self.ID_to_user_character.keys():
+            if self.ID_to_user_character[user][1].get_ctype() == CharacterType.PLAYER:
+                final_stats[user] = (key_dict[user], exit_dict[user], eject_dict[user])
+        final_stats = {k: v for k, v in sorted(final_stats.items(), key=lambda item: item[1])}
+        score_list = []
+        for user in final_stats.keys():
+            score_list.append(
+                {
+                    "type": "player-score",
+                    "name": get_name(user),
+                    "exits": final_stats[user][1],
+                    "keys": final_stats[user][0],
+                    "ejected": final_stats[user][2]
+                }
+            )
+            # print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
+        return score_list
+
+    def get_ID_to_user_character(self):
+        return self.ID_to_user_character
+
+    def leaderboard_stats(self, already):
+        key_dict, exit_dict, eject_dict = self.game.get_stats()
         final_stats = {}
         get_name = (lambda x: self.ID_to_user_character[x][1].get_name())
         for user in self.ID_to_user_character.keys():
@@ -206,7 +232,7 @@ class GameManager:
             # print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
         output = {
             "type": "leaderboard",
-            "scores": score_list
+            "scores": score_list + already
         }
         self.server.write(json.dumps(output))
     """

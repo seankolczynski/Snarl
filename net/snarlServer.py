@@ -2,6 +2,7 @@ import socket
 import json
 import argparse
 import sys
+import time
 
 from datetime import datetime
 sys.path.append("../src/")
@@ -27,9 +28,11 @@ if __name__ == "__main__":
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
 
     args = ap.parse_args()
-    key_dict, exit_dict, eject_dict = {}, {}, {}
+    already = []
+
     server = None
     while replay:
+        # time.sleep()
         server = Server(args.address,args.port,args.clients,args.wait, args.levels)
         path_to_levels = args.levels
 
@@ -44,10 +47,10 @@ if __name__ == "__main__":
         for i in range(1, len(parsed_levels)):
             level = parsed_levels[i]
             floors.append(JLevel.floorMaker(json.loads(level)))
-        if args.start > len(floors) or args.start < 1:
-            raise ValueError("invalid floor index")
+        # if args.start > len(floors) or args.start < 1:
+        #     raise ValueError("invalid floor index")
 
-        start_level_index = args.start - 1
+        # start_level_index = args.start - 1
         init_gamestate = GameState(floors)
         # init_gamestate.set_stats(key_dict, exit_dict, eject_dict)
         init_gamemanager = GameManager(init_gamestate, server, parsed_levels)
@@ -55,10 +58,10 @@ if __name__ == "__main__":
             init_gamemanager.register_player_user(player)
         if args.observe == 1:
             init_gamemanager.register_observer(Observer(-1))
-        init_gamemanager.set_starting_level(1)
+        # init_gamemanager.set_starting_level(1)
         init_gamemanager.start_game()
-        key_dict_1, exit_dict_2, eject_dict_3 = init_gamestate.get_stats()
-        key_dict, exit_dict, eject_dict = ({**key_dict, **key_dict_1}, {**exit_dict, **exit_dict_2}, {**eject_dict, **eject_dict_3})
-        init_gamemanager.leaderboard_stats(key_dict, exit_dict, eject_dict)
+        init_gamemanager.leaderboard_stats(already)
+        already = init_gamemanager.get_end_game_stats()
         replay = server.ask_head_for_replay()
-    server.close()
+        print("REPLAY " + str(replay))
+        server.close()

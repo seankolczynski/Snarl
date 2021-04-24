@@ -23,6 +23,7 @@ class Server():
         host = ip  # Get local machine name
         port = port
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind((host, port))
         self.wait = wait
         self.id_to_conn = {}
@@ -79,14 +80,17 @@ class Server():
             conn.sendall(bytes(str1 + "\n", encoding='utf8'))
 
     def ask_head_for_replay(self):
-        current_conn = self.id_to_conn[1]
+        current_conn = self.id_to_conn[0]
         current_conn.sendall(bytes(json.dumps({"type": "replay"})+"\n", encoding='utf8'))
         data = None
         while data == None:
             data = current_conn.recv(1024).decode('utf8')
             print(data)
-        translated = bool(str(data))
-        return translated
+        data_i = str(data).strip()
+        if data_i == "True":
+            return True
+        else:
+            return False
 
 
     def write_to_id(self, message, id):
@@ -148,4 +152,4 @@ if __name__ == "__main__":
         {**key_dict, **key_dict_1}, {**exit_dict, **exit_dict_2}, {**eject_dict, **eject_dict_3})
         init_gamemanager.leaderboard_stats(key_dict, exit_dict, eject_dict)
         replay = server.ask_head_for_replay()
-    server.close(
+    server.close()
