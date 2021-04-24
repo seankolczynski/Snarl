@@ -120,7 +120,7 @@ if __name__ == "__main__":
                 else:
                     server_json = json.loads(data)
                     if server_json["type"] == "start-level":
-                        print("Starting level #" + server_json["level"] + " with players:")
+                        print("Starting level #" + str(server_json["level"]) + " with players:")
                         for name in server_json["players"]:
                             print(name)
                     elif server_json["type"] == "end-level":
