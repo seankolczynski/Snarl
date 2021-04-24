@@ -92,6 +92,7 @@ if __name__ == "__main__":
             data_list = data_raw.split("\n")
             for data in data_list:
                 data = data.strip()
+                print("RAW DATA: " + data)
                 if done == True:
                     continue
                 if data is None or data == "":
@@ -148,6 +149,11 @@ if __name__ == "__main__":
                         player_update(server_json)
                     elif server_json["type"] == "welcome":
                         break
+                    elif server_json["type"] == "replay":
+                        x = None
+                        while x != "true" or x != "false":
+                            x = input("do you want to replay on this server?")
+                        s.sendall(bytes(x, encoding='utf8'))
                     else:
                         print("unknown message received closing socket")
                         done = True

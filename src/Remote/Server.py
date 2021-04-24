@@ -104,7 +104,7 @@ class Server():
         while data == None:
             data = current_conn.recv(1024).decode('utf8')
             print(data)
-        translated = str(data)
+        translated = bool(str(data))
         return translated
 
     def write(self,str1):
@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
         start_level_index = args.start - 1
         init_gamestate = GameState(floors)
-        init_gamestate.set_stats(key_dict, exit_dict, eject_dict)
+        # init_gamestate.set_stats(key_dict, exit_dict, eject_dict)
         init_gamemanager = GameManager(init_gamestate, server, parsed_levels)
         for player in server.list_of_players:
             init_gamemanager.register_player_user(player)
@@ -167,6 +167,8 @@ if __name__ == "__main__":
         init_gamemanager.set_starting_level(1)
         init_gamemanager.start_game()
         key_dict_1, exit_dict_2, eject_dict_3 = init_gamestate.get_stats()
+        key_dict, exit_dict, eject_dict = ({**key_dict, **key_dict_1}, {**exit_dict, **exit_dict_2}, {**eject_dict, **eject_dict_3})
+        init_gamemanager.leaderboard_stats(key_dict, exit_dict, eject_dict)
         replay = server.ask_head_for_replay()
     server.close()
 
