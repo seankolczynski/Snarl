@@ -120,7 +120,7 @@ if __name__ == "__main__":
                 else:
                     server_json = json.loads(data)
                     if server_json["type"] == "start-level":
-                        print("Starting level #" + str(server_json["level"]) + " with players:")
+                        print("Starting level #" + server_json["level"] + " with players:")
                         for name in server_json["players"]:
                             print(name)
                     elif server_json["type"] == "end-level":
@@ -138,9 +138,12 @@ if __name__ == "__main__":
                         for score in server_json["scores"]:
                             print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
                             + str(score["exits"]) + " times, and got ejected " + str(score["ejected"]) + " times.")
-                        s.close()
-                        done = True
-                        break
+                    elif server_json["type"] == "leaderboard":
+                        print("Leaderboard:")
+                        for score in server_json["scores"]:
+                            print(score["name"] + " got " + str(score["keys"]) + " keys, exited "
+                                  + str(score["exits"]) + " times, and got ejected " + str(
+                                score["ejected"]) + " times.")
                     elif server_json["type"] == "player-update":
                         player_update(server_json)
                     elif server_json["type"] == "welcome":

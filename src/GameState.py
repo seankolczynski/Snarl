@@ -161,6 +161,12 @@ class GameState:
             return None
 
 
+    def set_stats(self, ctk, ctex, ctej):
+        self.character_to_keys = ctk
+        self.character_to_exits = ctex
+        self.character_to_ejects = ctej
+
+
     def update_status(self):
         dead = len(self.ejected)
         escaped = len(self.exited)
