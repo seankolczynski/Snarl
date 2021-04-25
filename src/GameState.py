@@ -150,6 +150,11 @@ class GameState:
     def get_stats(self):
         return self.character_to_keys, self.character_to_exits, self.character_to_ejects
 
+    def set_stats(self, ctk, ctex, ctej):
+        self.character_to_keys = ctk
+        self.character_to_exits = ctex
+        self.character_to_ejects = ctej
+
     def unlock(self):
         self.unlocked = True
 

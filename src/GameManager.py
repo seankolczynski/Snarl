@@ -237,7 +237,6 @@ class GameManager:
             "scores": score_list + already
         }
         self.server.write(json.dumps(output))
-
     """
     int -> JSON
     Executes a single turn the user whose turn it currently is. This includes receiving moves until one is approved, 
