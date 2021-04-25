@@ -4,6 +4,7 @@ import argparse
 import sys
 
 from datetime import datetime
+
 sys.path.append("../src/")
 from LocalPlayer.LocalPlayer import LocalPlayer
 import Common.JSONToLevel as JLevel
@@ -14,13 +15,13 @@ from Enums.CharacterType import CharacterType
 
 
 class Server:
-   
+
     def __init__(self, ip, port, clients, wait):
 
         self.ID = 0
-        host = ip# Get local machine name
-        port = port               
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) #
+        host = ip  # Get local machine name
+        port = port
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #
         sock.bind((host, port))
         time_change = datetime.timedelta(seconds=wait)
         end_time = datetime.datetime.now() + time_change
@@ -28,31 +29,30 @@ class Server:
         self.server = sock
         self.list_of_players = []
         while datetime.datetime.now() < end_time or self.ID >= clients:
-                data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-                self.ID += 1 
-                self.addr_to_id[addr] = self.ID
-                print("Got Connection")
-                self.server.sendto(addr, bytes("enter a name for your character: ", "UTF-8"))
-                addr2 = None
-                data2 = None
-                while addr != addr2:
-                    data2, addr2 = sock.recvfrom(1024) # buffer size is 1024 bytes
-                new_player = LocalPlayer(str(data2), CharacterType.PLAYER, self.ID)
-                self.list_of_players.append(new_player)
-                end_time = datetime.datetime.now() + time_change 
+            data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+            self.ID += 1
+            self.addr_to_id[addr] = self.ID
+            print("Got Connection")
+            self.server.sendto(addr, bytes("enter a name for your character: ", "UTF-8"))
+            addr2 = None
+            data2 = None
+            while addr != addr2:
+                data2, addr2 = sock.recvfrom(1024)  # buffer size is 1024 bytes
+            new_player = LocalPlayer(str(data2), CharacterType.PLAYER, self.ID)
+            self.list_of_players.append(new_player)
+            end_time = datetime.datetime.now() + time_change
         if self.ID == 0:
             print("No Players Joined ending Server")
             sock.close()
 
     def read(self):
-       data, addr = self.server.recvfrom(1024)
-       return data
-    
-    def write(self,str1):
+        data, addr = self.server.recvfrom(1024)
+        return data
+
+    def write(self, str1):
         message = bytes(str1, "UTF-8")
         for key in self.addr_to_id.keys():
-            self.server.sendto(key,message)
-
+            self.server.sendto(key, message)
 
 
 if __name__ == "__main__":
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
 
     args = ap.parse_args()
-    server = Server(args.ip,args.port,args.clients,args.wait)
+    server = Server(args.ip, args.port, args.clients, args.wait)
     path_to_levels = args.levels
 
     levels = open(path_to_levels)
