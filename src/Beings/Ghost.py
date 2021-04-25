@@ -44,3 +44,7 @@ class Ghost(Adversary):
             occupant = goal_tile.get_character()
             if not isinstance(goal_tile, WallTile) and occupant is None:
                 return goal_tile
+
+
+    def get_name(self):
+        return self.name

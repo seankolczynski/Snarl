@@ -1,6 +1,5 @@
 from Item import Item
 import Enums.CharacterType as CT
-from Beings.Hero import Hero
 
 
 class Tile(object):
@@ -59,14 +58,14 @@ class Tile(object):
         return " "
 
     def add_character(self, character):
-        response = {"success": True, "message": "OK"}
+        response = {"success": True, "message": "OK", "detail": ""}
         if self.character != None:
             raise ValueError("Occupied!")
         self.character = character
-        if isinstance(character, Hero):
+        if character.get_ctype() == CT.CharacterType.PLAYER:
             for item in self.items:
                 if item.name == "key" or item.name == "Key":
-                    response = {"success": True, "message": "Key"}
+                    response = {"success": True, "message": "Key", "detail": ""}
                 character.add_to_inventory(item)
             new_items = []
             self.items = new_items

@@ -32,6 +32,8 @@ class GameState:
         self.current_status = Status.INPROGRESS
         self.character_to_exits = defaultdict(int)
         self.character_to_keys = defaultdict(int)
+        self.character_to_ejects = defaultdict(int)
+        self.key_holder = None
 
     def get_random_empty_tile(self):
         current_floor = self.get_current_floor()
@@ -59,6 +61,7 @@ class GameState:
         self.move_character(player, self.get_random_empty_tile().get_position())
         self.character_to_exits[player.get_id()] = 0
         self.character_to_keys[player.get_id()] = 0
+        self.character_to_ejects[player.get_id()] = 0
 
     def add_adversary(self, adversary):
         self.adversaries.append(adversary)
@@ -80,21 +83,23 @@ class GameState:
             if not self.unlocked:
                 self.unlocked = self.current_floor.check_if_unlocked()
             if message is not None and "Key" in message['message']:
+                self.key_holder = character.get_name()
                 print("Player " + character.get_name() + " picked up a key")
                 self.character_to_keys[character.get_id()] = self.character_to_keys[character.get_id()] + 1
-            if self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
+                message = {"success": message["success"], "message": message["message"], "detail": "Player " + character.get_name() + " picked up a key"}
+            elif self.unlocked and destination == self.current_floor.get_exit() and character.get_ctype() == CharacterType.PLAYER:
                 self.exited.append(character)
                 self.character_to_exits[character.get_id()] = self.character_to_exits[character.get_id()] + 1
+                character.exited = True
                 self.update_status()
                 destination.remove_character()
                 print("Player " + character.get_name() + " exited")
-                message = {"success": True, "message": "Exited"}
-
+                message = {"success": True, "message": "Exit", "detail": "Player " + character.get_name() + " exited"}
         else:
             if character.get_ctype() == CharacterType.GHOST:
                 message = character.move(character.special_move(self.current_floor))
             else:
-                message = {"success": False, "message": "WallTile"}
+                message = {"success": False, "message": "WallTile", "detail": ""}
         if isinstance(character, Adversary):
             self.who_died()
         return message
@@ -103,6 +108,7 @@ class GameState:
         for player in self.players:
             if not player.is_alive() and player not in self.ejected:
                 self.ejected.append(player)
+                self.character_to_ejects[player.get_id()] = self.character_to_ejects[player.get_id()] + 1
                 print("Player " + player.get_name() + " was expelled")
         for monster in self.adversaries:
             if not monster.is_alive() and monster not in self.ejected:
@@ -112,7 +118,7 @@ class GameState:
         return self.move_character(self.players[id], pos)
 
     def draw(self):
-        return self.current_floor.draw()
+        self.current_floor.draw()
 
     def get_current_floor(self):
         return self.current_floor
@@ -142,10 +148,17 @@ class GameState:
         return len(self.dungeon)
 
     def get_stats(self):
-        return self.character_to_keys, self.character_to_exits
+        return self.character_to_keys, self.character_to_exits, self.character_to_ejects
 
     def unlock(self):
         self.unlocked = True
+
+    def get_tile_at(self, pos):
+        x, y = pos
+        if 0 <= x < len(self.current_floor.grid) and 0 <= y < len(self.current_floor.grid[0]):
+            return self.current_floor.grid[x][y]
+        else:
+            return None
 
 
     def update_status(self):
@@ -183,6 +196,8 @@ class GameState:
                 return False
         return True
 
+    def who_has_key(self):
+        return self.key_holder
 
     def get_intermediate_state(self):
         acc = ""

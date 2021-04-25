@@ -25,20 +25,20 @@ class LocalPlayer(PlayerUser):
         return self.name
 
     def request_move(self):
-        print("your Position is: " + str(self.position))
-        move = input("Make a move:")
-        if move == "":
-            return self.position
-        move_split = move.split(" ")
-        if len(move_split) == 2:
-            move_json = json.loads("[" + move_split[0] + "," + move_split[1] + "]")
+        # print("your Position is: " + str(self.position))
+        move_raw = input("give move")
+        move = move_raw["to"]
+        try: 
+            if move == None:
+                return self.position
+            move_json = move
             if not (isinstance(move_json[0], int)):
                 raise ValueError("the first value is not a number")
             if not (isinstance(move_json[1], int)):
                 raise ValueError("the second value is not a number")
             formatted_move = (move_json[0], move_json[1])
             return formatted_move
-        else:
+        except:
             return self.request_move()
 
 

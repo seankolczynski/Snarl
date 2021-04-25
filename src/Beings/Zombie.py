@@ -24,5 +24,8 @@ class Zombie(Adversary):
 
     def fit_the_bill(self, target_tile):
         return target_tile is not None and (isinstance(target_tile, Tile) or isinstance(target_tile, ExitTile)) \
-               and not target_tile.is_door() and not isinstance(target_tile.get_room(), Hallway) and not isinstance(target_tile.get_character(), Adversary)
+               and not target_tile.is_door() and not isinstance(target_tile.get_room(), Hallway) and not isinstance(
+            target_tile.get_character(), Adversary)
 
+    def get_name(self):
+        return self.name

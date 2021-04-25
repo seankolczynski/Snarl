@@ -3,10 +3,10 @@ import json
 import argparse
 import sys
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
-sys.path.append("../src/")
-from LocalPlayer.LocalPlayer import LocalPlayer
+sys.path.append("../")
+from RemotePlayer import RemotePlayer
 import Common.JSONToLevel as JLevel
 from Common.Observer import Observer
 from GameState import GameState
@@ -14,45 +14,82 @@ from GameManager import GameManager
 from Enums.CharacterType import CharacterType
 
 
-class Server:
+class Server():
 
-    def __init__(self, ip, port, clients, wait):
+    def __init__(self, ip, port, clients, wait, start_level):
 
+        self.start_level = start_level
         self.ID = 0
         host = ip  # Get local machine name
         port = port
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  #
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #
         sock.bind((host, port))
-        time_change = datetime.timedelta(seconds=wait)
-        end_time = datetime.datetime.now() + time_change
-        self.addr_to_id = {}
+        self.wait = wait
+        self.id_to_conn = {}
+        # self.id_to_name = {}
         self.server = sock
         self.list_of_players = []
-        while datetime.datetime.now() < end_time or self.ID >= clients:
-            data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-            self.ID += 1
-            self.addr_to_id[addr] = self.ID
-            print("Got Connection")
-            self.server.sendto(addr, bytes("enter a name for your character: ", "UTF-8"))
-            addr2 = None
-            data2 = None
-            while addr != addr2:
-                data2, addr2 = sock.recvfrom(1024)  # buffer size is 1024 bytes
-            new_player = LocalPlayer(str(data2), CharacterType.PLAYER, self.ID)
-            self.list_of_players.append(new_player)
-            end_time = datetime.datetime.now() + time_change
+        self.list_of_names = []
+        sock.listen(clients)
+        self.wait_for_player()
+        self.server.settimeout(wait)
+        try:
+            for _ in range(1, clients):
+                self.wait_for_player()
+        except socket.timeout:
+            print("No additional players")
         if self.ID == 0:
             print("No Players Joined ending Server")
             sock.close()
+        start_message = bytes(
+            json.dumps({"type": "start-level", "level": self.start_level, "players": self.list_of_names}) + "\n",
+            encoding='utf8')
+        print(len(self.id_to_conn))
+        for conn in self.id_to_conn.values():
+            conn.sendall(start_message)
 
-    def read(self):
-        data, addr = self.server.recvfrom(1024)
-        return data
+    def wait_for_player(self):
+        print("waiting for player")
+        conn, addr = self.server.accept()
+
+        print("Got Connection")
+        welcome = conn.sendall(bytes(json.dumps({"type": "welcome", "info": "0.1"}) + "\n", encoding='utf8'))
+        while welcome is not None:
+            continue
+        conn.sendall(bytes("name" + "\n", encoding='utf8'))
+        data2 = conn.recv(1024).decode('utf8')  # buffer size is 1024 bytes
+        new_player = RemotePlayer(data2, CharacterType.PLAYER, self.ID, self)
+        # self.id_to_name[self.ID] = str(data2)
+        self.list_of_players.append(new_player)
+        self.list_of_names.append(data2)
+        self.id_to_conn[self.ID] = conn
+        self.ID += 1
+
+    def read(self, ID):
+        current_conn = self.id_to_conn[ID]
+        current_conn.sendall(bytes("move" + "\n", encoding='utf8'))
+        data = None
+        while data == None:
+            data = current_conn.recv(1024).decode('utf8')
+            print(data)
+        translated = json.loads(str(data))
+        return translated
 
     def write(self, str1):
-        message = bytes(str1, "UTF-8")
-        for key in self.addr_to_id.keys():
-            self.server.sendto(key, message)
+        for conn in self.id_to_conn.values():
+            conn.sendall(bytes(str1 + "\n", encoding='utf8'))
+
+    def write_to_id(self, message, id):
+        self.id_to_conn[id].sendall(bytes(message + "\n", encoding="utf8"))
+
+    def close(self):
+        self.server.close()
+
+    def start_new_level(self, level_num):
+        for conn in self.id_to_conn.values():
+            conn.sendall(bytes(
+                json.dumps({"type": "start-level", "level": str(level_num + 1), "players": self.list_of_names}) + "\n",
+                encoding='utf8'))
 
 
 if __name__ == "__main__":
@@ -66,7 +103,7 @@ if __name__ == "__main__":
     ap.add_argument("--port", help="port to listen to", action="store", type=int, default=45678)
 
     args = ap.parse_args()
-    server = Server(args.ip, args.port, args.clients, args.wait)
+    server = Server(args.address, args.port, args.clients, args.wait, args.levels)
     path_to_levels = args.levels
 
     levels = open(path_to_levels)
@@ -85,7 +122,7 @@ if __name__ == "__main__":
 
     start_level_index = args.start - 1
     init_gamestate = GameState(floors)
-    init_gamemanager = GameManager(init_gamestate)
+    init_gamemanager = GameManager(init_gamestate, server, parsed_levels)
     for player in server.list_of_players:
         init_gamemanager.register_player_user(player)
     if args.observe == 1:

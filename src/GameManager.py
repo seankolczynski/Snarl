@@ -7,6 +7,8 @@ from Beings.Zombie import Zombie
 from Beings.Ghost import Ghost
 from Enums.CharacterType import CharacterType
 from AdversaryDriver import AdversaryDriver
+import json
+import Common.JSONToLevel as JLevel
 import math
 """
 The cycle of the game manager:
@@ -22,13 +24,15 @@ Outside of this loop, it also needs to start and end the game
 
 class GameManager:
 
-    def __init__(self, initial_gamestate):
+    def __init__(self, initial_gamestate, server, layout_list):
         self.game = initial_gamestate
         self.ID_to_user_character = {}
         self.rule_checker = RuleChecker(initial_gamestate)
         self.current_status = Status.NOGAME
         self.observers = []
         self.current_level_id = 1
+        self.server = server
+        self.layout_list = layout_list
 
     """
     Player -> Void
@@ -51,6 +55,18 @@ class GameManager:
             
     def move_to_new_level(self):
         self.current_status = Status.INPROGRESS
+        key_info = None
+        if self.game.key_holder is not None:
+            key_info = self.game.key_holder
+        print(list(map(lambda x: x.name, self.game.exited)))
+        print(list(map(lambda x: x.name, self.game.ejected)))
+        output = {
+            "type": "end-level",
+            "key": key_info,
+            "exits": list(map(lambda x: x.name, self.game.exited)),
+            "ejects": list(map(lambda x: x.name, self.game.ejected))
+        }
+        self.server.write(json.dumps(output))
         self.game.next_level()
         self.generate_adversaries()
 
@@ -107,6 +123,8 @@ class GameManager:
     def register_observer(self, observer):
         self.observers.append(observer)
 
+
+
     """
     Initialize the game and maintains the loop that keeps it running
     """
@@ -122,6 +140,7 @@ class GameManager:
             if self.current_status == Status.WON:
                 if current_level < numLevels:
                     self.move_to_new_level()
+                    self.server.start_new_level(current_level+1)
                 current_level = current_level + 1
                 self.update_gamestate()
         if self.current_status == Status.WON:
@@ -129,27 +148,42 @@ class GameManager:
         elif self.current_status == Status.LOST:
             print("Lost on level " + str(current_level))
         self.end_game_stats()
+        self.server.close()
 
 
     def run_level(self):
         current_character_turn = 0
         while self.current_status == Status.INPROGRESS or self.current_status == Status.INPROGRESSWON:
             if self.rule_checker.character_alive(self.ID_to_user_character[current_character_turn][1]):
-                self.series_of_messages(self.take_turn(current_character_turn), current_character_turn)
+                self.take_turn(current_character_turn), current_character_turn
                 self.current_status = self.rule_checker.getGameStatus()
             current_character_turn = (current_character_turn + 1) % len(self.ID_to_user_character)
 
     def end_game_stats(self):
-        key_dict, exit_dict = self.game.get_stats()
+        key_dict, exit_dict, eject_dict = self.game.get_stats()
         final_stats = {}
         get_name = (lambda x: self.ID_to_user_character[x][1].get_name())
         for user in self.ID_to_user_character.keys():
             if self.ID_to_user_character[user][1].get_ctype() == CharacterType.PLAYER:
-                final_stats[user] = (key_dict[user], exit_dict[user])
+                final_stats[user] = (key_dict[user], exit_dict[user], eject_dict[user])
         final_stats = {k: v for k, v in sorted(final_stats.items(), key=lambda item: item[1])}
+        score_list = []
         for user in final_stats.keys():
-            print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
-
+            score_list.append(
+                {
+                    "type": "player-score",
+                    "name": get_name(user),
+                    "exits": final_stats[user][1],
+                    "keys": final_stats[user][0],
+                    "ejected": final_stats[user][2]
+                }
+            )
+            # print(get_name(user) + " exited " + str(final_stats[user][1]) + " times and picked up " + str(final_stats[user][0]) + " keys" )
+        output = {
+            "type": "end-game",
+            "scores": score_list
+        }
+        self.server.write(json.dumps(output))
 
     """
     int -> JSON
@@ -158,52 +192,53 @@ class GameManager:
     Also provides a JSON update of what occurred on the turn
     """
     def take_turn(self, turn_index):
-        responses = []
+        response = None
         current_character = self.ID_to_user_character[turn_index][1]
         current_user = self.ID_to_user_character[turn_index][0]
         move = None
-        while True:
+        while True and current_character.is_alive() and not current_character.exited:
             try:
                 move = current_user.request_move()
             except ValueError:
                 return "Done"
+            except Exception:
+                return
             if self.rule_checker.validateMove(turn_index, move):
                 break
-            responses.append((move, {"success": False, "message": "Invalid"}))
+            response = (move, {"success": False, "message": "Invalid", "detail": ""})
+            self.give_result(response)
         if move is None:
-            responses.append((move, {"success": True, "message": "OK"}))
-            return responses
-        responses.append((move, self.game.move_character(current_character, move)))
+            response = ((move, {"success": True, "message": "OK", "detail": ""}))
+            self.give_result(response)
+            return response
+        response = (move, self.game.move_character(current_character, move))
+        self.give_result(response)
         self.update_gamestate()
-        return responses
+        return response
+
+
+    def give_result(self, result):
+        if result is None or result[1] is None or result[1]['message'] is None:
+            pass
+        else:
+            for user in self.ID_to_user_character.keys():
+                self.ID_to_user_character[user][0].transmit_message(result[1]['detail'])
 
     """
     Void
     Updates all players on the most recent version of the game
     """
     def update_gamestate(self):
-        image = self.game.draw()
         for user in self.ID_to_user_character.keys():
             userPos = self.ID_to_user_character[user][1].get_char_position()
-            self.ID_to_user_character[user][0].update_state(SimpleState(self.game.get_current_floor().grid), userPos, server)
+            self.ID_to_user_character[user][0].update_state(self.game, userPos)
         for observer in self.observers:
-            observer.update_state(SimpleState(self.game.get_current_floor().grid), (0,0), server)
+            observer.update_state(SimpleState(self.game.get_current_floor().grid), (0,0))
+
 
     def player_message(self, message):
         for user in self.ID_to_user_character.values():
             user[0].transmit_message(message)
-
-    def series_of_messages(self, ListOfMessages, current_turn):
-        player_name = self.ID_to_user_character[current_turn][0].get_name()
-        # for message in ListOfMessages:
-        #     if message is None or message[1] is None or message[1]['message'] is None:
-        #         continue
-        #     if "Key" in message[1]['message']:
-        #         self.player_message("Player " + player_name + " found the key")
-        #     elif "Exited" in message[1]['message']:
-        #         self.player_message("Player  " + player_name + " exited")
-        #     elif "Ejected" in message[1]['message']:
-        #         self.player_message("Player  " + player_name + " was expelled")
 
 
     """

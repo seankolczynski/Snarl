@@ -63,13 +63,14 @@ class Adversary(Character):
             return message
         elif occupant.get_ctype() == CharacterType.PLAYER:
             occupant.kill()
+            message = {"success": True, "message": "Ejected player", "detail": "Player " + occupant.get_name() + " was expelled"}
             if self.current_tile is not None:
                 self.current_tile.remove_character()
             self.current_tile = tile
             tile.add_character(self)
             return message
         else:
-            message = {"success": False, "message": "Occupied by another adversary"}
+            message = {"success": False, "message": "Occupied by another adversary", "detail": ""}
             return message
 
     def special(self, tile):
